@@ -62,7 +62,7 @@ async function fetchContributors() {
             });
           }
         }
-      } catch (err) {
+      } catch {
         console.warn(`  ⚠️  Failed to fetch contributors for ${repo.name}`);
       }
     }
