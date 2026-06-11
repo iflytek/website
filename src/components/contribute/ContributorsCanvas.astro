@@ -27,8 +27,7 @@ const contributorsJSON = JSON.stringify(contributors);
     id="contributors-canvas"
     class="block h-full w-full cursor-pointer"
     aria-label="iFLYTEK contributor avatars forming the text iFLYTEK"
-    role="img"
-  ></canvas>
+    role="img"></canvas>
 
   <!-- Tooltip -->
   <div
@@ -45,10 +44,7 @@ const contributorsJSON = JSON.stringify(contributors);
   </div>
 
   <!-- Loading overlay -->
-  <div
-    id="canvas-loading"
-    class="absolute inset-0 flex items-center justify-center"
-  >
+  <div id="canvas-loading" class="absolute inset-0 flex items-center justify-center">
     <div class="flex items-center gap-3 text-gray-400">
       <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -336,8 +332,7 @@ const contributorsJSON = JSON.stringify(contributors);
 
       document.getElementById('tooltip-avatar').src = particle.contributor.avatar_url;
       document.getElementById('tooltip-name').textContent = particle.contributor.username;
-      document.getElementById('tooltip-stats').textContent =
-        particle.contributor.contributions + ' contributions';
+      document.getElementById('tooltip-stats').textContent = particle.contributor.contributions + ' contributions';
 
       const wrapper = document.getElementById('contributors-canvas-wrapper');
       const rect = wrapper.getBoundingClientRect();
@@ -389,22 +384,26 @@ const contributorsJSON = JSON.stringify(contributors);
       });
 
       // Touch support
-      canvas.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-        const p = getParticleAt(x, y);
-        if (p) {
-          showTooltip(p, touch.clientX, touch.clientY);
-          setTimeout(() => {
-            hideTooltip();
-            if (p.contributor.profile_url) {
-              window.open(p.contributor.profile_url, '_blank', 'noopener');
-            }
-          }, 1500);
-        }
-      }, { passive: true });
+      canvas.addEventListener(
+        'touchstart',
+        (e) => {
+          const touch = e.touches[0];
+          const rect = canvas.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          const p = getParticleAt(x, y);
+          if (p) {
+            showTooltip(p, touch.clientX, touch.clientY);
+            setTimeout(() => {
+              hideTooltip();
+              if (p.contributor.profile_url) {
+                window.open(p.contributor.profile_url, '_blank', 'noopener');
+              }
+            }, 1500);
+          }
+        },
+        { passive: true }
+      );
 
       // Resize
       let resizeTimer;
@@ -492,11 +491,18 @@ const contributorsJSON = JSON.stringify(contributors);
           const imageMap = {};
           uniqueUrls.forEach((url, i) => (imageMap[url] = images[i]));
           particles = positions.map((pos, i) => ({
-            x: pos.x, y: pos.y, targetX: pos.x, targetY: pos.y,
-            startX: pos.x, startY: pos.y, size: getAvatarSize(),
+            x: pos.x,
+            y: pos.y,
+            targetX: pos.x,
+            targetY: pos.y,
+            startX: pos.x,
+            startY: pos.y,
+            size: getAvatarSize(),
             img: imageMap[contributorPool[i].avatar_url],
-            contributor: contributorPool[i], progress: 1,
-            phase: 0, arrived: true,
+            contributor: contributorPool[i],
+            progress: 1,
+            phase: 0,
+            arrived: true,
           }));
           const loading = document.getElementById('canvas-loading');
           if (loading) loading.style.display = 'none';

@@ -23,7 +23,7 @@ const categoryLabels: Record<string, string> = {
   'ai-platform': 'AI 平台',
   'developer-tools': '开发者工具',
   'nlp-speech': 'NLP & 语音',
-  'infrastructure': '基础设施',
+  infrastructure: '基础设施',
 };
 
 // Total stats
@@ -33,7 +33,9 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
 
 <Layout metadata={metadata}>
   <!-- Page Header -->
-  <section class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-24">
+  <section
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-24"
+  >
     <div class="absolute inset-0 opacity-30">
       <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]"></div>
       <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]"></div>
@@ -41,9 +43,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
-            开源项目
-          </span>
+          <span class="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent"> 开源项目 </span>
           <span class="text-gray-900 dark:text-white"> / Projects</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
@@ -82,34 +82,38 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
         >
           全部 / All
         </button>
-        {categories.map((cat) => (
-          <button
-            class="category-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            data-category={cat}
-          >
-            {categoryLabels[cat] || cat}
-          </button>
-        ))}
+        {
+          categories.map((cat) => (
+            <button
+              class="category-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              data-category={cat}
+            >
+              {categoryLabels[cat] || cat}
+            </button>
+          ))
+        }
       </div>
 
       <!-- Project Cards -->
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
-        {sortedProjects.map((project) => (
-          <ProjectCard
-            name={project.data.name}
-            description={project.data.description}
-            repo={project.data.repo}
-            homepage={project.data.homepage}
-            category={project.data.category}
-            tags={project.data.tags}
-            languages={project.data.languages}
-            stars={project.data.stars}
-            forks={project.data.forks}
-            license={project.data.license}
-            featured={project.data.featured}
-            data-category={project.data.category}
-          />
-        ))}
+        {
+          sortedProjects.map((project) => (
+            <ProjectCard
+              name={project.data.name}
+              description={project.data.description}
+              repo={project.data.repo}
+              homepage={project.data.homepage}
+              category={project.data.category}
+              tags={project.data.tags}
+              languages={project.data.languages}
+              stars={project.data.stars}
+              forks={project.data.forks}
+              license={project.data.license}
+              featured={project.data.featured}
+              data-category={project.data.category}
+            />
+          ))
+        }
       </div>
 
       <!-- View Landscape Link -->
@@ -118,7 +122,14 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
           href="/landscape"
           class="inline-flex items-center gap-2 rounded-xl border-2 border-primary-200 bg-primary-50 px-8 py-4 font-medium text-primary-700 transition-all hover:border-primary-300 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:hover:bg-primary-900"
         >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+            ></path></svg
+          >
           查看全景图 / View Landscape
           <span>→</span>
         </a>

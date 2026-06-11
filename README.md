@@ -74,29 +74,29 @@ npm run preview
 
 ## 📋 Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run check` | Run all code quality checks |
-| `npm run check:astro` | Run Astro type checking |
-| `npm run check:eslint` | Run ESLint |
-| `npm run check:prettier` | Run Prettier check |
-| `npm run fix` | Auto-fix ESLint and Prettier issues |
-| `npm run fetch:contributors` | Fetch GitHub contributor data |
-| `npm run license:check` | Check dependency licenses |
-| `npm run license:report` | Generate license report |
+| Script                       | Description                         |
+| ---------------------------- | ----------------------------------- |
+| `npm run dev`                | Start development server            |
+| `npm run build`              | Build for production                |
+| `npm run preview`            | Preview production build            |
+| `npm run check`              | Run all code quality checks         |
+| `npm run check:astro`        | Run Astro type checking             |
+| `npm run check:eslint`       | Run ESLint                          |
+| `npm run check:prettier`     | Run Prettier check                  |
+| `npm run fix`                | Auto-fix ESLint and Prettier issues |
+| `npm run fetch:contributors` | Fetch GitHub contributor data       |
+| `npm run license:check`      | Check dependency licenses           |
+| `npm run license:report`     | Generate license report             |
 
 ## 🌍 Pages
 
-| Route | Description |
-|-------|-------------|
-| `/` | Homepage |
-| `/projects` | Project list with filters |
-| `/landscape` | CNCF-style project landscape |
-| `/blog` | Blog list (tech + news) |
-| `/events` | Community events timeline |
+| Route         | Description                           |
+| ------------- | ------------------------------------- |
+| `/`           | Homepage                              |
+| `/projects`   | Project list with filters             |
+| `/landscape`  | CNCF-style project landscape          |
+| `/blog`       | Blog list (tech + news)               |
+| `/events`     | Community events timeline             |
 | `/contribute` | Contribution guide + contributor wall |
 
 ## 🤝 Contributing

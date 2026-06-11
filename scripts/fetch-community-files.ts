@@ -9,11 +9,7 @@ import { join } from 'path';
 
 const COMMUNITY_REPO = 'https://github.com/iflytek/community.git';
 const TEMP_DIR = '.tmp-community';
-const TARGET_FILES = [
-  'CODE_OF_CONDUCT.md',
-  'CONTRIBUTING.md',
-  'SECURITY.md',
-];
+const TARGET_FILES = ['CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'SECURITY.md'];
 
 async function fetchCommunityFiles() {
   console.log('📦 Fetching community files from iflytek/community...');
@@ -48,10 +44,7 @@ async function fetchCommunityFiles() {
       if (existsSync(srcDir)) {
         const targetDir = dir;
         mkdirSync(targetDir, { recursive: true });
-        const files = execSync(`ls ${srcDir}`, { encoding: 'utf-8' })
-          .trim()
-          .split('\n')
-          .filter(Boolean);
+        const files = execSync(`ls ${srcDir}`, { encoding: 'utf-8' }).trim().split('\n').filter(Boolean);
         for (const file of files) {
           copyFileSync(join(srcDir, file), join(targetDir, file));
           console.log(`  ✅ Copied ${dir}/${file}`);

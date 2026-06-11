@@ -68,9 +68,7 @@ async function fetchContributors() {
     }
 
     // Sort by contributions
-    const sortedContributors = Array.from(allContributors.values()).sort(
-      (a, b) => b.contributions - a.contributions
-    );
+    const sortedContributors = Array.from(allContributors.values()).sort((a, b) => b.contributions - a.contributions);
 
     // Save to cache
     if (!existsSync(CACHE_DIR)) {

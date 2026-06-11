@@ -9,7 +9,7 @@ metadata:
   title:
     default: iFLYTEK Open Source
     template: '%s — iFLYTEK Open Source'
-  description: "iFLYTEK Open Source - Exploring AI, NLP, Speech Recognition and more open source projects from iFLYTEK."
+  description: 'iFLYTEK Open Source - Exploring AI, NLP, Speech Recognition and more open source projects from iFLYTEK.'
   robots:
     index: true
     follow: true
