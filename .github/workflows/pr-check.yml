@@ -1,0 +1,79 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # ============ Code Quality ============
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: ESLint
+        run: npm run check:eslint
+      - name: Prettier
+        run: npm run check:prettier
+      - name: TypeScript / Astro Check
+        run: npm run check:astro
+
+  # ============ Build ============
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build site
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-pr-${{ github.event.pull_request.number }}
+          path: dist/
+
+  # ============ Link Check ============
+  link-check:
+    name: Link Check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-pr-${{ github.event.pull_request.number }}
+          path: dist/
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress 'dist/**/*.html'
+        continue-on-error: true
+
+  # ============ License Check ============
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check dependency licenses
+        run: npx license-checker --production --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0" --failOn "GPL-3.0;AGPL-3.0"

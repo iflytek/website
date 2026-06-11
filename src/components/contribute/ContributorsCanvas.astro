@@ -1,0 +1,511 @@
+---
+/**
+ * ContributorsCanvas — 贡献者头像拼字动画
+ *
+ * Renders contributor avatars in the shape of "iFLYTEK" text
+ * with fly-in animation and breathing micro-animation.
+ */
+interface Props {
+  contributors: Array<{
+    username: string;
+    avatar_url: string;
+    contributions: number;
+    profile_url: string;
+  }>;
+}
+
+const { contributors } = Astro.props;
+const contributorsJSON = JSON.stringify(contributors);
+---
+
+<div
+  id="contributors-canvas-wrapper"
+  class="relative mx-auto w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+  style="min-height: 300px;"
+>
+  <canvas
+    id="contributors-canvas"
+    class="block h-full w-full cursor-pointer"
+    aria-label="iFLYTEK contributor avatars forming the text iFLYTEK"
+    role="img"
+  ></canvas>
+
+  <!-- Tooltip -->
+  <div
+    id="contributor-tooltip"
+    class="pointer-events-none absolute z-50 hidden rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-lg dark:border-gray-700 dark:bg-gray-900"
+  >
+    <div class="flex items-center gap-2.5">
+      <img id="tooltip-avatar" class="h-8 w-8 rounded-full" src="" alt="" />
+      <div>
+        <div id="tooltip-name" class="font-semibold text-gray-900 dark:text-white"></div>
+        <div id="tooltip-stats" class="text-xs text-gray-500 dark:text-gray-400"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div
+    id="canvas-loading"
+    class="absolute inset-0 flex items-center justify-center"
+  >
+    <div class="flex items-center gap-3 text-gray-400">
+      <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <span>Loading contributors...</span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ contributorsData: contributorsJSON }}>
+  (function () {
+    const contributors = JSON.parse(contributorsData);
+
+    // Config
+    const TEXT = 'iFLYTEK';
+    const FONT_FAMILY = 'Arial, Helvetica, sans-serif';
+    const AVATAR_SIZE = { desktop: 32, tablet: 24, mobile: 18 };
+    const SAMPLE_STEP = { desktop: 5, tablet: 6, mobile: 8 };
+    const MAX_AVATARS = { desktop: 200, tablet: 120, mobile: 60 };
+    const FLY_DURATION = 1800;
+    const BREATHING_AMPLITUDE = 2;
+    const BREATHING_SPEED = 0.002;
+
+    // State
+    let canvas, ctx;
+    let particles = [];
+    let animFrame;
+    let hasEntered = false;
+    let hoveredParticle = null;
+    let canvasWidth, canvasHeight;
+    let dpr;
+
+    function getDeviceType() {
+      if (canvasWidth < 640) return 'mobile';
+      if (canvasWidth < 1024) return 'tablet';
+      return 'desktop';
+    }
+
+    function getAvatarSize() {
+      return AVATAR_SIZE[getDeviceType()];
+    }
+
+    function getSampleStep() {
+      return SAMPLE_STEP[getDeviceType()];
+    }
+
+    function getMaxAvatars() {
+      return MAX_AVATARS[getDeviceType()];
+    }
+
+    // Sample text pixels
+    function sampleTextPixels() {
+      const offscreen = document.createElement('canvas');
+      const octx = offscreen.getContext('2d');
+      offscreen.width = canvasWidth;
+      offscreen.height = canvasHeight;
+
+      const fontSize = Math.min(canvasWidth / 5.5, canvasHeight * 0.45, 160);
+      octx.font = `900 ${fontSize}px ${FONT_FAMILY}`;
+      octx.textAlign = 'center';
+      octx.textBaseline = 'middle';
+      octx.fillStyle = '#000';
+      octx.fillText(TEXT, canvasWidth / 2, canvasHeight / 2);
+
+      const imageData = octx.getImageData(0, 0, canvasWidth, canvasHeight);
+      const pixels = imageData.data;
+      const step = getSampleStep();
+      const positions = [];
+
+      for (let y = 0; y < canvasHeight; y += step) {
+        for (let x = 0; x < canvasWidth; x += step) {
+          const i = (y * canvasWidth + x) * 4;
+          if (pixels[i + 3] > 128) {
+            positions.push({ x, y });
+          }
+        }
+      }
+
+      // Limit to max avatars, evenly sample
+      const max = getMaxAvatars();
+      if (positions.length > max) {
+        const sampled = [];
+        const interval = positions.length / max;
+        for (let i = 0; i < max; i++) {
+          sampled.push(positions[Math.floor(i * interval)]);
+        }
+        return sampled;
+      }
+      return positions;
+    }
+
+    // Load avatar image
+    function loadAvatar(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => {
+          // Create fallback avatar
+          const fallback = document.createElement('canvas');
+          fallback.width = 80;
+          fallback.height = 80;
+          const fctx = fallback.getContext('2d');
+          const hue = Math.random() * 360;
+          fctx.fillStyle = `hsl(${hue}, 60%, 50%)`;
+          fctx.fillRect(0, 0, 80, 80);
+          fctx.fillStyle = '#fff';
+          fctx.font = 'bold 36px Arial';
+          fctx.textAlign = 'center';
+          fctx.textBaseline = 'middle';
+          fctx.fillText('?', 40, 40);
+          resolve(fallback);
+        };
+        img.src = url;
+      });
+    }
+
+    // Initialize
+    async function init() {
+      canvas = document.getElementById('contributors-canvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+
+      resize();
+
+      // Load avatars
+      const avatarSize = getAvatarSize();
+      const positions = sampleTextPixels();
+      const contributorPool = [];
+
+      // Repeat contributors to fill positions
+      while (contributorPool.length < positions.length) {
+        for (const c of contributors) {
+          if (contributorPool.length >= positions.length) break;
+          contributorPool.push(c);
+        }
+      }
+
+      // Load unique avatar images
+      const uniqueUrls = [...new Set(contributors.map((c) => c.avatar_url))];
+      const loadedImages = await Promise.all(uniqueUrls.map(loadAvatar));
+      const imageMap = {};
+      uniqueUrls.forEach((url, i) => (imageMap[url] = loadedImages[i]));
+
+      // Create particles
+      particles = positions.map((pos, i) => {
+        const c = contributorPool[i];
+        const startX = Math.random() * canvasWidth;
+        const startY = Math.random() * canvasHeight;
+        return {
+          x: startX,
+          y: startY,
+          targetX: pos.x,
+          targetY: pos.y,
+          startX,
+          startY,
+          size: avatarSize,
+          img: imageMap[c.avatar_url],
+          contributor: c,
+          progress: 0,
+          phase: Math.random() * Math.PI * 2,
+          arrived: false,
+        };
+      });
+
+      // Hide loading
+      const loading = document.getElementById('canvas-loading');
+      if (loading) loading.style.display = 'none';
+
+      // Start animation
+      startFlyIn();
+    }
+
+    // Fly-in animation with easing
+    function startFlyIn() {
+      const startTime = performance.now();
+
+      function animateFly(time) {
+        const elapsed = time - startTime;
+        let allArrived = true;
+
+        particles.forEach((p, i) => {
+          const delay = (i / particles.length) * 600; // stagger
+          const t = Math.max(0, Math.min(1, (elapsed - delay) / FLY_DURATION));
+          p.progress = t;
+
+          // Ease out cubic
+          const ease = 1 - Math.pow(1 - t, 3);
+          p.x = p.startX + (p.targetX - p.startX) * ease;
+          p.y = p.startY + (p.targetY - p.startY) * ease;
+
+          if (t < 1) allArrived = false;
+          else p.arrived = true;
+        });
+
+        render();
+
+        if (!allArrived) {
+          animFrame = requestAnimationFrame(animateFly);
+        } else {
+          // Switch to breathing animation
+          startBreathing();
+        }
+      }
+
+      animFrame = requestAnimationFrame(animateFly);
+    }
+
+    // Breathing micro-animation
+    function startBreathing() {
+      function breathe(time) {
+        particles.forEach((p) => {
+          p.x = p.targetX + Math.sin(time * BREATHING_SPEED + p.phase) * BREATHING_AMPLITUDE;
+          p.y = p.targetY + Math.cos(time * BREATHING_SPEED * 0.8 + p.phase) * BREATHING_AMPLITUDE * 0.6;
+        });
+        render();
+        animFrame = requestAnimationFrame(breathe);
+      }
+      animFrame = requestAnimationFrame(breathe);
+    }
+
+    // Render frame
+    function render() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      particles.forEach((p) => {
+        const opacity = Math.min(1, p.progress * 2);
+        ctx.globalAlpha = opacity;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.save();
+        ctx.clip();
+        if (p.img) {
+          ctx.drawImage(p.img, p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+        }
+        ctx.restore();
+
+        // Highlight hovered
+        if (hoveredParticle === p) {
+          ctx.strokeStyle = '#0066FF';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size / 2 + 2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    // Handle resize
+    function resize() {
+      const wrapper = document.getElementById('contributors-canvas-wrapper');
+      if (!wrapper || !canvas) return;
+
+      dpr = window.devicePixelRatio || 1;
+      canvasWidth = wrapper.clientWidth;
+      canvasHeight = Math.max(280, Math.min(450, canvasWidth * 0.4));
+
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+      canvas.style.width = canvasWidth + 'px';
+      canvas.style.height = canvasHeight + 'px';
+      ctx.scale(dpr, dpr);
+    }
+
+    // Mouse / Touch interaction
+    function getParticleAt(x, y) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        const dx = x - p.x;
+        const dy = y - p.y;
+        if (dx * dx + dy * dy < (p.size / 2 + 4) * (p.size / 2 + 4)) {
+          return p;
+        }
+      }
+      return null;
+    }
+
+    function showTooltip(particle, clientX, clientY) {
+      const tooltip = document.getElementById('contributor-tooltip');
+      if (!tooltip || !particle) return;
+
+      document.getElementById('tooltip-avatar').src = particle.contributor.avatar_url;
+      document.getElementById('tooltip-name').textContent = particle.contributor.username;
+      document.getElementById('tooltip-stats').textContent =
+        particle.contributor.contributions + ' contributions';
+
+      const wrapper = document.getElementById('contributors-canvas-wrapper');
+      const rect = wrapper.getBoundingClientRect();
+      let tx = clientX - rect.left + 15;
+      let ty = clientY - rect.top - 20;
+
+      // Keep in bounds
+      if (tx + 180 > rect.width) tx = clientX - rect.left - 190;
+      if (ty < 0) ty = 10;
+
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top = ty + 'px';
+      tooltip.classList.remove('hidden');
+    }
+
+    function hideTooltip() {
+      const tooltip = document.getElementById('contributor-tooltip');
+      if (tooltip) tooltip.classList.add('hidden');
+    }
+
+    // Event listeners
+    function setupEvents() {
+      if (!canvas) return;
+
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const p = getParticleAt(x, y);
+        hoveredParticle = p;
+        canvas.style.cursor = p ? 'pointer' : 'default';
+        if (p) showTooltip(p, e.clientX, e.clientY);
+        else hideTooltip();
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        hoveredParticle = null;
+        hideTooltip();
+      });
+
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const p = getParticleAt(x, y);
+        if (p && p.contributor.profile_url) {
+          window.open(p.contributor.profile_url, '_blank', 'noopener');
+        }
+      });
+
+      // Touch support
+      canvas.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        const p = getParticleAt(x, y);
+        if (p) {
+          showTooltip(p, touch.clientX, touch.clientY);
+          setTimeout(() => {
+            hideTooltip();
+            if (p.contributor.profile_url) {
+              window.open(p.contributor.profile_url, '_blank', 'noopener');
+            }
+          }, 1500);
+        }
+      }, { passive: true });
+
+      // Resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          cancelAnimationFrame(animFrame);
+          resize();
+          const positions = sampleTextPixels();
+          // Remap particles to new positions
+          const contributorPool = [];
+          while (contributorPool.length < positions.length) {
+            for (const c of contributors) {
+              if (contributorPool.length >= positions.length) break;
+              contributorPool.push(c);
+            }
+          }
+          const imageMap = {};
+          particles.forEach((p) => {
+            if (p.img) imageMap[p.contributor.avatar_url] = p.img;
+          });
+
+          particles = positions.map((pos, i) => {
+            const c = contributorPool[i];
+            return {
+              x: pos.x,
+              y: pos.y,
+              targetX: pos.x,
+              targetY: pos.y,
+              startX: pos.x,
+              startY: pos.y,
+              size: getAvatarSize(),
+              img: imageMap[c.avatar_url],
+              contributor: c,
+              progress: 1,
+              phase: Math.random() * Math.PI * 2,
+              arrived: true,
+            };
+          });
+          startBreathing();
+        }, 250);
+      });
+    }
+
+    // IntersectionObserver — only animate when visible
+    function setupVisibility() {
+      const wrapper = document.getElementById('contributors-canvas-wrapper');
+      if (!wrapper) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasEntered) {
+              hasEntered = true;
+              init();
+              setupEvents();
+              observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      observer.observe(wrapper);
+    }
+
+    // Respect prefers-reduced-motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Skip animation, show static layout
+      document.addEventListener('DOMContentLoaded', () => {
+        canvas = document.getElementById('contributors-canvas');
+        if (!canvas) return;
+        ctx = canvas.getContext('2d');
+        resize();
+        const positions = sampleTextPixels();
+        const contributorPool = [];
+        while (contributorPool.length < positions.length) {
+          for (const c of contributors) {
+            if (contributorPool.length >= positions.length) break;
+            contributorPool.push(c);
+          }
+        }
+        const uniqueUrls = [...new Set(contributors.map((c) => c.avatar_url))];
+        Promise.all(uniqueUrls.map(loadAvatar)).then((images) => {
+          const imageMap = {};
+          uniqueUrls.forEach((url, i) => (imageMap[url] = images[i]));
+          particles = positions.map((pos, i) => ({
+            x: pos.x, y: pos.y, targetX: pos.x, targetY: pos.y,
+            startX: pos.x, startY: pos.y, size: getAvatarSize(),
+            img: imageMap[contributorPool[i].avatar_url],
+            contributor: contributorPool[i], progress: 1,
+            phase: 0, arrived: true,
+          }));
+          const loading = document.getElementById('canvas-loading');
+          if (loading) loading.style.display = 'none';
+          render();
+          setupEvents();
+        });
+      });
+    } else {
+      document.addEventListener('DOMContentLoaded', setupVisibility);
+    }
+  })();
+</script>

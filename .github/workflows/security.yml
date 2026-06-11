@@ -1,0 +1,24 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'  # Every Monday at 9:00 AM Beijing time (UTC+8)
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+      - name: License audit
+        run: npx license-checker --production --out licenses.csv --csv

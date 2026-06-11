@@ -1,0 +1,14 @@
+name: Astron Agent
+nameEn: Astron Agent
+description: 企业级、商业友好的 Agentic Workflow 开发平台，集成 AI 工作流编排、模型管理、AI 与 MCP 工具集成、RPA 自动化和团队协作功能。
+descriptionEn: Enterprise-grade, commercial-friendly agentic workflow platform for building next-generation SuperAgents.
+repo: iflytek/astron-agent
+homepage: https://astron.ai
+category: ai-platform
+tags: [agent, agentic-ai, workflow, llm, mcp, multi-agent, rpa, orchestration]
+languages: [Java, TypeScript, Python]
+featured: true
+stars: 8549
+forks: 850
+license: Apache-2.0
+icon: astron-agent
