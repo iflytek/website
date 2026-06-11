@@ -22,7 +22,7 @@
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w .",
     "fetch:contributors": "tsx scripts/fetch-contributors.ts",
-    "license:check": "license-checker --production --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0'",
+    "license:check": "license-checker --production --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0;OFL-1.1'",
     "license:report": "license-checker --production --markdown --out THIRD_PARTY_LICENSES.md",
     "license:summary": "license-checker --production --summary"
   },
