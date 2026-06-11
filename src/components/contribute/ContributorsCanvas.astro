@@ -55,7 +55,7 @@ const contributorsJSON = JSON.stringify(contributors);
   </div>
 </div>
 
-<script define:vars={{ contributorsData: contributorsJSON }}>
+<script is:inline define:vars={{ contributorsData: contributorsJSON }}>
   (function () {
     const contributors = JSON.parse(contributorsData);
 

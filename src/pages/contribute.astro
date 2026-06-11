@@ -9,7 +9,14 @@ const metadata = {
 };
 
 // Load contributor data
-let contributors = [];
+interface Contributor {
+  username: string;
+  avatar_url: string;
+  contributions: number;
+  profile_url: string;
+}
+
+let contributors: Contributor[] = [];
 const cachePath = join(process.cwd(), '.cache/contributors.json');
 try {
   if (existsSync(cachePath)) {

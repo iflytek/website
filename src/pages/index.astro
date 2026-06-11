@@ -50,7 +50,7 @@ const starDisplay = totalStars >= 1000 ? (totalStars / 1000).toFixed(1) + 'K' : 
   <Stats
     tagline="开源数据"
     title="iFLYTEK 开源生态"
-    items={[
+    stats={[
       {
         title: '开源项目',
         amount: projects.length.toString(),
@@ -85,43 +85,37 @@ const starDisplay = totalStars >= 1000 ? (totalStars / 1000).toFixed(1) + 'K' : 
         title: '开源项目',
         description: '涵盖 AI、NLP、语音识别、开发者工具等多个领域的开源项目，提供完整的文档和示例。',
         icon: 'tabler:box',
-        href: '/projects',
       },
       {
         title: '全景图',
         description: 'CNCF 风格的开源生态全景图，一目了然地查看所有 iFLYTEK 开源项目及分类。',
         icon: 'tabler:map',
-        href: '/landscape',
       },
       {
         title: '技术博客',
         description: '深入的技术文章、教程和架构分享，帮助你更好地理解和使用开源项目。',
         icon: 'tabler:article',
-        href: '/blog',
       },
       {
         title: '社区活动',
         description: 'Meetup、Hackathon、Conference 等丰富多彩的社区活动，与开发者面对面交流。',
         icon: 'tabler:calendar-event',
-        href: '/events',
       },
       {
         title: '参与贡献',
         description: '无论你是新手还是资深开发者，都可以找到适合自己的贡献方式。',
         icon: 'tabler:git-pull-request',
-        href: '/contribute',
       },
       {
         title: '开源许可',
         description: '所有项目均采用宽松的开源协议，鼓励商业使用和技术创新。',
         icon: 'tabler:license',
-        href: 'https://github.com/iflytek',
       },
     ]}
   />
 
   <!-- Latest Blog Posts -->
-  <BlogLatestPosts tagline="最新动态" title="技术博客与新闻" subtitle="了解 iFLYTEK 开源社区的最新技术动态和项目更新" />
+  <BlogLatestPosts title="技术博客与新闻" />
 
   <!-- Call to Action -->
   <CallToAction

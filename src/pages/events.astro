@@ -134,7 +134,10 @@ const eventTypes = [...new Set(events.map((e) => e.type))];
 const posts = await getCollection('post');
 const newsPosts = posts
   .filter((p) => p.data.category === 'news')
-  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate || Date.now()).getTime() - new Date(a.data.publishDate || Date.now()).getTime()
+  );
 ---
 
 <Layout metadata={metadata}>
@@ -313,7 +316,7 @@ const newsPosts = posts
                   <p class="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{post.data.excerpt}</p>
                 )}
                 <time class="mt-3 block text-xs text-gray-400">
-                  {new Date(post.data.publishDate).toLocaleDateString('zh-CN')}
+                  {post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString('zh-CN') : ''}
                 </time>
               </a>
             ))}

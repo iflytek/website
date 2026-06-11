@@ -56,7 +56,7 @@ async function fetchContributors() {
             const contributions = (existing?.contributions || 0) + (contributor.contributions || 0);
             allContributors.set(contributor.login, {
               username: contributor.login,
-              avatar_url: contributor.avatar_url,
+              avatar_url: contributor.avatar_url || `https://github.com/${contributor.login}.png`,
               contributions,
               profile_url: contributor.html_url || `https://github.com/${contributor.login}`,
             });
