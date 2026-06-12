@@ -63,6 +63,9 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
                       class="text-muted hover:text-gray-700 hover:underline dark:text-gray-400 transition duration-150 ease-in-out"
                       href={href}
                       aria-label={ariaLabel}
+                      data-wechat={
+                        String(text).includes('微信') || String(text).includes('WeChat') ? 'true' : undefined
+                      }
                     >
                       <Fragment set:html={text} />
                     </a>
@@ -84,6 +87,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
                   class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
                   aria-label={ariaLabel}
                   href={href}
+                  data-wechat={ariaLabel === 'WeChat' ? 'true' : undefined}
                 >
                   {icon && <Icon name={icon} class="w-5 h-5" />}
                   <Fragment set:html={text} />
@@ -102,3 +106,74 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
     </div>
   </div>
 </footer>
+
+<!-- WeChat QR Code Modal -->
+<div
+  id="wechat-qr-modal"
+  class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="WeChat QR Code"
+>
+  <div class="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 sm:max-w-md">
+    <button
+      id="wechat-qr-close"
+      class="absolute right-3 top-3 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+      aria-label="Close"
+    >
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="text-center">
+      <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">微信扫码加入社区</h3>
+      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Scan the QR code to join our WeChat group</p>
+      <div class="flex justify-center">
+        <img
+          src="https://raw.githubusercontent.com/iflytek/astron-agent/main/docs/imgs/WeCom_Group.png"
+          alt="WeChat QR Code"
+          class="h-auto max-h-[60vh] w-auto max-w-full rounded-lg"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const modal = document.getElementById('wechat-qr-modal');
+    const closeBtn = document.getElementById('wechat-qr-close');
+
+    function openModal(e) {
+      e.preventDefault();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    // Bind WeChat links
+    document.querySelectorAll('[data-wechat="true"]').forEach(function (el) {
+      el.addEventListener('click', openModal);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', closeModal);
+
+    // Click backdrop to close
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // ESC key to close
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+  })();
+</script>

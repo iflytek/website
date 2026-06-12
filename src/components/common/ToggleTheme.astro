@@ -7,22 +7,42 @@ export interface Props {
   label?: string;
   class?: string;
   iconClass?: string;
-  iconName?: string;
 }
 
-const {
-  label = 'Toggle between Dark and Light mode',
-  class:
-    className = 'text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center',
-  iconClass = 'w-6 h-6',
-  iconName = 'tabler:sun',
-} = Astro.props;
+const { label = 'Color scheme', class: className = '', iconClass = 'w-5 h-5' } = Astro.props;
 ---
 
 {
   !(UI.theme && UI.theme.endsWith(':only')) && (
-    <button type="button" class={className} aria-label={label} data-aw-toggle-color-scheme>
-      <Icon name={iconName} class={iconClass} />
-    </button>
+    <div
+      class:list={['inline-flex items-center rounded-lg bg-gray-100 dark:bg-gray-800 p-1 gap-1', className]}
+      role="radiogroup"
+      aria-label={label}
+    >
+      <button
+        type="button"
+        class="rounded-md p-1.5 transition-all duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 data-[active]:bg-white data-[active]:text-primary data-[active]:shadow-sm dark:data-[active]:bg-gray-600 dark:data-[active]:text-white dark:data-[active]:shadow-md"
+        aria-label="Light mode"
+        data-aw-theme-btn="light"
+      >
+        <Icon name="tabler:sun" class={iconClass} />
+      </button>
+      <button
+        type="button"
+        class="rounded-md p-1.5 transition-all duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 data-[active]:bg-white data-[active]:text-primary data-[active]:shadow-sm dark:data-[active]:bg-gray-600 dark:data-[active]:text-white dark:data-[active]:shadow-md"
+        aria-label="Dark mode"
+        data-aw-theme-btn="dark"
+      >
+        <Icon name="tabler:moon" class={iconClass} />
+      </button>
+      <button
+        type="button"
+        class="rounded-md p-1.5 transition-all duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 data-[active]:bg-white data-[active]:text-primary data-[active]:shadow-sm dark:data-[active]:bg-gray-600 dark:data-[active]:text-white dark:data-[active]:shadow-md"
+        aria-label="Follow system"
+        data-aw-theme-btn="system"
+      >
+        <Icon name="tabler:device-desktop" class={iconClass} />
+      </button>
+    </div>
   )
 }

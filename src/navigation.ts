@@ -83,44 +83,41 @@ export const footerData = {
       links: [
         { text: 'Email', href: 'mailto:opensource@iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
-        { text: 'Discord', href: '#' },
+        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
       ],
     },
     {
       title: '相关网站',
       titleEn: 'Related Sites',
       links: [
-        { text: 'iFLYTEK 官网', textEn: 'iFLYTEK Official', href: 'https://www.iflytek.com' },
+        { text: 'iFLYTEK Official', href: 'https://www.iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
-        { text: 'Gitee', href: 'https://gitee.com/iflytekopensource' },
-        { text: 'OSCHINA', href: 'https://www.oschina.net/' },
+        { text: 'Gitee', href: 'https://gitee.com/organizations/iflytek' },
       ],
     },
     {
       title: '关注我们',
       titleEn: 'Follow Us',
       links: [
-        { text: 'X (Twitter)', href: '#' },
-        { text: 'YouTube', href: '#' },
-        { text: '微信', textEn: 'WeChat', href: '#' },
-        { text: 'Discord', href: '#' },
+        { text: 'LinkedIn', href: 'https://www.linkedin.com/in/astron-ai' },
+        { text: 'WeChat', href: '#' },
+        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
       ],
     },
   ],
   secondaryLinks: [
-    { text: '隐私政策', textEn: 'Privacy Policy', href: getPermalink('/privacy') },
-    { text: '使用条款', textEn: 'Terms of Use', href: getPermalink('/terms') },
-    { text: '开源许可', textEn: 'Open Source License', href: getPermalink('/license') },
+    { text: '安全策略', textEn: 'Security Policy', href: getPermalink('/security') },
+    { text: '社区价值观', textEn: 'Community Values', href: getPermalink('/values') },
+    { text: '开源许可', textEn: 'CLA', href: getPermalink('/cla') },
   ],
   socialLinks: [
-    { ariaLabel: 'X (Twitter)', icon: 'tabler:brand-x', href: '#' },
-    { ariaLabel: 'YouTube', icon: 'tabler:brand-youtube', href: '#' },
+    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/in/astron-ai' },
     { ariaLabel: 'WeChat', icon: 'tabler:brand-wechat', href: '#' },
-    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: '#' },
+    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.com/invite/vXzgts4fK' },
     { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
     { ariaLabel: 'GitHub', icon: 'tabler:brand-github', href: 'https://github.com/iflytek' },
   ],
   footNote: `
-    © 2024 iFLYTEK CO., LTD. All rights reserved.
+    © 2026 iFLYTEK Corporation All Rights Reserved by iFLYTEK
   `,
 };

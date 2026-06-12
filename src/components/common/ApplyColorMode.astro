@@ -1,7 +1,5 @@
 ---
 import { UI } from 'astrowind:config';
-
-// TODO: This code is temporary
 ---
 
 <script is:inline define:vars={{ defaultTheme: UI.theme || 'system' }}>
@@ -11,8 +9,18 @@ import { UI } from 'astrowind:config';
     } else {
       document.documentElement.classList.remove('dark');
     }
-    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
 
+    // Update active button highlight
+    const stored = localStorage.theme || 'system';
+    document.querySelectorAll('[data-aw-theme-btn]').forEach((btn) => {
+      if (btn.getAttribute('data-aw-theme-btn') === stored) {
+        btn.setAttribute('data-active', '');
+      } else {
+        btn.removeAttribute('data-active');
+      }
+    });
+
+    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
     if (matches && matches.length) {
       matches.forEach((elem) => {
         elem.checked = theme !== 'dark';
