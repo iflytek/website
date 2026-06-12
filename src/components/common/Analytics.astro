@@ -1,11 +1,16 @@
 ---
 import { ANALYTICS } from 'astrowind:config';
+import VercelAnalytics from '@vercel/analytics/astro';
 
 const id = ANALYTICS?.vendors?.googleAnalytics?.id ? String(ANALYTICS.vendors.googleAnalytics.id) : '';
 const partytown = !!ANALYTICS?.vendors?.googleAnalytics?.partytown;
 const scriptType = partytown ? 'text/partytown' : undefined;
 ---
 
+<!-- Vercel Web Analytics -->
+<VercelAnalytics />
+
+<!-- Google Analytics -->
 {id && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} type={scriptType} />}
 
 <script is:inline id="ga-init" data-id={id} type={id ? scriptType : undefined}>
