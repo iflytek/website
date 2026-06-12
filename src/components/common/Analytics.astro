@@ -19,3 +19,9 @@ const scriptType = partytown ? 'text/partytown' : undefined;
     window.gtag('config', d);
   }
 </script>
+
+<!-- Vercel Web Analytics -->
+<script>
+  import { inject } from '@vercel/analytics';
+  inject();
+</script>
