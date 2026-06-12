@@ -4,7 +4,6 @@ import { blogCategoryRobots, getStaticPathsBlogCategory } from '~/utils/blog';
 
 import Layout from '~/layouts/PageLayout.astro';
 import BlogList from '~/components/blog/List.astro';
-import Headline from '~/components/blog/Headline.astro';
 import Pagination from '~/components/blog/Pagination.astro';
 
 export const prerender = true;
@@ -26,11 +25,45 @@ const metadata = {
     follow: blogCategoryRobots?.follow,
   },
 };
+const categoryMeta: Record<string, { titleZh: string; description: string }> = {
+  tech: {
+    titleZh: '技术博客',
+    description: '深度技术文章、架构设计与工程实践，探索 AI、NLP、开发者工具等前沿技术',
+  },
+  news: {
+    titleZh: '最新动态',
+    description: '项目发布、版本更新、社区活动等 iFLYTEK 开源生态最新资讯',
+  },
+};
+
+const cat = categoryMeta[category.slug] || { titleZh: category.title, description: `${category.title} 相关文章` };
 ---
 
 <Layout metadata={metadata}>
+  <!-- Header -->
+  <section
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
+  >
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute left-1/3 top-1/3 h-48 w-48 rounded-full bg-primary-400 blur-[80px]"></div>
+      <div class="absolute right-1/3 bottom-1/3 h-48 w-48 rounded-full bg-accent-400 blur-[80px]"></div>
+    </div>
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{cat.titleZh}</span
+          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
+            >{category.title}</span
+          >
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+          {cat.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
   <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <Headline>{category.title}</Headline>
     <BlogList posts={page.data} />
     <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
   </section>

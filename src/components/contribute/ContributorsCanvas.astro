@@ -21,7 +21,7 @@ const contributorsJSON = JSON.stringify(contributors);
 <div
   id="contributors-canvas-wrapper"
   class="relative mx-auto w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
-  style="min-height: 300px;"
+  style="min-height: 320px;"
 >
   <canvas
     id="contributors-canvas"
@@ -62,9 +62,9 @@ const contributorsJSON = JSON.stringify(contributors);
     // Config
     const TEXT = 'iFLYTEK';
     const FONT_FAMILY = 'Arial, Helvetica, sans-serif';
-    const AVATAR_SIZE = { desktop: 32, tablet: 24, mobile: 18 };
+    const AVATAR_SIZE = { desktop: 36, tablet: 28, mobile: 20 };
     const SAMPLE_STEP = { desktop: 5, tablet: 6, mobile: 8 };
-    const MAX_AVATARS = { desktop: 200, tablet: 120, mobile: 60 };
+    const MAX_AVATARS = { desktop: 300, tablet: 160, mobile: 80 };
     const FLY_DURATION = 1800;
     const BREATHING_AMPLITUDE = 2;
     const BREATHING_SPEED = 0.002;
@@ -103,7 +103,7 @@ const contributorsJSON = JSON.stringify(contributors);
       offscreen.width = canvasWidth;
       offscreen.height = canvasHeight;
 
-      const fontSize = Math.min(canvasWidth / 5.5, canvasHeight * 0.45, 160);
+      const fontSize = Math.min(canvasWidth / 4.5, canvasHeight * 0.55, 240);
       octx.font = `900 ${fontSize}px ${FONT_FAMILY}`;
       octx.textAlign = 'center';
       octx.textBaseline = 'middle';
@@ -304,7 +304,7 @@ const contributorsJSON = JSON.stringify(contributors);
 
       dpr = window.devicePixelRatio || 1;
       canvasWidth = wrapper.clientWidth;
-      canvasHeight = Math.max(280, Math.min(450, canvasWidth * 0.4));
+      canvasHeight = Math.max(320, Math.min(520, canvasWidth * 0.45));
 
       canvas.width = canvasWidth * dpr;
       canvas.height = canvasHeight * dpr;
@@ -471,9 +471,9 @@ const contributorsJSON = JSON.stringify(contributors);
     }
 
     // Respect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // Skip animation, show static layout
-      document.addEventListener('DOMContentLoaded', () => {
+    function boot() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Skip animation, show static layout
         canvas = document.getElementById('contributors-canvas');
         if (!canvas) return;
         ctx = canvas.getContext('2d');
@@ -509,9 +509,16 @@ const contributorsJSON = JSON.stringify(contributors);
           render();
           setupEvents();
         });
-      });
+      } else {
+        setupVisibility();
+      }
+    }
+
+    // Run when DOM is ready (handles both initial load and view transitions)
+    if (document.readyState !== 'loading') {
+      requestAnimationFrame(boot);
     } else {
-      document.addEventListener('DOMContentLoaded', setupVisibility);
+      document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(boot));
     }
   })();
 </script>

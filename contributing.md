@@ -1,7 +1,6 @@
 # Contributing to the Community
 
 <!-- toc -->
-
 - [Getting Started](#getting-started)
 - [How to Contribute](#how-to-contribute)
 - [Contributor Guides](#contributor-guides)
@@ -19,9 +18,9 @@ Welcome to the Iflytek Opensource Community contributing guide. We are excited a
 
 We have full documentation on how to get started contributing:
 
-- [Community Governance](governance.md) - How the community is organized
-- [Community Membership](community-membership.md) - Membership levels and responsibilities
-- [Code of Conduct](code-of-conduct.md) - Our community values and expectations
+* [Community Governance](governance.md) - How the community is organized
+* [Community Membership](community-membership.md) - Membership levels and responsibilities
+* [Code of Conduct](code-of-conduct.md) - Our community values and expectations
 
 ## How to Contribute
 
@@ -38,40 +37,40 @@ These documents provide detailed guidance on how to contribute effectively:
 
 The [Issue Guidelines](contribute/issue-guidelines.md) document covers:
 
-- How to search for existing issues before opening a new one
-- What information to include when opening an issue
-- The issue triage process and how maintainers review incoming issues
-- Issue lifecycle from open to resolved
-- Label conventions (`kind/`, `priority/`, `sig/`, `triage/`)
+* How to search for existing issues before opening a new one
+* What information to include when opening an issue
+* The issue triage process and how maintainers review incoming issues
+* Issue lifecycle from open to resolved
+* Label conventions (`kind/`, `priority/`, `sig/`, `triage/`)
 
 ### Pull Request Guidelines
 
 The [Pull Request Guidelines](contribute/pull-request-guidelines.md) document covers:
 
-- The pull request process from creation to merge
-- How to mark unfinished pull requests (WIP)
-- Why pull requests get closed (inactivity after 90 days)
-- Why your pull request might not be getting reviewed
-- Best practices: smaller PRs, good comments, testing, commit messages
+* The pull request process from creation to merge
+* How to mark unfinished pull requests (WIP)
+* Why pull requests get closed (inactivity after 90 days)
+* Why your pull request might not be getting reviewed
+* Best practices: smaller PRs, good comments, testing, commit messages
 
 ### Review Guidelines
 
 The [Review Guidelines](contribute/review-guidelines.md) document covers tips for reviewers:
 
-- Managing your time for reviews
-- When to loop in others with domain-specific knowledge
-- How to ask questions and request changes respectfully
-- Commit hygiene expectations
-- How to check out a pull request locally for deeper review
+* Managing your time for reviews
+* When to loop in others with domain-specific knowledge
+* How to ask questions and request changes respectfully
+* Commit hygiene expectations
+* How to check out a pull request locally for deeper review
 
 ### Discussions Guidelines
 
 The [Discussions Guidelines](contribute/discussions-guidelines.md) document covers:
 
-- What discussions are for (questions, brainstorming, showcase, announcements)
-- Discussion categories and when to use each
-- Discussion etiquette
-- When to use issues vs discussions
+* What discussions are for (questions, brainstorming, showcase, announcements)
+* Discussion categories and when to use each
+* Discussion etiquette
+* When to use issues vs discussions
 
 ## Mentorship
 

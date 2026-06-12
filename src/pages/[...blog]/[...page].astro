@@ -3,9 +3,7 @@ import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
 
 import Layout from '~/layouts/PageLayout.astro';
 import BlogList from '~/components/blog/List.astro';
-import Headline from '~/components/blog/Headline.astro';
 import Pagination from '~/components/blog/Pagination.astro';
-// import PostTags from "~/components/blog/Tags.astro";
 
 import { blogListRobots, getStaticPathsBlogList } from '~/utils/blog';
 
@@ -36,17 +34,30 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
+  <!-- Header -->
+  <section
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
+  >
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute left-1/3 top-1/3 h-48 w-48 rounded-full bg-primary-400 blur-[80px]"></div>
+      <div class="absolute right-1/3 bottom-1/3 h-48 w-48 rounded-full bg-accent-400 blur-[80px]"></div>
+    </div>
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">技术博客</span><span
+            class="mx-2 text-gray-300 dark:text-gray-600">/</span
+          ><span class="text-gray-900 dark:text-white">Blog</span>
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+          深入的技术文章、教程和架构分享，帮助你更好地理解和使用 iFLYTEK 开源项目
+        </p>
+      </div>
+    </div>
+  </section>
+
   <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <Headline
-      subtitle="A statically generated blog example with news, tutorials, resources and other interesting content related to AstroWind"
-    >
-      The Blog
-    </Headline>
     <BlogList posts={page.data} />
     <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
-    <!--
-      <PostTags tags={allCategories} class="mb-2" title="Search by Categories:" isCategory />
-      <PostTags tags={allTags}  title="Search by Tags:" />
-    -->
   </section>
 </Layout>

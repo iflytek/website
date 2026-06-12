@@ -152,10 +152,9 @@ const newsPosts = posts
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">社区活动</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >Events</span
-          >
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">社区活动</span><span
+            class="mx-2 text-gray-300 dark:text-gray-600">/</span
+          ><span class="text-gray-900 dark:text-white">Events</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           参与 iFLYTEK 开源社区活动 — Meetup、Hackathon、Workshop，与开发者面对面交流
@@ -210,7 +209,7 @@ const newsPosts = posts
               </div>
 
               {/* Event Card */}
-              <div class="mb-8 flex-1 rounded-xl border border-gray-200 bg-white p-5 transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-900 sm:p-6">
+              <div class="mb-8 flex-1 rounded-xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800 sm:p-6">
                 <div class="flex flex-wrap items-start justify-between gap-2">
                   <div class="flex flex-wrap items-center gap-2">
                     <span class:list={['rounded-full px-2.5 py-0.5 text-xs font-medium', typeColors[event.type]]}>
@@ -306,7 +305,7 @@ const newsPosts = posts
             {newsPosts.slice(0, 4).map((post) => (
               <a
                 href={`/blog/${post.id.replace('.md', '').replace('.mdx', '')}`}
-                class="group rounded-xl border border-gray-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+                class="group rounded-xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
               >
                 <span class="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
                   News
@@ -329,34 +328,42 @@ const newsPosts = posts
   }
 
   <!-- Filter Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('.event-filter-btn');
-      const items = document.querySelectorAll('.event-item');
+  <script is:inline>
+    (function () {
+      function setupFilters() {
+        const buttons = document.querySelectorAll('.event-filter-btn');
+        const items = document.querySelectorAll('.event-item');
 
-      buttons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const type = (btn as HTMLElement).dataset.type;
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const type = btn.dataset.type;
 
-          // Update button styles
-          buttons.forEach((b) => {
-            b.classList.remove('bg-primary-600', 'text-white');
-            b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
-          });
-          btn.classList.add('bg-primary-600', 'text-white');
-          btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            // Update button styles
+            buttons.forEach((b) => {
+              b.classList.remove('bg-primary-600', 'text-white');
+              b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            });
+            btn.classList.add('bg-primary-600', 'text-white');
+            btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
 
-          // Filter items
-          items.forEach((item) => {
-            const itemType = (item as HTMLElement).dataset.type;
-            if (type === 'all' || itemType === type) {
-              (item as HTMLElement).style.display = '';
-            } else {
-              (item as HTMLElement).style.display = 'none';
-            }
+            // Filter items
+            items.forEach((item) => {
+              const itemType = item.dataset.type;
+              if (type === 'all' || itemType === type) {
+                item.style.display = '';
+              } else {
+                item.style.display = 'none';
+              }
+            });
           });
         });
-      });
-    });
+      }
+
+      if (document.readyState !== 'loading') {
+        setupFilters();
+      } else {
+        document.addEventListener('DOMContentLoaded', setupFilters);
+      }
+    })();
   </script>
 </Layout>
