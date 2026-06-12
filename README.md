@@ -27,23 +27,23 @@ The official open source website for iFLYTEK (科大讯飞), showcasing our open
 website/
 ├── src/
 │   ├── components/    # UI components
-│   ├── data/          # Content (blog posts, etc.)
-│   ├── i18n/          # Internationalization
+│   ├── data/          # Content (blog posts, project data)
 │   ├── layouts/       # Page layouts
 │   ├── navigation.ts  # Navigation config
 │   ├── config.yaml    # Site config
 │   ├── pages/         # Route pages
 │   └── utils/         # Utilities
 ├── public/            # Static assets
-├── scripts/           # Build scripts
-└── .github/           # CI/CD workflows
+├── scripts/           # Build scripts (fetch contributors, community files)
+├── vendor/            # AstroWind integration
+└── .github/           # CI/CD workflows + Dependabot
 ```
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
 
-- Node.js >= 22.12.0
+- Node.js 24.x
 - npm
 
 ### Installation
@@ -74,34 +74,39 @@ npm run preview
 
 ## 📋 Available Scripts
 
-| Script                       | Description                         |
-| ---------------------------- | ----------------------------------- |
-| `npm run dev`                | Start development server            |
-| `npm run build`              | Build for production                |
-| `npm run preview`            | Preview production build            |
-| `npm run check`              | Run all code quality checks         |
-| `npm run check:astro`        | Run Astro type checking             |
-| `npm run check:eslint`       | Run ESLint                          |
-| `npm run check:prettier`     | Run Prettier check                  |
-| `npm run fix`                | Auto-fix ESLint and Prettier issues |
-| `npm run fetch:contributors` | Fetch GitHub contributor data       |
-| `npm run license:check`      | Check dependency licenses           |
-| `npm run license:report`     | Generate license report             |
+| Script                       | Description                          |
+| ---------------------------- | ------------------------------------ |
+| `npm run dev`                | Start development server             |
+| `npm run build`              | Build for production (with prebuild) |
+| `npm run preview`            | Preview production build             |
+| `npm run check`              | Run all code quality checks          |
+| `npm run check:astro`        | Run Astro type checking              |
+| `npm run check:eslint`       | Run ESLint                           |
+| `npm run check:prettier`     | Run Prettier check                   |
+| `npm run fix`                | Auto-fix ESLint and Prettier issues  |
+| `npm run fetch:contributors` | Fetch GitHub contributor data        |
+| `npm run license:check`      | Check dependency licenses            |
+| `npm run license:report`     | Generate license report (Markdown)   |
+| `npm run license:summary`    | Show license summary                 |
 
 ## 🌍 Pages
 
-| Route         | Description                           |
-| ------------- | ------------------------------------- |
-| `/`           | Homepage                              |
-| `/projects`   | Project list with filters             |
-| `/landscape`  | CNCF-style project landscape          |
-| `/blog`       | Blog list (tech + news)               |
-| `/events`     | Community events timeline             |
-| `/contribute` | Contribution guide + contributor wall |
+| Route             | Description                           |
+| ----------------- | ------------------------------------- |
+| `/`               | Homepage                              |
+| `/projects`       | Project list with category filters    |
+| `/projects/:slug` | Individual project detail page        |
+| `/landscape`      | CNCF-style project landscape          |
+| `/blog`           | Blog list (tech + news)               |
+| `/events`         | Community events timeline             |
+| `/contribute`     | Contribution guide + contributor wall |
+| `/security`       | Security policy                       |
+| `/values`         | Community values                      |
+| `/cla`            | Contributor License Agreement         |
 
 ## 🤝 Contributing
 
-Please read our [Contributing Guide](https://github.com/iflytek/community/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/iflytek/community/blob/main/CODE_OF_CONDUCT.md) before contributing.
+Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ## 📄 License
 
@@ -113,4 +118,7 @@ Third-party licenses are listed in [NOTICE](NOTICE).
 
 - **Website**: https://opensource.iflytek.com
 - **GitHub**: https://github.com/iflytek
+- **Gitee**: https://gitee.com/organizations/iflytek
 - **iFLYTEK Official**: https://www.iflytek.com
+- **Discord**: https://discord.com/invite/vXzgts4fK
+- **LinkedIn**: https://www.linkedin.com/in/astron-ai
