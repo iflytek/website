@@ -1,0 +1,14 @@
+name: AstronClaw Tutorial
+nameEn: AstronClaw Tutorial
+description: 从零到工作流，掌握 AstronClaw（云端）与 Loomy（桌面）的 AI 助手实战教程。
+descriptionEn: A complete tutorial to master AstronClaw (cloud AI) & Loomy (desktop AI), from zero to workflow.
+repo: iflytek/astronclaw-tutorial
+homepage: https://astronclaw-tutorial.space/
+category: tutorials
+tags: [tutorial, ai-agent, astronclaw, workflow]
+languages: [JavaScript]
+featured: false
+stars: 410
+forks: 41
+license: Apache-2.0
+icon: astronclaw-tutorial

@@ -37,6 +37,27 @@ const categoryInfo: Record<
     color: 'from-green-500 to-green-600',
     icon: '🛠️',
   },
+  'rpa-automation': {
+    label: 'RPA & 自动化',
+    labelEn: 'RPA & Automation',
+    description: 'RPA 自动化套件与低代码/无代码开发工具',
+    color: 'from-rose-500 to-rose-600',
+    icon: '🔄',
+  },
+  'ai-skills': {
+    label: 'AI 技能',
+    labelEn: 'AI Skills',
+    description: '语音、OCR、翻译、多模态等 Agent 技能包',
+    color: 'from-cyan-500 to-cyan-600',
+    icon: '🧩',
+  },
+  tutorials: {
+    label: '教程',
+    labelEn: 'Tutorials',
+    description: '从零到工作流的实战教程与学习资源',
+    color: 'from-amber-500 to-amber-600',
+    icon: '📚',
+  },
   'nlp-speech': {
     label: 'NLP & 语音',
     labelEn: 'NLP & Speech',
@@ -68,9 +89,7 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-          <span class="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
-            开源全景图
-          </span>
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> 开源全景图 </span>
         </h1>
         <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           iFLYTEK 开源项目生态全景 — {projects.length} 个项目，{totalStars.toLocaleString()} Stars
@@ -117,7 +136,7 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
                         class="group flex items-start gap-3 rounded-xl border border-gray-100 p-4 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-800 dark:hover:border-primary-800"
                       >
                         {/* Project Icon */}
-                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 text-sm font-bold text-white">
+                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-sm font-bold text-white">
                           {project.data.name.charAt(0)}
                         </div>
 

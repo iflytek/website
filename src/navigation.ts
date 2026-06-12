@@ -118,6 +118,6 @@ export const footerData = {
     { ariaLabel: 'GitHub', icon: 'tabler:brand-github', href: 'https://github.com/iflytek' },
   ],
   footNote: `
-    © 2026 iFLYTEK Corporation All Rights Reserved by iFLYTEK
+    © ${new Date().getFullYear()} iFLYTEK Corporation All Rights Reserved by iFLYTEK
   `,
 };

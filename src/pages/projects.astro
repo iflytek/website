@@ -9,12 +9,8 @@ const metadata = {
 
 const projects = await getCollection('project');
 
-// Sort: featured first, then by stars
-const sortedProjects = projects.sort((a, b) => {
-  if (a.data.featured && !b.data.featured) return -1;
-  if (!a.data.featured && b.data.featured) return 1;
-  return (b.data.stars || 0) - (a.data.stars || 0);
-});
+// Sort by stars
+const sortedProjects = projects.sort((a, b) => (b.data.stars || 0) - (a.data.stars || 0));
 
 // Extract unique categories
 const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
@@ -22,6 +18,9 @@ const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
 const categoryLabels: Record<string, string> = {
   'ai-platform': 'AI 平台',
   'developer-tools': '开发者工具',
+  'rpa-automation': 'RPA & 自动化',
+  'ai-skills': 'AI 技能',
+  tutorials: '教程',
   'nlp-speech': 'NLP & 语音',
   infrastructure: '基础设施',
 };
@@ -43,10 +42,9 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">开源项目</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >Projects</span
-          >
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">开源项目</span><span
+            class="mx-2 text-gray-300 dark:text-gray-600">/</span
+          ><span class="text-gray-900 dark:text-white">Projects</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           探索 iFLYTEK 的开源项目生态，涵盖 AI Agent、开发工具等前沿领域
@@ -82,7 +80,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
           class="category-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-category="all"
         >
-          全部 / All
+          全部 / All ({sortedProjects.length})
         </button>
         {
           categories.map((cat) => (
@@ -90,7 +88,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
               class="category-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               data-category={cat}
             >
-              {categoryLabels[cat] || cat}
+              {categoryLabels[cat] || cat} ({sortedProjects.filter((p) => p.data.category === cat).length})
             </button>
           ))
         }
@@ -100,20 +98,20 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
         {
           sortedProjects.map((project) => (
-            <ProjectCard
-              name={project.data.name}
-              description={project.data.description}
-              repo={project.data.repo}
-              homepage={project.data.homepage}
-              category={project.data.category}
-              tags={project.data.tags}
-              languages={project.data.languages}
-              stars={project.data.stars}
-              forks={project.data.forks}
-              license={project.data.license}
-              featured={project.data.featured}
-              data-category={project.data.category}
-            />
+            <div class="project-card" data-category={project.data.category}>
+              <ProjectCard
+                name={project.data.name}
+                description={project.data.description}
+                repo={project.data.repo}
+                homepage={project.data.homepage}
+                category={project.data.category}
+                tags={project.data.tags}
+                languages={project.data.languages}
+                stars={project.data.stars}
+                forks={project.data.forks}
+                license={project.data.license}
+              />
+            </div>
           ))
         }
       </div>
@@ -140,34 +138,42 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
   </section>
 
   <!-- Filter Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('.category-btn');
-      const cards = document.querySelectorAll('[data-category]');
+  <script is:inline>
+    (function () {
+      function setupFilters() {
+        const buttons = document.querySelectorAll('.category-btn');
+        const cards = document.querySelectorAll('.project-card');
 
-      buttons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const category = (btn as HTMLElement).dataset.category;
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const category = btn.dataset.category;
 
-          // Update button styles
-          buttons.forEach((b) => {
-            b.classList.remove('bg-primary-600', 'text-white');
-            b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
-          });
-          btn.classList.add('bg-primary-600', 'text-white');
-          btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            // Update button styles
+            buttons.forEach((b) => {
+              b.classList.remove('bg-primary-600', 'text-white');
+              b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            });
+            btn.classList.add('bg-primary-600', 'text-white');
+            btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
 
-          // Filter cards
-          cards.forEach((card) => {
-            const cardCategory = (card as HTMLElement).dataset.category;
-            if (category === 'all' || cardCategory === category) {
-              (card as HTMLElement).style.display = '';
-            } else {
-              (card as HTMLElement).style.display = 'none';
-            }
+            // Filter cards
+            cards.forEach((card) => {
+              const cardCategory = card.dataset.category;
+              if (category === 'all' || cardCategory === category) {
+                card.style.display = '';
+              } else {
+                card.style.display = 'none';
+              }
+            });
           });
         });
-      });
-    });
+      }
+
+      if (document.readyState !== 'loading') {
+        setupFilters();
+      } else {
+        document.addEventListener('DOMContentLoaded', setupFilters);
+      }
+    })();
   </script>
 </Layout>
