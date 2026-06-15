@@ -1,10 +1,10 @@
 name: Astron RPA
 nameEn: Astron RPA
-description: Agent-ready RPA 自动化套件，提供开箱即用的自动化工具，面向个人与企业，支持低代码/无代码开发。
-descriptionEn: Agent-ready RPA suite with out-of-the-box automation tools. Built for individuals and enterprises, supporting low-code/no-code development.
+description: 面向智能体的 RPA 套件，内置开箱即用的自动化工具。专为个人和企业打造。
+descriptionEn: Agent-ready RPA suite with out-of-the-box automation tools. Built for individuals and enterprises.
 repo: iflytek/astron-rpa
 homepage: http://www.iflyrpa.com
-category: rpa-automation
+category: agentic-automation
 tags: [rpa, automation, agent, ai, low-code, no-code, mcp, llm, enterprise]
 languages: [Java, Python]
 featured: true

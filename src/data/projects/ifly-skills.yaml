@@ -1,9 +1,9 @@
 name: iFly Skills
 nameEn: iFly Skills
-description: iFLYTEK 官方技能集合，涵盖语音、OCR、翻译、校对和多模态 AI 能力，为 Agent 提供丰富的技能包。
-descriptionEn: Official collection of iFLYTEK skills for speech, OCR, translation, proofreading, and multimodal AI capabilities.
+description: 讯飞官方技能库，包含语音、OCR、翻译及多模态 AI 能力。
+descriptionEn: Official collection of iFLYTEK skills for speech, OCR, translation, and multimodal AI capabilities.
 repo: iflytek/iFly-Skills
-category: ai-skills
+category: agent-skills
 tags: [skill, agent, speech, ocr, translation, multimodal-ai]
 languages: [Python]
 featured: false

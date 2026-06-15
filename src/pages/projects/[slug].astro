@@ -29,13 +29,12 @@ const langColors: Record<string, string> = {
 };
 
 const categoryLabels: Record<string, { zh: string; en: string }> = {
-  'ai-platform': { zh: 'AI 平台', en: 'AI Platform' },
-  'developer-tools': { zh: '开发者工具', en: 'Developer Tools' },
-  'rpa-automation': { zh: 'RPA & 自动化', en: 'RPA & Automation' },
-  'ai-skills': { zh: 'AI 技能', en: 'AI Skills' },
-  tutorials: { zh: '教程', en: 'Tutorials' },
-  'nlp-speech': { zh: 'NLP & 语音', en: 'NLP & Speech' },
-  infrastructure: { zh: '基础设施', en: 'Infrastructure' },
+  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
+  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
+  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
+  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
+  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
+  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
 };
 ---
 
@@ -83,9 +82,16 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
             </div>
 
             <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">
-              {data.description}
+              {
+                data.descriptionEn ? (
+                  <span data-lang-zh={data.description} data-lang-en={data.descriptionEn}>
+                    {data.description}
+                  </span>
+                ) : (
+                  data.description
+                )
+              }
             </p>
-            {data.descriptionEn && <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">{data.descriptionEn}</p>}
           </div>
         </div>
 

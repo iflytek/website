@@ -1,0 +1,13 @@
+name: HarnessClaw Engine
+nameEn: HarnessClaw Engine
+description: 基于 Go 语言构建的大模型编程助手引擎，支持 WebSocket、多轮对话、工具调用及权限管理。
+descriptionEn: LLM programming assistant engine built with Go, supporting WebSocket, multi-turn dialogues, tool calling, and permissions.
+repo: harnessclaw/harnessclaw-engine
+category: agent-engine
+tags: [llm, agent, golang, websocket, programming-assistant, skill-engine, iflytek-astron]
+languages: [Go]
+featured: false
+stars: 266
+forks: 91
+license: Apache-2.0
+icon: harnessclaw-engine

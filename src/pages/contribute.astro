@@ -26,6 +26,9 @@ interface Contributor {
 let contributorsCache: { data: Contributor[]; fetchedAt: number } | null = null;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
+// All GitHub organizations whose contributors should be aggregated
+const CONTRIBUTE_ORGS = ['iflytek', 'harnessclaw'];
+
 async function fetchContributorsLive(): Promise<Contributor[]> {
   if (contributorsCache && Date.now() - contributorsCache.fetchedAt < CACHE_TTL) {
     return contributorsCache.data;
@@ -35,43 +38,48 @@ async function fetchContributorsLive(): Promise<Contributor[]> {
   const headers: Record<string, string> = { Accept: 'application/vnd.github+json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  // 1. Get all public repos (exclude forks and archived)
-  const reposRes = await fetch('https://api.github.com/orgs/iflytek/repos?type=public&per_page=100', { headers });
-  if (!reposRes.ok) throw new Error(`Failed to fetch repos: HTTP ${reposRes.status}`);
-  const reposData = (await reposRes.json()) as Array<{ name: string; fork: boolean; archived: boolean }>;
-  const activeRepos = reposData.filter((r) => !r.fork && !r.archived);
-
-  // 2. Fetch contributors for each repo in parallel
   const contributorMap = new Map<string, Contributor>();
+
   await Promise.all(
-    activeRepos.map(async (repo) => {
-      try {
-        const res = await fetch(`https://api.github.com/repos/iflytek/${repo.name}/contributors?per_page=100`, {
-          headers,
-        });
-        if (!res.ok) return;
-        const list = (await res.json()) as Array<{
-          login: string;
-          type: string;
-          avatar_url: string;
-          contributions: number;
-          html_url: string;
-        }>;
-        for (const c of list) {
-          if (c.login && c.type === 'User') {
-            const existing = contributorMap.get(c.login);
-            const contributions = (existing?.contributions || 0) + (c.contributions || 0);
-            contributorMap.set(c.login, {
-              username: c.login,
-              avatar_url: c.avatar_url || `https://github.com/${c.login}.png`,
-              contributions,
-              profile_url: c.html_url || `https://github.com/${c.login}`,
+    CONTRIBUTE_ORGS.map(async (org) => {
+      // 1. Get all public repos for this org (exclude forks and archived)
+      const reposRes = await fetch(`https://api.github.com/orgs/${org}/repos?type=public&per_page=100`, { headers });
+      if (!reposRes.ok) return;
+      const reposData = (await reposRes.json()) as Array<{ name: string; fork: boolean; archived: boolean }>;
+      const activeRepos = reposData.filter((r) => !r.fork && !r.archived);
+
+      // 2. Fetch contributors for each repo in parallel
+      await Promise.all(
+        activeRepos.map(async (repo) => {
+          try {
+            const res = await fetch(`https://api.github.com/repos/${org}/${repo.name}/contributors?per_page=100`, {
+              headers,
             });
+            if (!res.ok) return;
+            const list = (await res.json()) as Array<{
+              login: string;
+              type: string;
+              avatar_url: string;
+              contributions: number;
+              html_url: string;
+            }>;
+            for (const c of list) {
+              if (c.login && c.type === 'User') {
+                const existing = contributorMap.get(c.login);
+                const contributions = (existing?.contributions || 0) + (c.contributions || 0);
+                contributorMap.set(c.login, {
+                  username: c.login,
+                  avatar_url: c.avatar_url || `https://github.com/${c.login}.png`,
+                  contributions,
+                  profile_url: c.html_url || `https://github.com/${c.login}`,
+                });
+              }
+            }
+          } catch {
+            /* skip individual repo errors */
           }
-        }
-      } catch {
-        /* skip individual repo errors */
-      }
+        })
+      );
     })
   );
 
@@ -416,9 +424,9 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.issuesDesc">
             从这些适合新手的 Issue 开始你的贡献之旅
           </p>
-          <div class="mt-6">
+          <div class="mt-6 flex flex-wrap gap-3">
             <a
-              href="https://github.com/search?q=org%3Aiflytek+label%3A%22good+first+issue%22+state%3Aopen&type=issues"
+              href="https://github.com/search?q=topic%3Aiflytek-astron+label%3A%22good+first+issue%22+state%3Aopen&type=issues"
               target="_blank"
               rel="noopener"
               class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700"
@@ -450,7 +458,15 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
               rel="noopener"
               class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
             >
-              GitHub
+              GitHub (iFLYTEK)
+            </a>
+            <a
+              href="https://github.com/harnessclaw"
+              target="_blank"
+              rel="noopener"
+              class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              GitHub (HarnessClaw)
             </a>
             <a
               href="https://github.com/iflytek/community/blob/master/code-of-conduct.md"

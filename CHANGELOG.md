@@ -11,6 +11,11 @@ All notable changes to this project will be documented in this file.
 - **CSS Content Visibility**: `.i18n-zh`/`.i18n-en` CSS class system with `html.lang-en` class toggle for full-page bilingual content on static pages
 - **Bilingual Static Pages**: Full Chinese/English content for `/security` (安全策略), `/values` (社区价值观), `/cla` (贡献者许可协议) using dual-div layout
 - **i18n Coverage**: `data-i18n` attributes added to all pages — home, projects, project detail, contribute, events, landscape, blog, blog categories, pagination, post navigation, related posts
+- **New Projects**: Add HarnessClaw (Electron desktop app, agent-management) and HarnessClaw Engine (Go LLM engine, agent-engine) — total 7 projects
+- **Landscape Rewrite**: Complete treemap rewrite matching awesome-astron-workflow.dev/landscape — 6 categories (agentic-workflow, agentic-automation, agent-skills, tutorial, agent-management, agent-engine), 3-column layout (42%/33%/25%), SVG ecosystem arrows, bilingual labels via `.i18n-zh`/`.i18n-en`
+- **Landscape Download Fix**: "Save HD Image" button uses CDN-based `html-to-image` (`is:inline` script) — fixes bundling issue where page-level `<script>` was not processed by Vite; downloads 1280×cardHeight PNG at 3x pixel ratio
+- **Landscape Scale Fix**: Remove height constraint from scale formula (`scale(min((100vw-40px)/1280, 1))`), card uses `min-h-[800px]` instead of fixed `h-[720px]` — prevents bottom clipping of Skill Registry and Tutorial cards
+- **Landscape Background**: Page header matches /projects style (`from-primary-50` gradient with blurred circles); treemap section on white background
 - **Language Filter on Projects Page**: Add language filter bar (Java, Python, TypeScript, JavaScript) with AND logic alongside category filter; project cards carry `data-languages` attribute for client-side filtering
 - **Real-time Project Stats**: `getProjectsWithStats()` utility fetches live stars/forks from GitHub API at runtime (Vercel SSR), falls back to `.cache/project-stats.json` at build time
 - **Project Stats Script**: `scripts/fetch-project-stats.ts` fetches stars/forks for all project repos via GitHub API, saves to `.cache/project-stats.json`
@@ -31,6 +36,12 @@ All notable changes to this project will be documented in this file.
 
 - **Bilingual UI Cleanup**: Removed all `中文 / English` dual-display patterns (title "中文 / English" → single title that switches by language mode) across all pages — contribute, events, projects, landscape, blog, category, project detail
 - **Landscape Subtitle**: Restructured with `.i18n-zh`/`.i18n-en` blocks for full sentence translation including dynamic counts (X 个项目 → X projects)
+- **Category System**: Renamed from 7 categories to 6 matching awesome-astron-workflow.dev — `ai-platform`→`agentic-workflow`, `rpa-automation`→`agentic-automation`, `ai-skills`→`agent-skills`, `developer-tools`→`agent-skills`, `tutorials`→`tutorial`, added `agent-management`, `agent-engine`
+- **Contribute Multi-Org**: `fetchContributorsLive()` now iterates over `CONTRIBUTE_ORGS = ['iflytek', 'harnessclaw']` via `Promise.all`, merging contributor data from both GitHub organizations
+- **Homepage Background**: Hero section now has gradient background (`from-primary-50 to-white`) with blurred accent circles, matching /projects page header style — implemented as default fallback in `Hero.astro`'s `bg` slot (passing a `<Fragment slot="bg">` from parent breaks Astro's CSS module injection)
+- **Homepage White Strip Fix**: Body background changed from white to `primary-50` (`rgb(235 242 255)`) in `CustomStyles.astro` — matches Hero gradient start color, eliminating white strip between browser top and navigation
+- **Hero Title No-Wrap**: h1 uses `whitespace-nowrap` with responsive font sizing (`text-3xl sm:text-4xl md:text-5xl lg:text-6xl`) — keeps "iFLYTEK Open Source" / "科大讯飞开源" on one line across all screen sizes
+- **Stats Layout**: Amounts row (7, 18.4K, 2.2K, Apache 2.0) and labels row (开源项目, GitHub Stars, Forks, 开源协议) now render as two separate flex rows in `Stats.astro` — amounts on top line, labels on bottom line
 - **Contribute PR Workflow**: Step descriptions now bilingual (`descZh`/`descEn`) with `data-lang-zh`/`data-lang-en` switching
 - **Brand Name i18n**: "iFLYTEK Open Source" displays as "科大讯飞开源" in Chinese mode across logo, header, homepage title, and all widget default texts via `data-lang-zh`/`data-lang-en`
 - **Font Stack**: Add `'PingFang SC'` to `--font-sans` and `--font-heading` CSS font stacks (Apple device local font only, no `@font-face` or font file upload)
@@ -52,6 +63,9 @@ All notable changes to this project will be documented in this file.
 - **Contributors Canvas**: Fix rendering failure caused by `DOMContentLoaded` not firing during Astro View Transitions — use `document.readyState` check + `requestAnimationFrame(boot)`
 - **Contributors Canvas**: Enlarge "iFLYTEK" text and avatar size in canvas
 - **Events Filter**: Fix filter script with `is:inline` + `readyState` pattern for View Transitions compatibility
+- **Landscape Card Clipping**: Remove fixed `h-[720px]` height, use `min-h-[800px]` instead — prevents bottom clipping of Skill Registry and Tutorial category cards
+- **Landscape Download Button**: Page-level `<script>` is inline in Astro (not processed by Vite) — npm `import('html-to-image')` fails in browser. Fixed by using `<script is:inline>` with CDN ESM import (`cdn.jsdelivr.net/npm/html-to-image@1.11.11/+esm`)
+- **Projects Filter Buttons**: `{sortedProjects.length}` inside HTML attribute quotes rendered as literal text — fixed by using backtick template literals in `data-lang-zh`/`data-lang-en` attributes
 - **Prettier**: Add `.cache`, `contributing.md`, `security.md` to `.prettierignore`
 
 ### Removed

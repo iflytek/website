@@ -2,6 +2,7 @@
 interface Props {
   name: string;
   description: string;
+  descriptionEn?: string;
   repo: string;
   homepage?: string;
   category: string;
@@ -15,6 +16,7 @@ interface Props {
 const {
   name,
   description,
+  descriptionEn,
   repo,
   homepage,
   category,
@@ -26,23 +28,21 @@ const {
 } = Astro.props;
 
 const categoryColors: Record<string, string> = {
-  'ai-platform': 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  'developer-tools': 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  'rpa-automation': 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300',
-  'ai-skills': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/50 dark:text-cyan-300',
-  tutorials: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
-  'nlp-speech': 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
-  infrastructure: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
+  'agentic-workflow': 'bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300',
+  'agentic-automation': 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
+  'agent-skills': 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+  tutorial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+  'agent-management': 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+  'agent-engine': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
 };
 
-const categoryLabels: Record<string, string> = {
-  'ai-platform': 'AI 平台',
-  'developer-tools': '开发者工具',
-  'rpa-automation': 'RPA & 自动化',
-  'ai-skills': 'AI 技能',
-  tutorials: '教程',
-  'nlp-speech': 'NLP & 语音',
-  infrastructure: '基础设施',
+const categoryLabels: Record<string, { zh: string; en: string }> = {
+  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
+  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
+  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
+  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
+  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
+  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
 };
 
 const langColors: Record<string, string> = {
@@ -92,14 +92,30 @@ function formatNumber(n: number): string {
           categoryColors[category] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
         ]}
       >
-        {categoryLabels[category] || category}
+        {
+          categoryLabels[category] ? (
+            <span data-lang-zh={categoryLabels[category].zh} data-lang-en={categoryLabels[category].en}>
+              {categoryLabels[category].zh}
+            </span>
+          ) : (
+            category
+          )
+        }
       </span>
     </div>
   </div>
 
   <!-- Description -->
   <p class="mt-4 flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-    {description}
+    {
+      descriptionEn ? (
+        <span data-lang-zh={description} data-lang-en={descriptionEn}>
+          {description}
+        </span>
+      ) : (
+        description
+      )
+    }
   </p>
 
   <!-- Languages -->

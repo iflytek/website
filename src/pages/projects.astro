@@ -21,13 +21,12 @@ const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
 const languages = [...new Set(sortedProjects.flatMap((p) => p.data.languages || []))].sort();
 
 const categoryLabels: Record<string, { zh: string; en: string }> = {
-  'ai-platform': { zh: 'AI 平台', en: 'AI Platform' },
-  'developer-tools': { zh: '开发者工具', en: 'Developer Tools' },
-  'rpa-automation': { zh: 'RPA & 自动化', en: 'RPA & Automation' },
-  'ai-skills': { zh: 'AI 技能', en: 'AI Skills' },
-  tutorials: { zh: '教程', en: 'Tutorials' },
-  'nlp-speech': { zh: 'NLP & 语音', en: 'NLP & Speech' },
-  infrastructure: { zh: '基础设施', en: 'Infrastructure' },
+  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
+  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
+  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
+  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
+  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
+  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
 };
 
 // Total stats
@@ -88,7 +87,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
           class="category-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-category="all"
         >
-          <span data-lang-zh="全部 ({sortedProjects.length})" data-lang-en="All ({sortedProjects.length})"
+          <span data-lang-zh={`全部 (${sortedProjects.length})`} data-lang-en={`All (${sortedProjects.length})`}
             >全部 ({sortedProjects.length})</span
           >
         </button>
@@ -145,6 +144,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
               <ProjectCard
                 name={project.data.name}
                 description={project.data.description}
+                descriptionEn={project.data.descriptionEn}
                 repo={project.data.repo}
                 homepage={project.data.homepage}
                 category={project.data.category}
