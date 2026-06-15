@@ -20,6 +20,7 @@ import {
   readingTimeRemarkPlugin,
   responsiveTablesRehypePlugin,
   autolinkHeadingsRehypePlugin,
+  watermarkImageRehypePlugin,
 } from './src/utils/frontmatter';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -97,7 +98,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [readingTimeRemarkPlugin],
-      rehypePlugins: [responsiveTablesRehypePlugin, autolinkHeadingsRehypePlugin],
+      rehypePlugins: [watermarkImageRehypePlugin, responsiveTablesRehypePlugin, autolinkHeadingsRehypePlugin],
     }),
   },
 

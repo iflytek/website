@@ -22,7 +22,7 @@ const SUPPORTED_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.tiff']);
 
 // Watermark configuration
 const WATERMARK_TEXT = '@iFLYTEK OpenSource';
-const FONT_SIZE = 28;
+const FONT_SIZE = 24; // Fixed size for consistency across all images
 const MARGIN = 16;
 
 function isSupported(filename: string): boolean {
@@ -33,22 +33,19 @@ function isSupported(filename: string): boolean {
  * Build an SVG overlay with the watermark text positioned at the bottom-right.
  */
 function watermarkSvg(imageWidth: number, imageHeight: number): string {
-  const scale = Math.max(0.5, Math.min(imageWidth / 900, 2));
-  const fontSize = Math.round(FONT_SIZE * scale);
+  const margin = MARGIN;
 
-  const boxWidth = fontSize * 20;
-  const boxHeight = fontSize * 1.6;
-  const margin = Math.round(MARGIN * scale);
-  const paddingX = Math.round(14 * scale);
+  // Calculate text width (approximate)
+  const textWidth = FONT_SIZE * WATERMARK_TEXT.length * 0.6;
+  const boxHeight = FONT_SIZE * 1.6;
 
-  const boxX = imageWidth - boxWidth - margin;
+  const boxX = imageWidth - textWidth - margin;
   const boxY = imageHeight - boxHeight - margin;
-  const textX = boxX + boxWidth - paddingX;
+  const textX = boxX + textWidth;
   const textY = boxY + boxHeight * 0.82;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${imageWidth} ${imageHeight}" width="${imageWidth}" height="${imageHeight}">
-  <rect x="${boxX}" y="${boxY}" width="${boxWidth}" height="${boxHeight}" rx="8" fill="rgba(0,0,0,0.3)"/>
-  <text x="${textX}" y="${textY}" font-family="Arial, Helvetica, sans-serif" font-size="${fontSize}" font-weight="400" fill="rgba(255,255,255,0.7)" text-anchor="end" dominant-baseline="auto">${WATERMARK_TEXT}</text>
+  <text x="${textX}" y="${textY}" font-family="Arial, Helvetica, sans-serif" font-size="${FONT_SIZE}" font-weight="400" fill="rgba(255,255,255,0.8)" text-anchor="end" dominant-baseline="auto">${WATERMARK_TEXT}</text>
 </svg>`;
 }
 

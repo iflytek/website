@@ -92,3 +92,25 @@ export const autolinkHeadingsRehypePlugin: RehypePlugin = () => {
     wrap(tree);
   };
 };
+
+/**
+ * Rewrite markdown image `src` from `~/assets/images/xxx` to `/images/watermarked/xxx`
+ * so inline blog images use the pre-baked watermarked copies.
+ */
+export const watermarkImageRehypePlugin: RehypePlugin = () => {
+  return function (tree) {
+    if (!tree.children) return;
+
+    for (const node of tree.children) {
+      if (node.type === 'element' && node.tagName === 'img') {
+        const src = node.properties?.src as string | undefined;
+        if (src && src.startsWith('~/assets/images/')) {
+          const filename = src.split('/').pop();
+          if (filename) {
+            node.properties = { ...node.properties, src: `/images/watermarked/${filename}` };
+          }
+        }
+      }
+    }
+  };
+};
