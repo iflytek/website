@@ -30,10 +30,9 @@ lerna-debug.log*
 # ============================================
 # Cache directories
 # ============================================
-# Keep contributors.json and project-stats.json for site to work
+# Keep contributors.json for site to work
 .cache/*
 !.cache/contributors.json
-!.cache/project-stats.json
 .vercel/
 
 # ============================================

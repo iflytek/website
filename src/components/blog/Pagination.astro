@@ -11,6 +11,10 @@ export interface Props {
 }
 
 const { prevUrl, nextUrl, prevText = 'Newer posts', nextText = 'Older posts' } = Astro.props;
+
+// Check if using defaults — if so, wrap with i18n
+const useDefaultPrevText = prevText === 'Newer posts';
+const useDefaultNextText = nextText === 'Older posts';
 ---
 
 {
@@ -23,11 +27,13 @@ const { prevUrl, nextUrl, prevText = 'Newer posts', nextText = 'Older posts' } =
           href={getPermalink(prevUrl)}
         >
           <Icon name="tabler:chevron-left" class="w-6 h-6" />
-          <p class="ml-2">{prevText}</p>
+          <p class="ml-2">{useDefaultPrevText ? <span data-i18n="blog.newerPosts">{prevText}</span> : prevText}</p>
         </Button>
 
         <Button variant="tertiary" class={`md:px-3 px-3 ${!nextUrl ? 'invisible' : ''}`} href={getPermalink(nextUrl)}>
-          <span class="mr-2">{nextText}</span>
+          <span class="mr-2">
+            {useDefaultNextText ? <span data-i18n="blog.olderPosts">{nextText}</span> : nextText}
+          </span>
           <Icon name="tabler:chevron-right" class="w-6 h-6" />
         </Button>
       </div>

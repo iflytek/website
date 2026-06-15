@@ -152,14 +152,13 @@ const newsPosts = posts
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            >社区活动</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >Events</span
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-i18n="events.titleZh">社区活动</span
           >
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          参与 iFLYTEK 开源社区活动 — Meetup、Hackathon、Workshop，与开发者面对面交流
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="events.subtitle">
+          参与科大讯飞开源社区活动 — Meetup、Hackathon、Workshop，与开发者面对面交流
         </p>
       </div>
     </div>
@@ -174,7 +173,7 @@ const newsPosts = posts
           class="event-filter-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-type="all"
         >
-          全部 / All ({events.length})
+          <span data-lang-zh="全部 ({events.length})" data-lang-en="All ({events.length})">全部 ({events.length})</span>
         </button>
         {
           eventTypes.map((type) => (
@@ -227,7 +226,13 @@ const newsPosts = posts
                             : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
                       ]}
                     >
-                      {event.status === 'upcoming' ? '即将举办' : event.status === 'ongoing' ? '进行中' : '已结束'}
+                      {event.status === 'upcoming' ? (
+                        <span data-i18n="events.upcoming">即将举办</span>
+                      ) : event.status === 'ongoing' ? (
+                        <span data-i18n="events.ongoing">进行中</span>
+                      ) : (
+                        <span data-i18n="events.past">已结束</span>
+                      )}
                     </span>
                   </div>
                   <time class="text-sm font-medium text-gray-500 dark:text-gray-400">{event.date}</time>
@@ -241,13 +246,23 @@ const newsPosts = posts
                       rel="noopener"
                       class="hover:text-primary-600 dark:hover:text-primary-400"
                     >
-                      {event.titleZh}
+                      <span data-lang-zh={event.titleZh} data-lang-en={event.title}>
+                        {event.titleZh}
+                      </span>
                     </a>
                   ) : (
-                    event.titleZh
+                    <span data-lang-zh={event.titleZh} data-lang-en={event.title}>
+                      {event.titleZh}
+                    </span>
                   )}
                 </h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-500">{event.title}</p>
+                <p
+                  class="mt-1 text-sm text-gray-500 dark:text-gray-500"
+                  data-lang-zh={event.titleZh}
+                  data-lang-en={event.title}
+                >
+                  {event.title}
+                </p>
                 <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
 
                 <div class="mt-4 flex items-center justify-between">
@@ -275,7 +290,7 @@ const newsPosts = posts
                       rel="noopener"
                       class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                     >
-                      详情
+                      <span data-i18n="events.viewDetails">详情</span>
                       <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           stroke-linecap="round"
@@ -301,7 +316,7 @@ const newsPosts = posts
       <section class="border-t border-gray-200 bg-gray-50 py-12 dark:border-gray-800 dark:bg-gray-900/50 md:py-16">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-            最新动态 / Latest News
+            <span data-i18n="events.latestNews">最新动态</span>
           </h2>
           <div class="grid gap-6 sm:grid-cols-2">
             {newsPosts.slice(0, 4).map((post) => (

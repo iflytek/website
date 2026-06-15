@@ -35,9 +35,10 @@ const {
               </div>
             )}
             {title && (
-              <div class="text-sm font-medium uppercase tracking-widest text-gray-800 dark:text-slate-400 lg:text-base">
-                {title}
-              </div>
+              <div
+                class="text-sm font-medium tracking-widest text-gray-800 dark:text-slate-400 lg:text-base"
+                set:html={title}
+              />
             )}
           </div>
         ))

@@ -5,6 +5,7 @@ import { getHomePermalink } from '~/utils/permalinks';
 
 interface Link {
   text?: string;
+  textEn?: string;
   href?: string;
   ariaLabel?: string;
   icon?: string;
@@ -12,6 +13,7 @@ interface Link {
 
 interface Links {
   title?: string;
+  titleEn?: string;
   links: Array<Link>;
 }
 
@@ -34,35 +36,44 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
     <div class="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 py-8 md:py-12">
       <div class="col-span-12 lg:col-span-4">
         <div class="mb-2">
-          <a class="inline-block font-bold text-xl" href={getHomePermalink()}>{SITE?.name}</a>
+          <a class="inline-block font-bold text-xl" href={getHomePermalink()}
+            ><span data-lang-zh="科大讯飞开源" data-lang-en="iFLYTEK Open Source">{SITE?.name}</span></a
+          >
         </div>
         <div class="text-sm text-muted flex gap-1">
           {
-            secondaryLinks.map(({ text, href }, index) => (
+            secondaryLinks.map(({ text, textEn, href }, index) => (
               <>
                 {index !== 0 ? ' · ' : ''}
                 <a
                   class="text-muted hover:text-gray-700 dark:text-gray-400 hover:underline transition duration-150 ease-in-out"
                   href={href}
-                  set:html={text}
-                />
+                  data-lang-zh={text}
+                  data-lang-en={textEn || text}
+                >
+                  <Fragment set:html={text} />
+                </a>
               </>
             ))
           }
         </div>
       </div>
       {
-        links.map(({ title, links }) => (
+        links.map(({ title, titleEn, links }) => (
           <div class="col-span-6 md:col-span-3 lg:col-span-2">
-            <div class="dark:text-gray-300 font-medium mb-2">{title}</div>
+            <div class="dark:text-gray-300 font-medium mb-2" data-lang-zh={title} data-lang-en={titleEn || title}>
+              {title}
+            </div>
             {links && Array.isArray(links) && links.length > 0 && (
               <ul class="text-sm">
-                {links.map(({ text, href, ariaLabel }) => (
+                {links.map(({ text, textEn, href, ariaLabel }) => (
                   <li class="mb-2">
                     <a
                       class="text-muted hover:text-gray-700 hover:underline dark:text-gray-400 transition duration-150 ease-in-out"
                       href={href}
                       aria-label={ariaLabel}
+                      data-lang-zh={text}
+                      data-lang-en={textEn || text}
                       data-wechat={
                         String(text).includes('微信') || String(text).includes('WeChat') ? 'true' : undefined
                       }
@@ -126,8 +137,12 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
       </svg>
     </button>
     <div class="text-center">
-      <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">微信扫码加入社区</h3>
-      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Scan the QR code to join our WeChat group</p>
+      <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white" data-i18n="footer.wechatTitle">
+        微信扫码加入社区
+      </h3>
+      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400" data-i18n="footer.wechatDesc">
+        Scan the QR code to join our WeChat group
+      </p>
       <div class="flex justify-center">
         <img
           src="https://raw.githubusercontent.com/iflytek/astron-agent/main/docs/imgs/WeCom_Group.png"

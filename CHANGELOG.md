@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **i18n Language Toggle**: Client-side 中文/EN toggle button in header (`ToggleLanguage.astro`), persisted via `localStorage.lang`, effective across all pages without reload
+- **i18n Attribute System**: `data-i18n="key"` attribute-based translation with central dictionary (`translations.ts`); `data-lang-zh`/`data-lang-en` for inline bilingual text switching
+- **CSS Content Visibility**: `.i18n-zh`/`.i18n-en` CSS class system with `html.lang-en` class toggle for full-page bilingual content on static pages
+- **Bilingual Static Pages**: Full Chinese/English content for `/security` (安全策略), `/values` (社区价值观), `/cla` (贡献者许可协议) using dual-div layout
+- **i18n Coverage**: `data-i18n` attributes added to all pages — home, projects, project detail, contribute, events, landscape, blog, blog categories, pagination, post navigation, related posts
 - **Language Filter on Projects Page**: Add language filter bar (Java, Python, TypeScript, JavaScript) with AND logic alongside category filter; project cards carry `data-languages` attribute for client-side filtering
 - **Real-time Project Stats**: `getProjectsWithStats()` utility fetches live stars/forks from GitHub API at runtime (Vercel SSR), falls back to `.cache/project-stats.json` at build time
 - **Project Stats Script**: `scripts/fetch-project-stats.ts` fetches stars/forks for all project repos via GitHub API, saves to `.cache/project-stats.json`
@@ -24,6 +29,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Bilingual UI Cleanup**: Removed all `中文 / English` dual-display patterns (title "中文 / English" → single title that switches by language mode) across all pages — contribute, events, projects, landscape, blog, category, project detail
+- **Landscape Subtitle**: Restructured with `.i18n-zh`/`.i18n-en` blocks for full sentence translation including dynamic counts (X 个项目 → X projects)
+- **Contribute PR Workflow**: Step descriptions now bilingual (`descZh`/`descEn`) with `data-lang-zh`/`data-lang-en` switching
+- **Brand Name i18n**: "iFLYTEK Open Source" displays as "科大讯飞开源" in Chinese mode across logo, header, homepage title, and all widget default texts via `data-lang-zh`/`data-lang-en`
+- **Font Stack**: Add `'PingFang SC'` to `--font-sans` and `--font-heading` CSS font stacks (Apple device local font only, no `@font-face` or font file upload)
 - **Blog Watermark Architecture**: Watermark images now pre-baked to `public/images/watermarked/` via `scripts/watermark-images.ts`; originals in `src/assets/images/` remain untouched; `<Image watermark>` resolves watermarked copies via `findWatermarkedImage()`
 - **Blog Detail Page**: Move featured image below article body; hide title/excerpt in header (`sr-only` for SEO); reduce prose font size to `prose-sm lg:prose-lg`
 - **Navigation**: Rename "新闻" to "最新新闻" in nav menu; update category page title accordingly
@@ -50,6 +60,9 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Events Page**: Fixed swapped `data-lang-zh`/`data-lang-en` on event subtitle (zh was showing English and vice versa)
+- **Stats Widget**: `{title}` → `set:html={title}` so `<span data-i18n>` renders as DOM instead of escaped text; removed `uppercase` class that distorted "Projects" → "PROJECTS"
+- **Features Widget**: Same `set:html` fix for `itemTitle` to render `data-i18n` spans correctly
 - **Blog Navigation**: Fix double `/blog/blog/` prefix in prev/next post links
 - **Dependabot #1, #2 (esbuild)**: Force `esbuild >= 0.28.1` via `package.json` overrides — fixes vulnerability in transitive dependency from `@astrojs/vercel` (0.27.7) and `tsx` (0.28.0)
 - **Dependabot #3 (path-to-regexp)**: Force `path-to-regexp >= 6.3.0` via `package.json` overrides — fixes vulnerability in transitive dependency from `@vercel/routing-utils` (6.1.0)

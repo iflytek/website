@@ -89,12 +89,20 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-i18n="landscape.titleZh"
+          >
             开源全景图
           </span>
         </h1>
         <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          iFLYTEK 开源项目生态全景 — {projects.length} 个项目，{totalStars.toLocaleString()} Stars
+          <span class="i18n-zh"
+            >科大讯飞开源项目生态全景 — {projects.length} 个项目，{totalStars.toLocaleString()} Stars</span
+          >
+          <span class="i18n-en"
+            >iFLYTEK Open Source Ecosystem — {projects.length} projects, {totalStars.toLocaleString()} Stars</span
+          >
         </p>
       </div>
     </div>
@@ -117,7 +125,9 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
                     <span class="text-2xl">{info.icon}</span>
                     <div>
                       <h2 class="text-xl font-bold text-white">
-                        {info.label} / {info.labelEn}
+                        <span data-lang-zh={info.label} data-lang-en={info.labelEn}>
+                          {info.label}
+                        </span>
                       </h2>
                       <p class="text-sm text-white/80">{info.description}</p>
                     </div>
@@ -206,23 +216,32 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
             <div class="mt-8 rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
               <span class="text-3xl">{info.icon}</span>
               <h3 class="mt-2 font-semibold text-gray-700 dark:text-gray-300">
-                {info.label} / {info.labelEn}
+                <span data-lang-zh={info.label} data-lang-en={info.labelEn}>
+                  {info.label}
+                </span>
               </h3>
-              <p class="mt-1 text-sm text-gray-500">即将开放 / Coming Soon</p>
+              <p class="mt-1 text-sm text-gray-500">
+                <span data-i18n="landscape.comingSoon">即将开放</span>
+              </p>
             </div>
           ))
       }
 
       <!-- Legend / Info -->
       <div class="mt-12 rounded-xl bg-gray-50 p-6 dark:bg-gray-800/50">
-        <h3 class="font-semibold text-gray-900 dark:text-white">关于全景图 / About Landscape</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-white">
+          <span data-i18n="landscape.about">关于全景图</span>
+        </h3>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          全景图以分类视图展示 iFLYTEK 所有开源项目，数据基于 GitHub 仓库实时更新。 灵感来源于 <a
+          <span data-i18n="landscape.aboutText"
+            >全景图以分类视图展示科大讯飞所有开源项目，数据基于 GitHub 仓库实时更新。 灵感来源于</span
+          >
+          <a
             href="https://landscape.cncf.io"
             target="_blank"
             rel="noopener"
             class="text-primary-600 underline dark:text-primary-400">CNCF Landscape</a
-          >。 项目数据每周自动通过 GitHub Actions 更新。
+          ><span data-i18n="landscape.aboutText2">。 项目数据每周自动通过 GitHub Actions 更新。</span>
         </p>
       </div>
     </div>
