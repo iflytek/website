@@ -46,6 +46,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Dependabot #1, #2 (esbuild)**: Force `esbuild >= 0.28.1` via `package.json` overrides — fixes vulnerability in transitive dependency from `@astrojs/vercel` (0.27.7) and `tsx` (0.28.0)
+- **Dependabot #3 (path-to-regexp)**: Force `path-to-regexp >= 6.3.0` via `package.json` overrides — fixes vulnerability in transitive dependency from `@vercel/routing-utils` (6.1.0)
 - **Tailwind v4**: `from-primary-500`, `to-accent-500` and other numbered color variants rendered as transparent — fixed by defining full color scales
 - **View Transitions**: Category filter buttons on `/projects` and type filter on `/events` did not work during client-side navigation — fixed with `is:inline` script and `readyState` check
 - **Community Links**: 404 errors from wrong branch name (`main` vs `master`) and wrong filename case (`CODE_OF_CONDUCT.md` vs `code-of-conduct.md`)
