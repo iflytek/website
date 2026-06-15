@@ -2,6 +2,8 @@
 
 The official open source website for iFLYTEK (科大讯飞), showcasing our open source projects, blog, events, and community contributions.
 
+[![Deploy Production](https://github.com/iflytek/website/actions/workflows/deploy.yml/badge.svg)](https://github.com/iflytek/website/actions/workflows/deploy.yml)
+
 ## 🚀 Tech Stack
 
 - **Framework**: [Astro](https://astro.build) 6.x
