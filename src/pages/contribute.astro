@@ -5,6 +5,8 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { getCollection } from 'astro:content';
 
+export const prerender = false;
+
 const metadata = {
   title: 'Contribute',
 };
@@ -20,17 +22,83 @@ interface Contributor {
   profile_url: string;
 }
 
-let contributors: Contributor[] = [];
-const cachePath = join(process.cwd(), '.cache/contributors.json');
-try {
-  if (existsSync(cachePath)) {
-    const raw = readFileSync(cachePath, 'utf-8');
-    const data = JSON.parse(raw);
-    contributors = data.contributors || [];
+// ── In-memory cache for serverless warm invocations ──────────────────────────
+let contributorsCache: { data: Contributor[]; fetchedAt: number } | null = null;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function fetchContributorsLive(): Promise<Contributor[]> {
+  if (contributorsCache && Date.now() - contributorsCache.fetchedAt < CACHE_TTL) {
+    return contributorsCache.data;
   }
-} catch {
-  console.warn('Failed to load contributors data, using empty list');
+
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = { Accept: 'application/vnd.github+json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  // 1. Get all public repos (exclude forks and archived)
+  const reposRes = await fetch('https://api.github.com/orgs/iflytek/repos?type=public&per_page=100', { headers });
+  if (!reposRes.ok) throw new Error(`Failed to fetch repos: HTTP ${reposRes.status}`);
+  const reposData = (await reposRes.json()) as Array<{ name: string; fork: boolean; archived: boolean }>;
+  const activeRepos = reposData.filter((r) => !r.fork && !r.archived);
+
+  // 2. Fetch contributors for each repo in parallel
+  const contributorMap = new Map<string, Contributor>();
+  await Promise.all(
+    activeRepos.map(async (repo) => {
+      try {
+        const res = await fetch(`https://api.github.com/repos/iflytek/${repo.name}/contributors?per_page=100`, {
+          headers,
+        });
+        if (!res.ok) return;
+        const list = (await res.json()) as Array<{
+          login: string;
+          type: string;
+          avatar_url: string;
+          contributions: number;
+          html_url: string;
+        }>;
+        for (const c of list) {
+          if (c.login && c.type === 'User') {
+            const existing = contributorMap.get(c.login);
+            const contributions = (existing?.contributions || 0) + (c.contributions || 0);
+            contributorMap.set(c.login, {
+              username: c.login,
+              avatar_url: c.avatar_url || `https://github.com/${c.login}.png`,
+              contributions,
+              profile_url: c.html_url || `https://github.com/${c.login}`,
+            });
+          }
+        }
+      } catch {
+        /* skip individual repo errors */
+      }
+    })
+  );
+
+  const result = Array.from(contributorMap.values()).sort((a, b) => b.contributions - a.contributions);
+  contributorsCache = { data: result, fetchedAt: Date.now() };
+  return result;
 }
+
+function loadCachedContributors(): Contributor[] {
+  const cachePath = join(process.cwd(), '.cache/contributors.json');
+  if (!existsSync(cachePath)) return [];
+  try {
+    return (JSON.parse(readFileSync(cachePath, 'utf-8')).contributors as Contributor[]) || [];
+  } catch {
+    return [];
+  }
+}
+
+const hasToken = !!process.env.GITHUB_TOKEN;
+const contributors: Contributor[] = await (async () => {
+  try {
+    return hasToken ? await fetchContributorsLive() : loadCachedContributors();
+  } catch {
+    console.warn('Failed to fetch live contributors, falling back to cache');
+    return loadCachedContributors();
+  }
+})();
 
 // Top contributors for leaderboard
 const topContributors = contributors.slice(0, 12);
@@ -51,9 +119,11 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">参与贡献</span><span
-            class="mx-2 text-gray-300 dark:text-gray-600">/</span
-          ><span class="text-gray-900 dark:text-white">Contribute</span>
+          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            >参与贡献</span
+          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
+            >Contribute</span
+          >
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           加入 iFLYTEK 开源社区，一起构建更好的 AI 生态。感谢每一位贡献者！
@@ -163,7 +233,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek/community/issues/new?template=general-issue.yml"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-2xl dark:bg-red-900/50"
@@ -184,7 +254,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek/community/issues/new?template=general-issue.yml"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 text-2xl dark:bg-yellow-900/50"
@@ -203,7 +273,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek/community/blob/master/CONTRIBUTING.md"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-2xl dark:bg-blue-900/50"
@@ -224,7 +294,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek/community/blob/master/CONTRIBUTING.md"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-2xl dark:bg-green-900/50"
@@ -245,7 +315,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-2xl dark:bg-purple-900/50"
@@ -264,7 +334,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           href="https://github.com/iflytek/community/blob/master/code-of-conduct.md"
           target="_blank"
           rel="noopener"
-          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
+          class="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
         >
           <div
             class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-2xl dark:bg-pink-900/50"

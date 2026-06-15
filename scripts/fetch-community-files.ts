@@ -1,15 +1,77 @@
 /**
  * Fetch community files from iflytek/community repository
  * Copies CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md, and templates
+ * Then applies post-processing to fix known issues (branch names, dead links)
  */
 
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, copyFileSync, writeFileSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, copyFileSync, writeFileSync, rmSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 const COMMUNITY_REPO = 'https://github.com/iflytek/community.git';
 const TEMP_DIR = '.tmp-community';
 const TARGET_FILES = ['CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'SECURITY.md'];
+
+/**
+ * Post-process copied files to fix known issues:
+ * - Branch name: community repo uses `master`, not `main`
+ * - CONTRIBUTING.md relative links point to files that only exist in the community repo
+ * - CODE_OF_CONDUCT.md local reference should use uppercase filename
+ */
+function postProcessFiles() {
+  console.log('🔧 Post-processing copied files...');
+
+  // Fix blob/main/ → blob/master/ in all .github files
+  const githubFiles = [
+    '.github/PULL_REQUEST_TEMPLATE.md',
+    '.github/ISSUE_TEMPLATE/moderator_application.yml',
+    '.github/ISSUE_TEMPLATE/leadership-change.yml',
+  ];
+  for (const file of githubFiles) {
+    if (existsSync(file)) {
+      const content = readFileSync(file, 'utf-8');
+      const fixed = content.replace(/blob\/main\//g, 'blob/master/');
+      if (content !== fixed) {
+        writeFileSync(file, fixed);
+        console.log(`  ✅ Fixed branch name in ${file}`);
+      }
+    }
+  }
+
+  // Fix CONTRIBUTING.md: convert relative links to absolute URLs
+  if (existsSync('CONTRIBUTING.md')) {
+    let content = readFileSync('CONTRIBUTING.md', 'utf-8');
+    const COMMUNITY_BASE = 'https://github.com/iflytek/community/blob/master';
+
+    // Fix relative links to community repo files
+    content = content.replace(/\(governance\.md\)/g, `(${COMMUNITY_BASE}/governance.md)`);
+    content = content.replace(/\(community-membership\.md\)/g, `(${COMMUNITY_BASE}/community-membership.md)`);
+    content = content.replace(
+      /\(contribute\/issue-guidelines\.md\)/g,
+      `(${COMMUNITY_BASE}/contribute/issue-guidelines.md)`
+    );
+    content = content.replace(
+      /\(contribute\/pull-request-guidelines\.md\)/g,
+      `(${COMMUNITY_BASE}/contribute/pull-request-guidelines.md)`
+    );
+    content = content.replace(
+      /\(contribute\/review-guidelines\.md\)/g,
+      `(${COMMUNITY_BASE}/contribute/review-guidelines.md)`
+    );
+    content = content.replace(
+      /\(contribute\/discussions-guidelines\.md\)/g,
+      `(${COMMUNITY_BASE}/contribute/discussions-guidelines.md)`
+    );
+
+    // Fix code-of-conduct.md → CODE_OF_CONDUCT.md (local file, uppercase)
+    content = content.replace(/\(code-of-conduct\.md\)/g, '(CODE_OF_CONDUCT.md)');
+
+    writeFileSync('CONTRIBUTING.md', content);
+    console.log('  ✅ Fixed dead links in CONTRIBUTING.md');
+  }
+
+  console.log('🎉 Post-processing complete!');
+}
 
 async function fetchCommunityFiles() {
   console.log('📦 Fetching community files from iflytek/community...');
@@ -80,6 +142,9 @@ async function fetchCommunityFiles() {
     if (existsSync(TEMP_DIR)) {
       rmSync(TEMP_DIR, { recursive: true, force: true });
     }
+
+    // Always post-process local files (whether freshly copied or already existing)
+    postProcessFiles();
   }
 }
 

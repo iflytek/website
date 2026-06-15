@@ -39,6 +39,10 @@
   --color-accent-900: #2a0e56;
   --color-accent-950: #1a0836;
 
+  /* Semantic gradient tokens (derived from brand colors) */
+  --color-gradient-start: var(--color-primary-600);
+  --color-gradient-end: var(--color-accent-500);
+
   --font-sans:
     'var(--aw-font-sans, ui-sans-serif)', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';

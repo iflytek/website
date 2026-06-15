@@ -19,7 +19,7 @@ The official open source website for iFLYTEK (科大讯飞), showcasing our open
 - 🗺️ **Project Landscape** — CNCF-style interactive project map
 - 👥 **Contributor Wall** — GitHub contributor avatars animation
 - 🔍 **SEO Optimized** — Meta tags, Open Graph, Sitemap
-- ⚡ **Fast Performance** — Static site generation with Astro
+- ⚡ **Fast Performance** — Hybrid rendering (SSG + SSR) with Astro
 
 ## 📁 Project Structure
 
@@ -34,8 +34,9 @@ website/
 │   ├── pages/         # Route pages
 │   └── utils/         # Utilities
 ├── public/            # Static assets
-├── scripts/           # Build scripts (fetch contributors, community files)
+├── scripts/           # Build scripts (fetch contributors, project stats, community files)
 ├── vendor/            # AstroWind integration
+├── .cache/            # Build-time data cache (contributors, project stats)
 └── .github/           # CI/CD workflows + Dependabot
 ```
 
@@ -74,20 +75,21 @@ npm run preview
 
 ## 📋 Available Scripts
 
-| Script                       | Description                          |
-| ---------------------------- | ------------------------------------ |
-| `npm run dev`                | Start development server             |
-| `npm run build`              | Build for production (with prebuild) |
-| `npm run preview`            | Preview production build             |
-| `npm run check`              | Run all code quality checks          |
-| `npm run check:astro`        | Run Astro type checking              |
-| `npm run check:eslint`       | Run ESLint                           |
-| `npm run check:prettier`     | Run Prettier check                   |
-| `npm run fix`                | Auto-fix ESLint and Prettier issues  |
-| `npm run fetch:contributors` | Fetch GitHub contributor data        |
-| `npm run license:check`      | Check dependency licenses            |
-| `npm run license:report`     | Generate license report (Markdown)   |
-| `npm run license:summary`    | Show license summary                 |
+| Script                        | Description                           |
+| ----------------------------- | ------------------------------------- |
+| `npm run dev`                 | Start development server              |
+| `npm run build`               | Build for production (with prebuild)  |
+| `npm run preview`             | Preview production build              |
+| `npm run check`               | Run all code quality checks           |
+| `npm run check:astro`         | Run Astro type checking               |
+| `npm run check:eslint`        | Run ESLint                            |
+| `npm run check:prettier`      | Run Prettier check                    |
+| `npm run fix`                 | Auto-fix ESLint and Prettier issues   |
+| `npm run fetch:contributors`  | Fetch GitHub contributor data         |
+| `npm run fetch:project-stats` | Fetch GitHub stars/forks for projects |
+| `npm run license:check`       | Check dependency licenses             |
+| `npm run license:report`      | Generate license report (Markdown)    |
+| `npm run license:summary`     | Show license summary                  |
 
 ## 🌍 Pages
 

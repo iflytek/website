@@ -1,6 +1,6 @@
 <!--  Thanks for sending a pull request!  Here are some tips for you:
 
-- If this is your first contribution, read our Getting Started guide https://github.com/iflytek/community/blob/main/CONTRIBUTING.md
+- If this is your first contribution, read our Getting Started guide https://github.com/iflytek/community/blob/master/CONTRIBUTING.md
 
 -->
 

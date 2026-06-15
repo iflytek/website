@@ -1,3 +1,3 @@
-# CODE OF CONDUCT
+# Iflytek Community Code of Conduct
 
-Please visit https://github.com/iflytek/community for the latest version.
+Please refer to our [Iflytek Community Code of Conduct](https://github.com/iflytek/community/blob/master/code-of-conduct.md)

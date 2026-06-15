@@ -1,0 +1,30 @@
+{
+  "updated_at": "2026-06-15T03:53:56.508Z",
+  "repos": {
+    "iflytek/astron-agent": {
+      "stars": 8560,
+      "forks": 853,
+      "updated_at": "2026-06-15T03:44:02.055Z"
+    },
+    "iflytek/astron-rpa": {
+      "stars": 5177,
+      "forks": 576,
+      "updated_at": "2026-06-15T03:44:02.631Z"
+    },
+    "iflytek/astronclaw-tutorial": {
+      "stars": 410,
+      "forks": 41,
+      "updated_at": "2026-06-15T03:44:03.239Z"
+    },
+    "iflytek/iFly-Skills": {
+      "stars": 184,
+      "forks": 23,
+      "updated_at": "2026-06-15T03:44:03.848Z"
+    },
+    "iflytek/skillhub": {
+      "stars": 3462,
+      "forks": 500,
+      "updated_at": "2026-06-15T03:44:04.442Z"
+    }
+  }
+}

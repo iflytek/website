@@ -1,13 +1,15 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import ProjectCard from '~/components/projects/ProjectCard.astro';
-import { getCollection } from 'astro:content';
+import { getProjectsWithStats } from '~/utils/project-stats';
+
+export const prerender = false;
 
 const metadata = {
   title: 'Projects',
 };
 
-const projects = await getCollection('project');
+const projects = await getProjectsWithStats();
 
 // Sort by stars
 const sortedProjects = projects.sort((a, b) => (b.data.stars || 0) - (a.data.stars || 0));
@@ -42,9 +44,11 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">开源项目</span><span
-            class="mx-2 text-gray-300 dark:text-gray-600">/</span
-          ><span class="text-gray-900 dark:text-white">Projects</span>
+          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            >开源项目</span
+          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
+            >Projects</span
+          >
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           探索 iFLYTEK 的开源项目生态，涵盖 AI Agent、开发工具等前沿领域

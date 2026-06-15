@@ -31,7 +31,7 @@ body:
       required: true
     - label: I have [enabled 2FA on my GitHub account](https://github.com/settings/security)
       required: true
-    - label: I have read and will abide by the policies mentioned in the [Moderation Guidelines](https://github.com/iflytek/community/blob/main/code-of-conduct.md)
+    - label: I have read and will abide by the policies mentioned in the [Moderation Guidelines](https://github.com/iflytek/community/blob/master/code-of-conduct.md)
       required: true
     - label: I have two sponsors that meet the sponsor requirements
       required: true
