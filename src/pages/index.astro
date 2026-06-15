@@ -7,14 +7,14 @@ import Stats from '~/components/widgets/Stats.astro';
 import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 
-import { getCollection } from 'astro:content';
+import { getProjectsWithStats } from '~/utils/project-stats';
 
 const metadata = {
   title: 'iFLYTEK Open Source — AI Agent, Developer Tools & More',
   ignoreTitleTemplate: true,
 };
 
-const projects = await getCollection('project');
+const projects = await getProjectsWithStats();
 const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
 const totalForks = projects.reduce((sum, p) => sum + (p.data.forks || 0), 0);
 const starDisplay = totalStars >= 1000 ? (totalStars / 1000).toFixed(1) + 'K' : totalStars.toString();

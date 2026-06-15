@@ -39,10 +39,23 @@ async function fetchContributors() {
       per_page: 100,
     });
 
-    console.log(`  Found ${repos.length} repositories`);
+    console.log(`  Found ${repos.length} public repositories`);
+
+    // Filter out forks and archived repos — their contributors belong to upstream projects
+    const forks = repos.filter((r) => r.fork);
+    const archived = repos.filter((r) => r.archived && !r.fork);
+    const activeRepos = repos.filter((r) => !r.fork && !r.archived);
+
+    if (forks.length > 0) {
+      console.log(`  ⏭️  Skipped ${forks.length} fork(s): ${forks.map((r) => r.name).join(', ')}`);
+    }
+    if (archived.length > 0) {
+      console.log(`  ⏭️  Skipped ${archived.length} archived: ${archived.map((r) => r.name).join(', ')}`);
+    }
+    console.log(`  ✅ Processing ${activeRepos.length} original repositories`);
 
     // Fetch contributors for each repo
-    for (const repo of repos) {
+    for (const repo of activeRepos) {
       try {
         const contributors = await octokit.paginate(octokit.repos.listContributors, {
           owner: ORG,

@@ -30,10 +30,11 @@ lerna-debug.log*
 # ============================================
 # Cache directories
 # ============================================
-# Keep contributors.json for site to work
+# Keep contributors.json and project-stats.json for site to work
 .cache/*
 !.cache/contributors.json
-.tmp-community/
+!.cache/project-stats.json
+.vercel/
 
 # ============================================
 # Package manager lock files

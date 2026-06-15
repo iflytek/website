@@ -13,7 +13,7 @@
     "build": "npm run prebuild && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "prebuild": "tsx scripts/fetch-community-files.ts",
+    "prebuild": "tsx scripts/fetch-community-files.ts && tsx scripts/fetch-project-stats.ts",
     "check": "npm run check:astro && npm run check:eslint && npm run check:prettier",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
@@ -22,6 +22,7 @@
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w .",
     "fetch:contributors": "tsx scripts/fetch-contributors.ts",
+    "fetch:project-stats": "tsx scripts/fetch-project-stats.ts",
     "license:check": "license-checker --production --excludePrivatePackages --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;BlueOak-1.0.0;OFL-1.1;MPL-2.0;LGPL-3.0-or-later;Python-2.0'",
     "license:report": "license-checker --production --markdown --out THIRD_PARTY_LICENSES.md",
     "license:summary": "license-checker --production --summary"

@@ -1,16 +1,17 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import { getCollection } from 'astro:content';
+import { getProjectsWithStats } from '~/utils/project-stats';
 
-export async function getStaticPaths() {
-  const projects = await getCollection('project');
-  return projects.map((project) => ({
-    params: { slug: project.id.replace('.yaml', '').replace('.yml', '') },
-    props: { project },
-  }));
+export const prerender = false;
+
+const slug = Astro.params.slug as string;
+const projects = await getProjectsWithStats();
+const project = projects.find((p) => p.id.replace('.yaml', '').replace('.yml', '') === slug);
+
+if (!project) {
+  return Astro.redirect('/404');
 }
 
-const { project } = Astro.props;
 const { data } = project;
 
 const metadata = {
@@ -53,7 +54,7 @@ const categoryLabels: Record<string, string> = {
         <div class="flex flex-col gap-6 md:flex-row md:items-start">
           <!-- Icon -->
           <div
-            class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 text-3xl font-bold text-white"
+            class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-gradient-start to-gradient-end text-3xl font-bold text-white"
           >
             {data.name.charAt(0)}
           </div>
