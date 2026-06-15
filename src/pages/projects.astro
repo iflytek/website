@@ -17,6 +17,9 @@ const sortedProjects = projects.sort((a, b) => (b.data.stars || 0) - (a.data.sta
 // Extract unique categories
 const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
 
+// Extract unique languages
+const languages = [...new Set(sortedProjects.flatMap((p) => p.data.languages || []))].sort();
+
 const categoryLabels: Record<string, string> = {
   'ai-platform': 'AI 平台',
   'developer-tools': '开发者工具',
@@ -79,7 +82,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
   <section class="py-12 md:py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Filter Bar -->
-      <div class="mb-8 flex flex-wrap items-center justify-center gap-3">
+      <div class="mb-4 flex flex-wrap items-center justify-center gap-3">
         <button
           class="category-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-category="all"
@@ -98,11 +101,37 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
         }
       </div>
 
+      <!-- Language Filter Bar -->
+      {
+        languages.length > 0 && (
+          <div class="mb-8 flex flex-wrap items-center justify-center gap-3">
+            <button
+              class="lang-btn rounded-full bg-primary-600 px-4 py-1.5 text-xs font-medium text-white"
+              data-language="all"
+            >
+              全部语言 / All Languages
+            </button>
+            {languages.map((lang) => (
+              <button
+                class="lang-btn rounded-full bg-gray-100 px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                data-language={lang}
+              >
+                {lang} ({sortedProjects.filter((p) => p.data.languages?.includes(lang)).length})
+              </button>
+            ))}
+          </div>
+        )
+      }
+
       <!-- Project Cards -->
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
         {
           sortedProjects.map((project) => (
-            <div class="project-card" data-category={project.data.category}>
+            <div
+              class="project-card"
+              data-category={project.data.category}
+              data-languages={(project.data.languages || []).join(',')}
+            >
               <ProjectCard
                 name={project.data.name}
                 description={project.data.description}
@@ -144,32 +173,44 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
   <!-- Filter Script -->
   <script is:inline>
     (function () {
-      function setupFilters() {
-        const buttons = document.querySelectorAll('.category-btn');
-        const cards = document.querySelectorAll('.project-card');
+      let activeCategory = 'all';
+      let activeLanguage = 'all';
 
+      function applyFilters() {
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach((card) => {
+          const cardCategory = card.dataset.category;
+          const cardLanguages = (card.dataset.languages || '').split(',').filter(Boolean);
+
+          const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+          const matchesLanguage = activeLanguage === 'all' || cardLanguages.includes(activeLanguage);
+
+          card.style.display = matchesCategory && matchesLanguage ? '' : 'none';
+        });
+      }
+
+      function setupButtonGroup(selector, callback) {
+        const buttons = document.querySelectorAll(selector);
         buttons.forEach((btn) => {
           btn.addEventListener('click', () => {
-            const category = btn.dataset.category;
-
-            // Update button styles
             buttons.forEach((b) => {
               b.classList.remove('bg-primary-600', 'text-white');
               b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
             });
             btn.classList.add('bg-primary-600', 'text-white');
             btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
-
-            // Filter cards
-            cards.forEach((card) => {
-              const cardCategory = card.dataset.category;
-              if (category === 'all' || cardCategory === category) {
-                card.style.display = '';
-              } else {
-                card.style.display = 'none';
-              }
-            });
+            callback(btn);
+            applyFilters();
           });
+        });
+      }
+
+      function setupFilters() {
+        setupButtonGroup('.category-btn', (btn) => {
+          activeCategory = btn.dataset.category || 'all';
+        });
+        setupButtonGroup('.lang-btn', (btn) => {
+          activeLanguage = btn.dataset.language || 'all';
         });
       }
 

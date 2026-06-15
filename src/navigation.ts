@@ -43,8 +43,8 @@ export const headerData = {
           href: getPermalink('/category/tech'),
         },
         {
-          text: '新闻',
-          textEn: 'News',
+          text: '最新新闻',
+          textEn: 'Latest News',
           href: getPermalink('/category/news'),
         },
       ],

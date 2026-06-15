@@ -2,6 +2,7 @@
 publishDate: 2026-04-20T00:00:00Z
 title: 'Astron Agent 亮相 MWC Barcelona 2026，展示企业 AI Agent 新范式'
 excerpt: '科大讯飞 Astron Agent 在 MWC 2026 世界移动通信大会上亮相，向全球开发者展示企业级 AI Agent 工作流平台的最新进展。'
+image: '~/assets/images/mwc.jpg'
 category: 'news'
 tags: ['astron-agent', 'mwc', 'event']
 author: 'iFLYTEK Open Source Team'
@@ -14,6 +15,9 @@ author: 'iFLYTEK Open Source Team'
 ## 展会亮点
 
 ### 现场演示
+
+![](~/assets/images/mwc.jpg)
+![](~/assets/images/astron.png)
 
 在展会上，我们展示了 Astron Agent 的核心能力：
 

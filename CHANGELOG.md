@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **Language Filter on Projects Page**: Add language filter bar (Java, Python, TypeScript, JavaScript) with AND logic alongside category filter; project cards carry `data-languages` attribute for client-side filtering
 - **Real-time Project Stats**: `getProjectsWithStats()` utility fetches live stars/forks from GitHub API at runtime (Vercel SSR), falls back to `.cache/project-stats.json` at build time
 - **Project Stats Script**: `scripts/fetch-project-stats.ts` fetches stars/forks for all project repos via GitHub API, saves to `.cache/project-stats.json`
 - **Project Stats CI**: `.github/workflows/update-project-stats.yml` — daily GitHub Action at 2:00 AM Beijing time to refresh cached stats
@@ -23,6 +24,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Blog Watermark Architecture**: Watermark images now pre-baked to `public/images/watermarked/` via `scripts/watermark-images.ts`; originals in `src/assets/images/` remain untouched; `<Image watermark>` resolves watermarked copies via `findWatermarkedImage()`
+- **Blog Detail Page**: Move featured image below article body; hide title/excerpt in header (`sr-only` for SEO); reduce prose font size to `prose-sm lg:prose-lg`
+- **Navigation**: Rename "新闻" to "最新新闻" in nav menu; update category page title accordingly
 - **Project Detail Page**: Replace `getStaticPaths` + `Astro.props` with dynamic `Astro.params.slug` lookup + `getProjectsWithStats()` for real-time stats on each request
 - **Contributors Fetching**: `contribute.astro` now calls GitHub API directly at runtime (via native `fetch`) when `GITHUB_TOKEN` is set, falls back to `.cache/contributors.json` otherwise
 - **Fork Filtering**: `fetch-contributors.ts` now excludes fork repos (`repo.fork`) and archived repos (`repo.archived`) to prevent upstream contributors from appearing on the wall
@@ -46,6 +50,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Blog Navigation**: Fix double `/blog/blog/` prefix in prev/next post links
 - **Dependabot #1, #2 (esbuild)**: Force `esbuild >= 0.28.1` via `package.json` overrides — fixes vulnerability in transitive dependency from `@astrojs/vercel` (0.27.7) and `tsx` (0.28.0)
 - **Dependabot #3 (path-to-regexp)**: Force `path-to-regexp >= 6.3.0` via `package.json` overrides — fixes vulnerability in transitive dependency from `@vercel/routing-utils` (6.1.0)
 - **Tailwind v4**: `from-primary-500`, `to-accent-500` and other numbered color variants rendered as transparent — fixed by defining full color scales
