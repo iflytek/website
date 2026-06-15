@@ -5,10 +5,10 @@ import merge from 'lodash.merge';
 import type { ImageMetadata } from 'astro';
 import Layout from '~/layouts/PageLayout.astro';
 import SinglePost from '~/components/blog/SinglePost.astro';
-import ToBlogLink from '~/components/blog/ToBlogLink.astro';
+import PostNavigation from '~/components/blog/PostNavigation.astro';
 
 import { getCanonical, getPermalink } from '~/utils/permalinks';
-import { getStaticPathsBlogPost, blogPostRobots } from '~/utils/blog';
+import { getStaticPathsBlogPost, blogPostRobots, getAdjacentPosts } from '~/utils/blog';
 import { findImage } from '~/utils/images';
 import type { MetaData } from '~/types';
 import RelatedPosts from '~/components/blog/RelatedPosts.astro';
@@ -25,6 +25,7 @@ const { post } = Astro.props as Props;
 
 const url = getCanonical(getPermalink(post.permalink, 'post'));
 const image = (await findImage(post.image)) as ImageMetadata | string | undefined;
+const { prev, next } = await getAdjacentPosts(post);
 
 const metadata = merge(
   {
@@ -46,9 +47,9 @@ const metadata = merge(
 ---
 
 <Layout metadata={metadata}>
-  <SinglePost post={{ ...post, image: image }} url={url}>
+  <SinglePost post={post} url={url}>
     {post.Content && <post.Content />}
   </SinglePost>
-  <ToBlogLink />
+  <PostNavigation prev={prev} next={next} />
   <RelatedPosts post={post} />
 </Layout>

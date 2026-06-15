@@ -4,6 +4,7 @@ import { Icon } from 'astro-icon/components';
 import Image from '~/components/common/Image.astro';
 import PostTags from '~/components/blog/Tags.astro';
 import SocialShare from '~/components/common/SocialShare.astro';
+import TableOfContents from '~/components/blog/TableOfContents.astro';
 
 import { getPermalink } from '~/utils/permalinks';
 import { getFormattedDate } from '~/utils/utils';
@@ -21,11 +22,11 @@ const { post, url } = Astro.props;
 <section class="py-8 sm:py-16 lg:py-20 mx-auto">
   <article>
     <header
-      class={post.image
-        ? 'intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade'
-        : 'intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade'}
+      class="relative overflow-hidden intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
     >
-      <div class="flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-4 sm:px-6 sm:items-center">
+      <div
+        class="relative z-10 flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-4 sm:px-6 sm:items-center"
+      >
         <p>
           <Icon name="tabler:clock" class="w-4 h-4 inline-block -mt-0.5 dark:text-gray-400" />
           <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
@@ -59,22 +60,36 @@ const { post, url } = Astro.props;
         </p>
       </div>
 
-      <h1
-        class="px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading"
-      >
-        {post.title}
-      </h1>
-      <p
-        class="max-w-3xl mx-auto mt-4 mb-8 px-4 sm:px-6 text-xl md:text-2xl text-muted dark:text-slate-400 text-justify"
-      >
-        {post.excerpt}
-      </p>
-
-      {
-        post.image ? (
+      <div class="sr-only">
+        <h1
+          class="relative z-10 px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading"
+        >
+          {post.title}
+        </h1>
+        <p
+          class="relative z-10 max-w-3xl mx-auto mt-4 mb-8 px-4 sm:px-6 text-xl md:text-2xl text-muted dark:text-slate-400 text-justify"
+        >
+          {post.excerpt}
+        </p>
+      </div>
+    </header>
+    <div class="mx-auto px-6 sm:px-6 max-w-6xl">
+      <div class="flex gap-12">
+        <div
+          class="flex-1 min-w-0 prose prose-sm lg:prose-lg dark:prose-invert dark:prose-headings:text-slate-300 prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px] prose-li:my-0"
+        >
+          <slot />
+        </div>
+        <TableOfContents headings={post.headings ?? []} />
+      </div>
+    </div>
+    {
+      post.image && (
+        <div class="mx-auto px-6 sm:px-6 max-w-6xl mt-8">
           <Image
             src={post.image}
-            class="max-w-full lg:max-w-[900px] mx-auto mb-6 sm:rounded-md bg-gray-400 dark:bg-slate-700"
+            watermark
+            class="max-w-full lg:max-w-[900px] mx-auto sm:rounded-md bg-gray-400 dark:bg-slate-700"
             widths={[400, 900]}
             sizes="(max-width: 900px) 400px, 900px"
             alt={post?.excerpt || ''}
@@ -84,21 +99,107 @@ const { post, url } = Astro.props;
             loading="eager"
             decoding="async"
           />
-        ) : (
-          <div class="max-w-3xl mx-auto px-4 sm:px-6">
-            <div class="border-t dark:border-slate-700" />
-          </div>
-        )
-      }
-    </header>
-    <div
-      class="mx-auto px-6 sm:px-6 max-w-3xl prose prose-md lg:prose-xl dark:prose-invert dark:prose-headings:text-slate-300 prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px] prose-li:my-0"
-    >
-      <slot />
-    </div>
-    <div class="mx-auto px-6 sm:px-6 max-w-3xl mt-8 flex justify-between flex-col sm:flex-row">
+        </div>
+      )
+    }
+    <div class="mx-auto px-6 sm:px-6 max-w-6xl mt-8 flex justify-between flex-col sm:flex-row">
       <PostTags tags={post.tags} class="mr-5 rtl:mr-0 rtl:ml-5" />
       <SocialShare url={url} text={post.title} class="mt-5 sm:mt-1 align-middle text-gray-500 dark:text-slate-600" />
     </div>
   </article>
 </section>
+
+<style is:global>
+  .prose .heading-anchor,
+  .prose .heading-anchor:hover {
+    text-decoration: none !important;
+    text-underline-offset: 0 !important;
+    border-bottom: none !important;
+    color: inherit !important;
+  }
+  .heading-anchor {
+    display: block;
+    position: relative;
+  }
+  .heading-anchor:hover {
+    cursor: pointer;
+  }
+  .heading-anchor:hover::before {
+    content: '#';
+    position: absolute;
+    left: -1.2em;
+    top: 0;
+    color: var(--aw-color-primary);
+    font-weight: normal;
+  }
+
+  .code-block-wrapper {
+    position: relative;
+  }
+  .code-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+    z-index: 10;
+  }
+  .code-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+  }
+  .code-copy-btn.copied {
+    color: #4ade80;
+  }
+</style>
+
+<script is:inline>
+  function initCodeCopy() {
+    document.querySelectorAll('.prose pre').forEach((pre) => {
+      if (pre.parentElement?.classList.contains('code-block-wrapper')) return;
+      const code = pre.querySelector('code');
+      if (!code) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrapper';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.textContent = 'Copy';
+      btn.setAttribute('aria-label', 'Copy code');
+
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(code.textContent).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 1500);
+        });
+      });
+
+      wrapper.appendChild(btn);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(initCodeCopy));
+  } else {
+    requestAnimationFrame(initCodeCopy);
+  }
+  document.addEventListener('astro:after-swap', () => {
+    requestAnimationFrame(initCodeCopy);
+  });
+</script>

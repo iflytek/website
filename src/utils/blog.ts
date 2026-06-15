@@ -42,7 +42,7 @@ const generatePermalink = async ({
 
 const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> => {
   const { id, data } = post;
-  const { Content, remarkPluginFrontmatter } = await render(post);
+  const { Content, headings, remarkPluginFrontmatter } = await render(post);
 
   const {
     publishDate: rawPublishDate = new Date(),
@@ -97,6 +97,8 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     // or 'content' in case you consume from API
 
     readingTime: remarkPluginFrontmatter?.readingTime,
+
+    headings,
   };
 };
 
@@ -278,4 +280,15 @@ export async function getRelatedPosts(originalPost: Post, maxResults: number = 4
   }
 
   return selectedPosts;
+}
+
+/** */
+export async function getAdjacentPosts(currentPost: Post): Promise<{ prev?: Post; next?: Post }> {
+  const posts = await fetchPosts();
+  const idx = posts.findIndex((p) => p.slug === currentPost.slug);
+  if (idx === -1) return {};
+  return {
+    prev: idx < posts.length - 1 ? posts[idx + 1] : undefined,
+    next: idx > 0 ? posts[idx - 1] : undefined,
+  };
 }

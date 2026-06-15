@@ -41,6 +41,19 @@ export const findImage = async (
   return ((await loader()) as { default: ImageMetadata }).default;
 };
 
+/**
+ * Map a `~/assets/images/…` reference to its watermarked static-asset URL
+ * under `public/images/watermarked/`.  Returns `undefined` for non-local or
+ * non-string inputs so callers can fall back to the regular pipeline.
+ */
+export const findWatermarkedImage = (imagePath?: string | ImageMetadata | null): string | undefined => {
+  if (typeof imagePath !== 'string') return undefined;
+  if (!imagePath.startsWith('~/assets/images/')) return undefined;
+  const filename = imagePath.split('/').pop();
+  if (!filename) return undefined;
+  return `/images/watermarked/${filename}`;
+};
+
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 626;
 

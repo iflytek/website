@@ -1,0 +1,99 @@
+---
+/**
+ * Sticky Table of Contents sidebar for blog post detail pages.
+ *
+ * Renders h2/h3 headings extracted from the post as a vertical nav.
+ * On scroll, an IntersectionObserver highlights the heading that is
+ * currently in view.  Clicking a TOC link scrolls to the matching
+ * section (browser handles the hash navigation natively because each
+ * heading already has an `id` from Astro's rehype-slug plugin).
+ *
+ * Visibility: hidden below `lg` (1024 px) — mobile readers get the
+ * full-width prose without a sidebar.
+ */
+import type { MarkdownHeading } from 'astro';
+
+export interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// Only render h2/h3; skip h1 (title) and deeper levels.
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{
+  tocHeadings.length > 0 && (
+    <nav class="hidden lg:block sticky top-24 self-start w-52 shrink-0" aria-label="Table of Contents">
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3">目录</h4>
+      <ul class="space-y-0.5 text-sm">
+        {tocHeadings.map((h) => (
+          <li class={h.depth === 3 ? 'ml-4' : ''}>
+            <a
+              href={`#${h.slug}`}
+              class="toc-link block py-1.5 px-3 rounded text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
+              data-toc-slug={h.slug}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script is:inline>
+  function initToc() {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    if (!tocLinks.length) return;
+
+    const headingEls = Array.from(document.querySelectorAll('.prose h1[id], .prose h2[id], .prose h3[id]'));
+    if (!headingEls.length) return;
+
+    // --- Scroll spy via IntersectionObserver ---------------------------------
+    let activeId = '';
+
+    const setActive = (id) => {
+      if (id === activeId) return;
+      activeId = id;
+      tocLinks.forEach((link) => {
+        const isActive = link.dataset.tocSlug === id;
+        link.classList.toggle('text-primary', isActive);
+        link.classList.toggle('dark:text-blue-400', isActive);
+        link.classList.toggle('font-medium', isActive);
+        link.classList.toggle('bg-gray-100', isActive);
+        link.classList.toggle('dark:bg-slate-700', isActive);
+        link.classList.toggle('bg-transparent', !isActive);
+        link.classList.toggle('dark:bg-transparent', !isActive);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-80px 0px -65% 0px', threshold: 0 }
+    );
+
+    headingEls.forEach((el) => observer.observe(el));
+
+    // Set initial active from hash
+    if (location.hash) {
+      const initialId = decodeURIComponent(location.hash.slice(1));
+      setActive(initialId);
+    } else if (headingEls.length) {
+      // Default to first heading
+      setActive(headingEls[0].id);
+    }
+  }
+
+  // Run on initial load and after Astro view-transition swaps
+  initToc();
+  document.addEventListener('astro:after-swap', initToc);
+</script>

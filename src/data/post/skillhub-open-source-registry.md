@@ -3,6 +3,7 @@ publishDate: 2026-05-15T00:00:00Z
 title: 'SkillHub：企业级 Agent 技能注册中心的开源之路'
 excerpt: '介绍 SkillHub 如何帮助企业构建私有的 Agent 技能市场，实现技能的发布、版本管理、RBAC 权限治理和审计追踪。'
 category: 'tech'
+image: '~/assets/images/skillhub.jpg'
 tags: ['skillhub', 'agent-skill', 'registry', 'enterprise-ai']
 author: 'iFLYTEK Open Source Team'
 ---

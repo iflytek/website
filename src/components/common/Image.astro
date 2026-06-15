@@ -27,7 +27,7 @@ import { Image as AstroImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { HTMLAttributes } from 'astro/types';
 import { transformUrl, parseUrl } from 'unpic';
-import { findImage } from '~/utils/images';
+import { findImage, findWatermarkedImage } from '~/utils/images';
 
 type Layout = 'constrained' | 'responsive' | 'fullWidth' | 'fixed' | 'cover';
 type Format = 'avif' | 'jpeg' | 'jpg' | 'png' | 'webp';
@@ -39,9 +39,10 @@ interface Props extends Omit<HTMLAttributes<'img'>, 'src' | 'width' | 'height'> 
   widths?: number[];
   format?: Format;
   layout?: Layout;
+  watermark?: boolean;
 }
 
-const { src, alt, width, height, widths, format, layout = 'constrained', ...rest } = Astro.props;
+const { src, alt, width, height, widths, format, layout = 'constrained', watermark = false, ...rest } = Astro.props;
 
 // --- Accessibility ---------------------------------------------------------
 if (alt === undefined || alt === null) {
@@ -62,6 +63,10 @@ rest.decoding ??= 'async';
 
 // --- Resolve src (handles `~/assets/...` paths) ----------------------------
 const resolved = await findImage(src);
+
+// When watermark is enabled for a local image, use the pre-baked watermarked
+// copy from public/images/watermarked/ instead of the Astro pipeline.
+const watermarkedSrc = watermark ? findWatermarkedImage(src) : undefined;
 
 const isCdnUrl =
   typeof resolved === 'string' &&
@@ -159,7 +164,11 @@ const cdnSrcSet =
 ---
 
 {
-  isCdnUrl ? (
+  watermarkedSrc ? (
+    /* Pre-baked watermarked image from public/images/watermarked/.  Served as
+       a static asset — no Astro <Image /> processing, no HTML overlay. */
+    <img src={watermarkedSrc} width={w} height={h} alt={alt} {...rest} style={finalStyle} />
+  ) : isCdnUrl ? (
     <img
       src={cdnSrc}
       srcset={cdnSrcSet}

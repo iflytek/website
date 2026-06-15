@@ -95,18 +95,18 @@ npm run preview
 
 ## 🌍 Pages
 
-| Route             | Description                           |
-| ----------------- | ------------------------------------- |
-| `/`               | Homepage                              |
-| `/projects`       | Project list with category filters    |
-| `/projects/:slug` | Individual project detail page        |
-| `/landscape`      | CNCF-style project landscape          |
-| `/blog`           | Blog list (tech + news)               |
-| `/events`         | Community events timeline             |
-| `/contribute`     | Contribution guide + contributor wall |
-| `/security`       | Security policy                       |
-| `/values`         | Community values                      |
-| `/cla`            | Contributor License Agreement         |
+| Route             | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `/`               | Homepage                                        |
+| `/projects`       | Project list with category and language filters |
+| `/projects/:slug` | Individual project detail page                  |
+| `/landscape`      | CNCF-style project landscape                    |
+| `/blog`           | Blog list (tech + news)                         |
+| `/events`         | Community events timeline                       |
+| `/contribute`     | Contribution guide + contributor wall           |
+| `/security`       | Security policy                                 |
+| `/values`         | Community values                                |
+| `/cla`            | Contributor License Agreement                   |
 
 ## 🤝 Contributing
 
