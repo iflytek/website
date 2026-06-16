@@ -86,7 +86,26 @@ const projectCollection = defineCollection({
   }),
 });
 
+const adopterCollection = defineCollection({
+  loader: glob({ pattern: ['*.yaml', '*.yml'], base: 'src/data/adopters' }),
+  schema: z.object({
+    name: z.string(),
+    nameEn: z.string().optional(),
+    logo: z.string(),
+    subtitle: z.string(),
+    subtitleEn: z.string().optional(),
+    tags: z.array(z.string()).optional(),
+    scenario: z.string(),
+    scenarioEn: z.string().optional(),
+    delivery: z.string(),
+    deliveryEn: z.string().optional(),
+    outcome: z.string(),
+    outcomeEn: z.string().optional(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
   project: projectCollection,
+  adopter: adopterCollection,
 };

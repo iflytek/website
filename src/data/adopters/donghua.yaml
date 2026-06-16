@@ -1,0 +1,15 @@
+name: 东华软件
+nameEn: Donghua Software
+logo: /images/adopters/donghua.png
+subtitle: 金融行业方案验证
+subtitleEn: Financial workflow validation
+tags:
+  - 金融
+  - 数据处理
+  - Agent + RPA
+scenario: 银行征信数据归集、反洗钱报告生成，探索面向金融行业的智能体与自动化能力。
+scenarioEn: Credit data aggregation and anti-money-laundering report generation for banking workflows.
+delivery: 补齐认证、容器部署、模型授权和 RPA 架构配置，串起可验证的业务闭环。
+deliveryEn: Completed authentication, container deployment, model authorization, and RPA architecture setup to validate an end-to-end solution.
+outcome: 较快完成金融核心场景验证，为后续 OEM 与行业复制打下基础。
+outcomeEn: Accelerated solution verification for financial scenarios and prepared the ground for OEM and industry replication.

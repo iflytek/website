@@ -1,0 +1,15 @@
+name: 小趣科技
+nameEn: Xiaoqu Technology
+logo: /images/adopters/xiaoqu.png
+subtitle: 开发环境与二次开发调试
+subtitleEn: Developer environment and debugging
+tags:
+  - 研发支持
+  - 前后端分离
+  - 开源版
+scenario: RPA 二次开发调试、前后端分离开发部署。
+scenarioEn: RPA secondary development, source debugging, and frontend-backend separated deployment.
+delivery: 明确开源版支持前后端分离开发模式，帮助团队以更灵活的方式调试源码。
+deliveryEn: Confirmed support for separated development mode so the team could iterate and debug faster.
+outcome: 消除部署不确定性，加快环境搭建和二次开发启动速度。
+outcomeEn: Removed deployment uncertainty and accelerated environment setup for custom development.

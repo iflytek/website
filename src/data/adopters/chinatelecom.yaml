@@ -1,0 +1,15 @@
+name: 中国电信苏州分公司
+nameEn: China Telecom Suzhou
+logo: /images/adopters/chinatelecom.png
+subtitle: 内网业务受理与稽核
+subtitleEn: Intranet acceptance and audit
+tags:
+  - 电信
+  - 内网部署
+  - 业务稽核
+scenario: 自动业务受理、业务稽核，全部运行在企业内网环境。
+scenarioEn: Automatic service acceptance and business auditing in a fully isolated enterprise network.
+delivery: 围绕验证码识别、复杂页面定位和内网依赖注入，形成隔离网络下的实施方案。
+deliveryEn: Built an intranet-ready automation path around captcha recognition, dynamic element targeting, and dependency injection.
+outcome: 推动核心流程进入灰度试运行，跑通高安全场景下的业务闭环。
+outcomeEn: Moved core workflows into gray release and proved a secure closed loop for acceptance and auditing.

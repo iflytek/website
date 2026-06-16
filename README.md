@@ -104,6 +104,7 @@ npm run preview
 | `/blog`           | Blog list (tech + news)                         |
 | `/events`         | Community events timeline                       |
 | `/contribute`     | Contribution guide + contributor wall           |
+| `/adopters`       | Customer case studies (10 enterprise stories)   |
 | `/security`       | Security policy                                 |
 | `/values`         | Community values                                |
 | `/cla`            | Contributor License Agreement                   |

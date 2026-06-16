@@ -1,0 +1,15 @@
+name: 广物互联
+nameEn: Guangwu Interconnect
+logo: /images/adopters/guangwu.jpg
+subtitle: 企微集成与规划型 Agent 探索
+subtitleEn: WeCom and planning-oriented agents
+tags:
+  - 企业服务
+  - SSO
+  - 规划能力
+scenario: 企业微信集成、单点登录、具备规划能力的智能体应用探索。
+scenarioEn: WeCom integration, SSO, and planning-capable agent exploration.
+delivery: 快速定位多组织登录问题，明确企微扫码登录、SSO 和规划能力的推进路径。
+deliveryEn: Quickly located multi-organization login issues and clarified the implementation path for WeCom and planning features.
+outcome: 保证基础环境可用，帮助客户尽快明确后续集成与共建方向。
+outcomeEn: Kept the evaluation environment usable and helped the team align on the next integration steps.

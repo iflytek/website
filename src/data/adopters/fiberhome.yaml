@@ -1,0 +1,15 @@
+name: 烽火通信科技
+nameEn: FiberHome
+logo: /images/adopters/fiberhome.png
+subtitle: 离线环境自动化与系统联动
+subtitleEn: Offline automation and system orchestration
+tags:
+  - 通信
+  - 离线内网
+  - Open API
+scenario: 离线内网 RPA 自动化、界面录制回放、内网 AI 模型接入、与 Jenkins 等系统联动。
+scenarioEn: Offline RPA automation, recording and playback, private AI model access, and Jenkins integration.
+delivery: 打通离线镜像导入、模拟人工输入、动态元素定位、自定义 AI 模型和 Open API 对接。
+deliveryEn: Completed the path for offline images, simulated typing, dynamic element targeting, custom AI access, and Open API integration.
+outcome: 验证 Astron 在高安全隔离环境中的部署可行性，并为后续系统扩展留出接口。
+outcomeEn: Verified deployment feasibility in a highly secure environment and left clear extension points for future system integration.
