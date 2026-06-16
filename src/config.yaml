@@ -1,5 +1,5 @@
 site:
-  name: iFLYTEK Open Source
+  name: 讯飞开源
   site: 'https://opensource.iflytek.com'
   base: '/'
   trailingSlash: false
@@ -7,14 +7,14 @@ site:
 # Default SEO metadata
 metadata:
   title:
-    default: iFLYTEK Open Source
-    template: '%s — iFLYTEK Open Source'
+    default: 讯飞开源
+    template: '%s — 讯飞开源'
   description: 'iFLYTEK Open Source - Exploring AI, NLP, Speech Recognition and more open source projects from iFLYTEK.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: iFLYTEK Open Source
+    site_name: 讯飞开源
     images:
       - url: '~/assets/images/default.png'
         width: 1200

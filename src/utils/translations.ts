@@ -221,6 +221,13 @@ export const translations: Record<string, { zh: string; en: string }> = {
   'values.titleZh': { zh: '社区价值观', en: 'Community Values' },
   'cla.titleZh': { zh: '开源许可', en: 'Contributor License Agreement' },
 
+  // Adopters
+  'adopters.titleZh': { zh: '用户案例', en: 'Adopters' },
+  'adopters.subtitle': {
+    zh: '探索 Astron 开源生态的用户案例，了解各行业如何利用 AI Agent 平台实现业务创新',
+    en: 'Explore Astron open source ecosystem user cases, see how industries leverage AI Agent platform for business innovation',
+  },
+
   // Footer
   'footer.wechatTitle': { zh: '微信扫码加入社区', en: 'Scan QR to join WeChat group' },
   'footer.wechatDesc': {

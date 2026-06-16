@@ -54,6 +54,11 @@ export const headerData = {
       textEn: 'Contribute',
       href: getPermalink('/contribute'),
     },
+    {
+      text: '用户',
+      textEn: 'Adopters',
+      href: getPermalink('/adopters'),
+    },
   ],
   actions: [
     {
@@ -75,6 +80,7 @@ export const footerData = {
         { text: '博客', textEn: 'Blog', href: getBlogPermalink() },
         { text: '活动', textEn: 'Events', href: getPermalink('/events') },
         { text: '贡献', textEn: 'Contribute', href: getPermalink('/contribute') },
+        { text: '用户', textEn: 'Adopters', href: getPermalink('/adopters') },
       ],
     },
     {
@@ -93,6 +99,7 @@ export const footerData = {
         { text: 'iFLYTEK Official', href: 'https://www.iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
         { text: 'Gitee', href: 'https://gitee.com/organizations/iflytek' },
+        { text: 'AtomGit', href: 'https://atomgit.com/ifly_opensource' },
       ],
     },
     {

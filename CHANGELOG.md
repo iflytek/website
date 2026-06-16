@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - **CSS Content Visibility**: `.i18n-zh`/`.i18n-en` CSS class system with `html.lang-en` class toggle for full-page bilingual content on static pages
 - **Bilingual Static Pages**: Full Chinese/English content for `/security` (安全策略), `/values` (社区价值观), `/cla` (贡献者许可协议) using dual-div layout
 - **i18n Coverage**: `data-i18n` attributes added to all pages — home, projects, project detail, contribute, events, landscape, blog, blog categories, pagination, post navigation, related posts
+- **Project Icons**: Configure valid icon paths for 5 projects — Astron Agent, Astron RPA, AstronClaw Tutorial, HarnessClaw, SkillHub use local `/images/` icons. Projects without icons (iFly Skills, HarnessClaw Engine) fall back to first-letter display with gradient background
+- **Adopters Page**: New `/adopters` page showcasing 10 enterprise customer stories from `iflytek/astron-agent` — Donghua Software, China Telecom Suzhou, Yunsuan Digital, Xiaoqu Tech, Shandong Yungu, Guangwu Interconnect, Beijing Yugou, FiberHome, Foxit Zhongshu, Xiangyang Dongsheng. Header matches events style (gradient + blurred circles), two-row marquee with opposite scroll directions (row 1 left, row 2 right), local logo images in `public/images/adopters/`. i18n-aware title (用户案例 / Adopters), bilingual descriptions
+- **Project Card Icon Background**: Remove gradient background when project has a configured icon — only show gradient for first-letter fallback
 - **New Projects**: Add HarnessClaw (Electron desktop app, agent-management) and HarnessClaw Engine (Go LLM engine, agent-engine) — total 7 projects
 - **Landscape Rewrite**: Complete treemap rewrite matching awesome-astron-workflow.dev/landscape — 6 categories (agentic-workflow, agentic-automation, agent-skills, tutorial, agent-management, agent-engine), 3-column layout (42%/33%/25%), SVG ecosystem arrows, bilingual labels via `.i18n-zh`/`.i18n-en`
 - **Landscape Download Fix**: "Save HD Image" button uses CDN-based `html-to-image` (`is:inline` script) — fixes bundling issue where page-level `<script>` was not processed by Vite; downloads 1280×cardHeight PNG at 3x pixel ratio
@@ -31,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - **Blog**: Add gradient header (技术博客 / Blog) matching Events page style for `/blog`, `/category/tech`, `/category/news`
 - **Home**: Add card containers with hover animation to 6 feature sections (上移、阴影、边框高亮、标题变色、图标放大)
 - **Copyright**: Use dynamic year `${new Date().getFullYear()}` instead of hardcoded 2026
+- **Blog i18n Link Fix**: `BlogHighlightedPosts.astro` and `BlogLatestPosts.astro` now use `set:html` for `linkText` to properly render `data-i18n` attributes (was rendering raw HTML tags as text). Homepage passes i18n-aware `linkText` to `BlogLatestPosts`
 
 ### Changed
 

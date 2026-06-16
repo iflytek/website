@@ -1,0 +1,15 @@
+name: 襄阳东昇
+nameEn: Xiangyang Dongsheng
+logo: /images/adopters/xiangyang-dongsheng.png
+subtitle: 订单接收与办公自动化
+subtitleEn: Order intake and office automation
+tags:
+  - 制造配套
+  - 邮件自动化
+  - Excel 自动化
+scenario: 订单自动接收、邮件附件自动下载处理、共享文件夹 Excel 自动化。
+scenarioEn: Automatic order intake, email attachment download, and shared-folder Excel processing.
+delivery: 针对邮件组件、Excel 实例调度、路径转义和网页组件问题提供源码级修复与实施指导。
+deliveryEn: Provided source-level fixes and implementation guidance for email components, Excel instance control, and path handling.
+outcome: 打通订单接收关键链路，提升无人值守运行稳定性，持续替代重复性办公工作。
+outcomeEn: Opened the key automation path for order intake and improved unattended operational stability.

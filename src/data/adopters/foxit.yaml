@@ -1,0 +1,15 @@
+name: 厦门福昕中数
+nameEn: Foxit Zhongshu
+logo: /images/adopters/foxit.jpg
+subtitle: 数智员工与工作流编排
+subtitleEn: Digital workforce and workflow orchestration
+tags:
+  - 软件产品
+  - 工作流
+  - 共建反馈
+scenario: 数智员工智能体、插件集成、工作流编排与 RPA 私有化部署。
+scenarioEn: Digital employee agents, plugin integration, workflow orchestration, and private RPA deployment.
+delivery: 通过代码节点绕过接口限制，支持现有后端系统联调，并围绕 Skill 与任务拆分持续共建。
+deliveryEn: Used code nodes to work around payload restrictions and kept the existing backend integration moving forward.
+outcome: 保障关键接口联调推进，同时沉淀多项可复用的产品反馈和共建成果。
+outcomeEn: Protected delivery progress while generating reusable product feedback and co-building value.
