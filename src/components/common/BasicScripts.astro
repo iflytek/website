@@ -1,8 +1,9 @@
 ---
 import { UI } from 'astrowind:config';
+import { translations } from '~/utils/translations';
 ---
 
-<script is:inline define:vars={{ defaultTheme: UI.theme }}>
+<script is:inline define:vars={{ defaultTheme: UI.theme, i18n: translations }}>
   if (window.basic_script) {
     return;
   }
@@ -32,6 +33,43 @@ import { UI } from 'astrowind:config';
     if (stored === 'dark' || stored === 'light') return stored;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
+
+  function applyLanguage(lang) {
+    // Dictionary-based: elements with data-i18n="key"
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      const t = i18n[key];
+      if (t) {
+        el.textContent = lang === 'en' ? t.en : t.zh;
+      }
+    });
+    // Attribute-based: elements with data-lang-zh / data-lang-en (e.g. nav links)
+    document.querySelectorAll('[data-lang-zh]').forEach((el) => {
+      const zh = el.getAttribute('data-lang-zh');
+      const en = el.getAttribute('data-lang-en');
+      if (lang === 'en' && en) {
+        el.textContent = en;
+      } else if (zh) {
+        el.textContent = zh;
+      }
+    });
+    // Update active button highlight
+    document.querySelectorAll('[data-aw-lang-btn]').forEach((btn) => {
+      if (btn.getAttribute('data-aw-lang-btn') === lang) {
+        btn.setAttribute('data-active', '');
+      } else {
+        btn.removeAttribute('data-active');
+      }
+    });
+    // Toggle language class on <html> for CSS-based content visibility
+    document.documentElement.classList.toggle('lang-en', lang === 'en');
+  }
+
+  const initLang = function () {
+    const lang = localStorage.lang || 'zh';
+    applyLanguage(lang);
+  };
+  initLang();
 
   const initTheme = function () {
     if (defaultTheme && defaultTheme.endsWith(':only')) {
@@ -106,6 +144,12 @@ import { UI } from 'astrowind:config';
 
       const effective = mode === 'system' ? getEffectiveTheme() : mode;
       applyTheme(effective);
+    });
+
+    attachEvent('[data-aw-lang-btn]', 'click', function (_, elem) {
+      const lang = elem.getAttribute('data-aw-lang-btn');
+      localStorage.lang = lang;
+      applyLanguage(lang);
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
@@ -192,6 +236,7 @@ import { UI } from 'astrowind:config';
 
   document.addEventListener('astro:after-swap', () => {
     initTheme();
+    initLang();
     onLoad();
     onPageShow();
   });
@@ -327,3 +372,16 @@ import { UI } from 'astrowind:config';
     Observer.start(true);
   });
 </script>
+
+<style is:global>
+  /* i18n content visibility: .i18n-zh shown in zh mode, .i18n-en shown in en mode */
+  .i18n-en {
+    display: none;
+  }
+  html.lang-en .i18n-zh {
+    display: none;
+  }
+  html.lang-en .i18n-en {
+    display: revert;
+  }
+</style>

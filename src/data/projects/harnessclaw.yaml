@@ -1,0 +1,13 @@
+name: HarnessClaw
+nameEn: HarnessClaw
+description: 基于 Electron 的桌面应用程序，旨在无缝管理、对话及操作 AI 智能体与技能。
+descriptionEn: Electron-based desktop application designed to manage, chat with, and operate AI agents and skills seamlessly.
+repo: harnessclaw/harnessclaw
+category: agent-management
+tags: [electron-app, desktop-app, agent, ai-agents, chatbot, iflytek-astron]
+languages: [TypeScript]
+featured: false
+stars: 316
+forks: 82
+license: Apache-2.0
+icon: harnessclaw

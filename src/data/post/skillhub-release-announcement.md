@@ -12,10 +12,11 @@ author: 'iFLYTEK Open Source Team'
 
 今天，我们很高兴地宣布 SkillHub 正式开源发布！
 
+![](~/assets/images/skillhub-release.gif)
+
 ## 什么是 SkillHub？
 
 SkillHub 是一个自托管的 Agent 技能注册中心，为企业提供一个私有、受治理的平台来共享和管理 Agent 技能。
-![](~/assets/images/skillhub-release.gif)
 
 ## 为什么需要 SkillHub？
 

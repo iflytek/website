@@ -25,18 +25,29 @@ const metadata = {
     follow: blogCategoryRobots?.follow,
   },
 };
-const categoryMeta: Record<string, { titleZh: string; description: string }> = {
+const categoryMeta: Record<string, { titleZh: string; titleEn: string; description: string; descriptionEn: string }> = {
   tech: {
     titleZh: '技术博客',
+    titleEn: 'Tech Blog',
     description: '深度技术文章、架构设计与工程实践，探索 AI、NLP、开发者工具等前沿技术',
+    descriptionEn:
+      'In-depth technical articles, architecture design and engineering practices exploring AI, NLP, developer tools and more',
   },
   news: {
     titleZh: '最新新闻',
-    description: '项目发布、版本更新、社区活动等 iFLYTEK 开源生态最新资讯',
+    titleEn: 'Latest News',
+    description: '项目发布、版本更新、社区活动等科大讯飞开源生态最新资讯',
+    descriptionEn:
+      'Latest news on project releases, version updates, community events and the iFLYTEK open source ecosystem',
   },
 };
 
-const cat = categoryMeta[category.slug] || { titleZh: category.title, description: `${category.title} 相关文章` };
+const cat = categoryMeta[category.slug] || {
+  titleZh: category.title,
+  titleEn: category.title,
+  description: `${category.title} 相关文章`,
+  descriptionEn: `${category.title} related posts`,
+};
 ---
 
 <Layout metadata={metadata}>
@@ -51,13 +62,17 @@ const cat = categoryMeta[category.slug] || { titleZh: category.title, descriptio
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            >{cat.titleZh}</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >{category.title}</span
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-lang-zh={cat.titleZh}
+            data-lang-en={cat.titleEn}>{cat.titleZh}</span
           >
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        <p
+          class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400"
+          data-lang-zh={cat.description}
+          data-lang-en={cat.descriptionEn}
+        >
           {cat.description}
         </p>
       </div>

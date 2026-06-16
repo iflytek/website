@@ -20,14 +20,13 @@ const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
 // Extract unique languages
 const languages = [...new Set(sortedProjects.flatMap((p) => p.data.languages || []))].sort();
 
-const categoryLabels: Record<string, string> = {
-  'ai-platform': 'AI 平台',
-  'developer-tools': '开发者工具',
-  'rpa-automation': 'RPA & 自动化',
-  'ai-skills': 'AI 技能',
-  tutorials: '教程',
-  'nlp-speech': 'NLP & 语音',
-  infrastructure: '基础设施',
+const categoryLabels: Record<string, { zh: string; en: string }> = {
+  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
+  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
+  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
+  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
+  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
+  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
 };
 
 // Total stats
@@ -47,14 +46,15 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            >开源项目</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >Projects</span
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-i18n="projects.titleZh"
           >
+            开源项目
+          </span>
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          探索 iFLYTEK 的开源项目生态，涵盖 AI Agent、开发工具等前沿领域
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="projects.subtitle">
+          探索科大讯飞的开源项目生态，涵盖 AI Agent、开发工具等前沿领域
         </p>
       </div>
 
@@ -62,17 +62,17 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
       <div class="mx-auto mt-12 flex max-w-xl items-center justify-center gap-8 sm:gap-16">
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{sortedProjects.length}</div>
-          <div class="mt-1 text-sm text-gray-500">开源项目</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statProjects">开源项目</div>
         </div>
         <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{(totalStars / 1000).toFixed(1)}k</div>
-          <div class="mt-1 text-sm text-gray-500">GitHub Stars</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statStars">GitHub Stars</div>
         </div>
         <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{(totalForks / 1000).toFixed(1)}k</div>
-          <div class="mt-1 text-sm text-gray-500">Forks</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statForks">Forks</div>
         </div>
       </div>
     </div>
@@ -87,7 +87,9 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
           class="category-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-category="all"
         >
-          全部 / All ({sortedProjects.length})
+          <span data-lang-zh={`全部 (${sortedProjects.length})`} data-lang-en={`All (${sortedProjects.length})`}
+            >全部 ({sortedProjects.length})</span
+          >
         </button>
         {
           categories.map((cat) => (
@@ -95,7 +97,12 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
               class="category-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               data-category={cat}
             >
-              {categoryLabels[cat] || cat} ({sortedProjects.filter((p) => p.data.category === cat).length})
+              <span
+                data-lang-zh={`${categoryLabels[cat]?.zh || cat} (${sortedProjects.filter((p) => p.data.category === cat).length})`}
+                data-lang-en={`${categoryLabels[cat]?.en || cat} (${sortedProjects.filter((p) => p.data.category === cat).length})`}
+              >
+                {categoryLabels[cat]?.zh || cat} ({sortedProjects.filter((p) => p.data.category === cat).length})
+              </span>
             </button>
           ))
         }
@@ -109,7 +116,9 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
               class="lang-btn rounded-full bg-primary-600 px-4 py-1.5 text-xs font-medium text-white"
               data-language="all"
             >
-              全部语言 / All Languages
+              <span data-lang-zh="全部语言" data-lang-en="All Languages">
+                全部语言
+              </span>
             </button>
             {languages.map((lang) => (
               <button
@@ -135,6 +144,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
               <ProjectCard
                 name={project.data.name}
                 description={project.data.description}
+                descriptionEn={project.data.descriptionEn}
                 repo={project.data.repo}
                 homepage={project.data.homepage}
                 category={project.data.category}
@@ -155,15 +165,15 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
           href="/landscape"
           class="inline-flex items-center gap-2 rounded-xl border-2 border-primary-200 bg-primary-50 px-8 py-4 font-medium text-primary-700 transition-all hover:border-primary-300 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:hover:bg-primary-900"
         >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            ><path
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-            ></path></svg
-          >
-          查看全景图 / View Landscape
+            ></path>
+          </svg>
+          <span data-i18n="projects.viewLandscape">查看全景图</span>
           <span>→</span>
         </a>
       </div>

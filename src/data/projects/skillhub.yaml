@@ -1,10 +1,10 @@
 name: SkillHub
 nameEn: SkillHub
-description: 企业级开源 Agent 技能注册中心，支持发布、版本管理、RBAC 权限治理和审计日志，可私有化部署于 Docker 或 Kubernetes。
-descriptionEn: Self-hosted, open-source agent skill registry for enterprises. Publish & version skill packages, govern with RBAC and audit logs, deploy on-premise with Docker or Kubernetes.
+description: 私有化智能体技能管理平台。支持基于角色访问控制（RBAC）的技能包发布与版本管理。
+descriptionEn: Self-hosted agent skill registry. Publish & version skill packages with RBAC.
 repo: iflytek/skillhub
 homepage: https://skill.xfyun.cn
-category: developer-tools
+category: agent-skills
 tags: [skill-registry, agent-framework, rbac, enterprise-ai, skill-management]
 languages: [Java, TypeScript]
 featured: true

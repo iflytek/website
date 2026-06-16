@@ -21,7 +21,19 @@ const {
 <section class="relative md:-mt-[76px] not-prose" {...id ? { id } : {}}>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
     <slot name="bg">
-      {bg ? <Fragment set:html={bg} /> : null}
+      {
+        bg ? (
+          <Fragment set:html={bg} />
+        ) : (
+          <>
+            <div class="absolute inset-0 bg-gradient-to-b from-primary-50 to-white dark:from-gray-900 dark:to-gray-950" />
+            <div class="absolute inset-0 opacity-30">
+              <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]" />
+              <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]" />
+            </div>
+          </>
+        )
+      }
     </slot>
   </div>
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
@@ -39,7 +51,7 @@ const {
         {
           title && (
             <h1
-              class="text-5xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+              class="whitespace-nowrap text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
               set:html={title}
             />
           )

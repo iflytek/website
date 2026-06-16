@@ -26,6 +26,9 @@ interface Contributor {
 let contributorsCache: { data: Contributor[]; fetchedAt: number } | null = null;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
+// All GitHub organizations whose contributors should be aggregated
+const CONTRIBUTE_ORGS = ['iflytek', 'harnessclaw'];
+
 async function fetchContributorsLive(): Promise<Contributor[]> {
   if (contributorsCache && Date.now() - contributorsCache.fetchedAt < CACHE_TTL) {
     return contributorsCache.data;
@@ -35,43 +38,48 @@ async function fetchContributorsLive(): Promise<Contributor[]> {
   const headers: Record<string, string> = { Accept: 'application/vnd.github+json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  // 1. Get all public repos (exclude forks and archived)
-  const reposRes = await fetch('https://api.github.com/orgs/iflytek/repos?type=public&per_page=100', { headers });
-  if (!reposRes.ok) throw new Error(`Failed to fetch repos: HTTP ${reposRes.status}`);
-  const reposData = (await reposRes.json()) as Array<{ name: string; fork: boolean; archived: boolean }>;
-  const activeRepos = reposData.filter((r) => !r.fork && !r.archived);
-
-  // 2. Fetch contributors for each repo in parallel
   const contributorMap = new Map<string, Contributor>();
+
   await Promise.all(
-    activeRepos.map(async (repo) => {
-      try {
-        const res = await fetch(`https://api.github.com/repos/iflytek/${repo.name}/contributors?per_page=100`, {
-          headers,
-        });
-        if (!res.ok) return;
-        const list = (await res.json()) as Array<{
-          login: string;
-          type: string;
-          avatar_url: string;
-          contributions: number;
-          html_url: string;
-        }>;
-        for (const c of list) {
-          if (c.login && c.type === 'User') {
-            const existing = contributorMap.get(c.login);
-            const contributions = (existing?.contributions || 0) + (c.contributions || 0);
-            contributorMap.set(c.login, {
-              username: c.login,
-              avatar_url: c.avatar_url || `https://github.com/${c.login}.png`,
-              contributions,
-              profile_url: c.html_url || `https://github.com/${c.login}`,
+    CONTRIBUTE_ORGS.map(async (org) => {
+      // 1. Get all public repos for this org (exclude forks and archived)
+      const reposRes = await fetch(`https://api.github.com/orgs/${org}/repos?type=public&per_page=100`, { headers });
+      if (!reposRes.ok) return;
+      const reposData = (await reposRes.json()) as Array<{ name: string; fork: boolean; archived: boolean }>;
+      const activeRepos = reposData.filter((r) => !r.fork && !r.archived);
+
+      // 2. Fetch contributors for each repo in parallel
+      await Promise.all(
+        activeRepos.map(async (repo) => {
+          try {
+            const res = await fetch(`https://api.github.com/repos/${org}/${repo.name}/contributors?per_page=100`, {
+              headers,
             });
+            if (!res.ok) return;
+            const list = (await res.json()) as Array<{
+              login: string;
+              type: string;
+              avatar_url: string;
+              contributions: number;
+              html_url: string;
+            }>;
+            for (const c of list) {
+              if (c.login && c.type === 'User') {
+                const existing = contributorMap.get(c.login);
+                const contributions = (existing?.contributions || 0) + (c.contributions || 0);
+                contributorMap.set(c.login, {
+                  username: c.login,
+                  avatar_url: c.avatar_url || `https://github.com/${c.login}.png`,
+                  contributions,
+                  profile_url: c.html_url || `https://github.com/${c.login}`,
+                });
+              }
+            }
+          } catch {
+            /* skip individual repo errors */
           }
-        }
-      } catch {
-        /* skip individual repo errors */
-      }
+        })
+      );
     })
   );
 
@@ -119,14 +127,13 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            >参与贡献</span
-          ><span class="mx-2 text-gray-300 dark:text-gray-600">/</span><span class="text-gray-900 dark:text-white"
-            >Contribute</span
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-i18n="contribute.titleZh">参与贡献</span
           >
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          加入 iFLYTEK 开源社区，一起构建更好的 AI 生态。感谢每一位贡献者！
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="contribute.subtitle">
+          加入科大讯飞开源社区，一起构建更好的 AI 生态。感谢每一位贡献者！
         </p>
       </div>
 
@@ -134,19 +141,19 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
       <div class="mx-auto mt-10 flex max-w-lg items-center justify-center gap-8 sm:gap-16">
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{contributors.length}</div>
-          <div class="mt-1 text-sm text-gray-500">贡献者</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="contribute.statContributors">贡献者</div>
         </div>
         <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">
             {totalContributions.toLocaleString()}
           </div>
-          <div class="mt-1 text-sm text-gray-500">总贡献</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="contribute.statTotalContributions">总贡献</div>
         </div>
         <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
         <div class="text-center">
           <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{projects.length}</div>
-          <div class="mt-1 text-sm text-gray-500">开源项目</div>
+          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statProjects">开源项目</div>
         </div>
       </div>
     </div>
@@ -156,10 +163,12 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
   <section class="py-12 md:py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-        贡献者墙 / Contributors Wall
+        <span data-i18n="contribute.contributorsWall">贡献者墙</span>
       </h2>
       <p class="mb-8 text-center text-sm text-gray-500 dark:text-gray-400">
-        点击头像访问贡献者 GitHub 主页 | Click avatar to visit GitHub profile
+        <span data-lang-zh="点击头像访问贡献者 GitHub 主页" data-lang-en="Click avatar to visit GitHub profile"
+          >点击头像访问贡献者 GitHub 主页</span
+        >
       </p>
 
       {
@@ -180,7 +189,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
       <section class="border-t border-gray-200 bg-gray-50 py-12 dark:border-gray-800 dark:bg-gray-900/50 md:py-16">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white">
-            贡献者排行 / Top Contributors
+            <span data-i18n="contribute.topContributors">贡献者排行</span>
           </h2>
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {topContributors.map((c, i) => (
@@ -226,7 +235,7 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
   <section class="py-12 md:py-16">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
       <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-        如何贡献 / How to Contribute
+        <span data-i18n="contribute.howTitle">如何贡献</span>
       </h2>
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <a
@@ -242,10 +251,11 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.bugTitle"
           >
             报告 Bug
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.bugDesc">
             在 GitHub Issues 中提交 Bug 报告，帮助我们发现问题、改进质量
           </p>
         </a>
@@ -263,10 +273,13 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.ideaTitle"
           >
             提出建议
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">分享你的想法和功能建议，参与项目方向讨论和 RFC</p>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.ideaDesc">
+            分享你的想法和功能建议，参与项目方向讨论和 RFC
+          </p>
         </a>
 
         <a
@@ -282,10 +295,11 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.codeTitle"
           >
             提交代码
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.codeDesc">
             Fork 项目，提交 Pull Request，修复 Bug 或开发新功能
           </p>
         </a>
@@ -303,10 +317,11 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.docsTitle"
           >
             完善文档
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.docsDesc">
             改进文档、编写教程、翻译内容，让更多人能顺利使用项目
           </p>
         </a>
@@ -324,10 +339,13 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.shareTitle"
           >
             传播分享
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Star 项目、写博客、在社区活动中分享你的使用经验</p>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.shareDesc">
+            Star 项目、写博客、在社区活动中分享你的使用经验
+          </p>
         </a>
 
         <a
@@ -343,10 +361,11 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
           </div>
           <h3
             class="text-lg font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400"
+            data-i18n="contribute.buildTitle"
           >
             社区建设
           </h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.buildDesc">
             参与讨论、帮助新用户、组织 Meetup，共同建设开源社区
           </p>
         </a>
@@ -357,21 +376,37 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
   <!-- PR Workflow -->
   <section class="border-t border-gray-200 bg-gray-50 py-12 dark:border-gray-800 dark:bg-gray-900/50 md:py-16">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-      <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white">贡献流程 / PR Workflow</h2>
+      <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white">
+        <span data-i18n="contribute.prWorkflow">贡献流程</span>
+      </h2>
       <div class="grid gap-6 sm:grid-cols-4">
         {
           [
-            { step: '1', title: 'Fork', desc: 'Fork 目标项目到你的 GitHub 账号' },
-            { step: '2', title: 'Branch', desc: '从 main 创建功能分支' },
-            { step: '3', title: 'Code', desc: '编写代码、添加测试' },
-            { step: '4', title: 'PR', desc: '提交 Pull Request 等待审核' },
+            {
+              step: '1',
+              title: 'Fork',
+              descZh: 'Fork 目标项目到你的 GitHub 账号',
+              descEn: 'Fork the target project to your GitHub account',
+            },
+            { step: '2', title: 'Branch', descZh: '从 main 创建功能分支', descEn: 'Create a feature branch from main' },
+            { step: '3', title: 'Code', descZh: '编写代码、添加测试', descEn: 'Write code and add tests' },
+            {
+              step: '4',
+              title: 'PR',
+              descZh: '提交 Pull Request 等待审核',
+              descEn: 'Submit a Pull Request and wait for review',
+            },
           ].map((item) => (
             <div class="text-center">
               <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-600 text-lg font-bold text-white">
                 {item.step}
               </div>
               <h3 class="mt-3 font-semibold text-gray-900 dark:text-white">{item.title}</h3>
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <span data-lang-zh={item.descZh} data-lang-en={item.descEn}>
+                  {item.descZh}
+                </span>
+              </p>
             </div>
           ))
         }
@@ -385,16 +420,18 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
       <div class="grid gap-8 sm:grid-cols-2">
         <!-- Good First Issues -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white">新手任务</h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">从这些适合新手的 Issue 开始你的贡献之旅</p>
-          <div class="mt-6">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white" data-i18n="contribute.issuesTitle">新手任务</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.issuesDesc">
+            从这些适合新手的 Issue 开始你的贡献之旅
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
             <a
               href="https://github.com/search?q=org%3Aiflytek+label%3A%22good+first+issue%22+state%3Aopen&type=issues"
               target="_blank"
               rel="noopener"
               class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700"
             >
-              查看 Good First Issues
+              <span data-i18n="contribute.viewGuide">查看 Good First Issues</span>
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -408,8 +445,12 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
 
         <!-- Community -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white">社区链接</h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">加入我们的社区，参与讨论和交流</p>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white" data-i18n="contribute.communityTitle">
+            社区链接
+          </h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" data-i18n="contribute.communityDesc">
+            加入我们的社区，参与讨论和交流
+          </p>
           <div class="mt-6 flex flex-wrap gap-3">
             <a
               href="https://github.com/iflytek"
@@ -417,7 +458,15 @@ const totalContributions = contributors.reduce((sum, c) => sum + c.contributions
               rel="noopener"
               class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
             >
-              GitHub
+              GitHub (iFLYTEK)
+            </a>
+            <a
+              href="https://github.com/harnessclaw"
+              target="_blank"
+              rel="noopener"
+              class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              GitHub (HarnessClaw)
             </a>
             <a
               href="https://github.com/iflytek/community/blob/master/code-of-conduct.md"

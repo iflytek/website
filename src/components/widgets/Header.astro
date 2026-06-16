@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import Logo from '~/components/Logo.astro';
 import ToggleTheme from '~/components/common/ToggleTheme.astro';
+import ToggleLanguage from '~/components/common/ToggleLanguage.astro';
 import ToggleMenu from '~/components/common/ToggleMenu.astro';
 import Button from '~/components/ui/Button.astro';
 
@@ -11,9 +12,11 @@ import type { CallToAction } from '~/types';
 
 interface Link {
   text?: string;
+  textEn?: string;
   href?: string;
   ariaLabel?: string;
   icon?: string;
+  i18nKey?: string;
 }
 
 interface MenuLink extends Link {
@@ -28,6 +31,7 @@ export interface Props {
   isDark?: boolean;
   isFullWidth?: boolean;
   showToggleTheme?: boolean;
+  showToggleLanguage?: boolean;
   showRssFeed?: boolean;
   position?: string;
 }
@@ -40,6 +44,7 @@ const {
   isDark = false,
   isFullWidth = false,
   showToggleTheme = false,
+  showToggleLanguage = false,
   showRssFeed = false,
   position = 'center',
 } = Astro.props;
@@ -86,19 +91,23 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
         class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[0.9375rem] tracking-[0.01rem] font-medium md:justify-center"
       >
         {
-          links.map(({ text, href, links }) => (
+          links.map(({ text, textEn, href, links }) => (
             <li class={links?.length ? 'dropdown' : ''}>
               {links?.length ? (
                 <>
                   <button
                     type="button"
                     class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap"
+                    data-lang-zh={text}
+                    data-lang-en={textEn || text}
                   >
-                    {text}{' '}
+                    <span data-lang-zh={text} data-lang-en={textEn || text}>
+                      {text}
+                    </span>{' '}
                     <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
                   </button>
                   <ul class="dropdown-menu md:backdrop-blur-md dark:md:bg-dark rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white/90 md:min-w-[200px] drop-shadow-xl">
-                    {links.map(({ text: text2, href: href2 }) => (
+                    {links.map(({ text: text2, textEn: textEn2, href: href2 }) => (
                       <li>
                         <a
                           class:list={[
@@ -106,6 +115,8 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                             { 'aw-link-active': href2 === currentPath },
                           ]}
                           href={href2}
+                          data-lang-zh={text2}
+                          data-lang-en={textEn2 || text2}
                         >
                           {text2}
                         </a>
@@ -120,6 +131,8 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                     { 'aw-link-active': href === currentPath },
                   ]}
                   href={href}
+                  data-lang-zh={text}
+                  data-lang-en={textEn || text}
                 >
                   {text}
                 </a>
@@ -149,6 +162,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
               </a>
             )
           }
+          {showToggleLanguage && <ToggleLanguage class="ml-2" />}
         </div>
         {
           actions?.length ? (

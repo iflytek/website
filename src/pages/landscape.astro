@@ -8,223 +8,621 @@ const metadata = {
 
 const projects = await getProjectsWithStats();
 
-// Group by category
-const grouped = projects.reduce(
-  (acc, p) => {
-    const cat = p.data.category;
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(p);
-    return acc;
-  },
-  {} as Record<string, typeof projects>
-);
+// Find projects by repo
+const find = (repo: string) => projects.find((p) => p.data.repo === repo);
 
-const categoryInfo: Record<
-  string,
-  { label: string; labelEn: string; description: string; color: string; icon: string }
-> = {
-  'ai-platform': {
-    label: 'AI 平台',
-    labelEn: 'AI Platform',
-    description: 'AI 大模型、Agent 工作流编排与智能自动化平台',
-    color: 'from-blue-500 to-blue-600',
-    icon: '🤖',
-  },
-  'developer-tools': {
-    label: '开发者工具',
-    labelEn: 'Developer Tools',
-    description: 'SDK、技能注册中心、IDE 插件等开发者效率工具',
-    color: 'from-green-500 to-green-600',
-    icon: '🛠️',
-  },
-  'rpa-automation': {
-    label: 'RPA & 自动化',
-    labelEn: 'RPA & Automation',
-    description: 'RPA 自动化套件与低代码/无代码开发工具',
-    color: 'from-rose-500 to-rose-600',
-    icon: '🔄',
-  },
-  'ai-skills': {
-    label: 'AI 技能',
-    labelEn: 'AI Skills',
-    description: '语音、OCR、翻译、多模态等 Agent 技能包',
-    color: 'from-cyan-500 to-cyan-600',
-    icon: '🧩',
-  },
-  tutorials: {
-    label: '教程',
-    labelEn: 'Tutorials',
-    description: '从零到工作流的实战教程与学习资源',
-    color: 'from-amber-500 to-amber-600',
-    icon: '📚',
-  },
-  'nlp-speech': {
-    label: 'NLP & 语音',
-    labelEn: 'NLP & Speech',
-    description: '自然语言处理、语音识别与合成引擎',
-    color: 'from-purple-500 to-purple-600',
-    icon: '🗣️',
-  },
-  infrastructure: {
-    label: '基础设施',
-    labelEn: 'Infrastructure',
-    description: '模型服务框架、数据处理与部署工具',
-    color: 'from-orange-500 to-orange-600',
-    icon: '⚙️',
-  },
-};
+const workflow = find('iflytek/astron-agent');
+const automation = find('iflytek/astron-rpa');
+const skillsOfficial = find('iflytek/iFly-Skills');
+const skillsRegistry = find('iflytek/skillhub');
+const tutorial = find('iflytek/astronclaw-tutorial');
+const management = find('harnessclaw/harnessclaw');
+const engine = find('harnessclaw/harnessclaw-engine');
 
 const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
 ---
 
 <Layout metadata={metadata}>
-  <!-- Header -->
+  <!-- Page Header -->
   <section
-    class="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
   >
-    <div class="absolute inset-0">
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(0,102,255,0.08),transparent_50%)]"></div>
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(0,212,170,0.08),transparent_50%)]"></div>
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]"></div>
+      <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]"></div>
     </div>
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-          <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">
+        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-i18n="landscape.titleZh"
+          >
             开源全景图
           </span>
         </h1>
-        <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          iFLYTEK 开源项目生态全景 — {projects.length} 个项目，{totalStars.toLocaleString()} Stars
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+          <span class="i18n-zh"
+            >科大讯飞开源项目生态全景 — {projects.length} 个项目，{totalStars.toLocaleString()} Stars</span
+          >
+          <span class="i18n-en"
+            >iFLYTEK Open Source Ecosystem — {projects.length} projects, {totalStars.toLocaleString()} Stars</span
+          >
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Landscape Map -->
-  <section class="py-12 md:py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Category Sections -->
-      <div class="space-y-12">
-        {
-          Object.entries(categoryInfo).map(([catKey, info]) => {
-            const catProjects = grouped[catKey] || [];
-            if (catProjects.length === 0) return null;
-            return (
-              <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
-                {/* Category Header */}
-                <div class={`bg-gradient-to-r ${info.color} px-6 py-4`}>
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl">{info.icon}</span>
-                    <div>
-                      <h2 class="text-xl font-bold text-white">
-                        {info.label} / {info.labelEn}
-                      </h2>
-                      <p class="text-sm text-white/80">{info.description}</p>
-                    </div>
-                    <span class="ml-auto rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white">
-                      {catProjects.length} projects
-                    </span>
-                  </div>
+  <!-- Treemap -->
+  <section class="py-6 md:py-10">
+    <div class="flex w-full items-start justify-center px-4">
+      <div
+        style={`
+          transform: scale(min(calc((100vw - 40px) / 1280), 1));
+          transform-origin: center top;
+        `}
+      >
+        <div
+          id="landscape-card"
+          class="relative flex min-h-[800px] w-[1280px] shrink-0 flex-col overflow-hidden rounded-2xl border-2 border-white/60 shadow-2xl backdrop-blur-xl"
+          style="background:linear-gradient(180deg,#e0f2fe 0%,#bae6fd 40%,#7dd3fc 100%);font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;"
+        >
+          <!-- Ambient bubbles inside card -->
+          <div
+            class="absolute left-[20%] top-[15%] h-16 w-16 rounded-full border border-white/50 bg-white/40 shadow-inner"
+          >
+          </div>
+          <div
+            class="absolute left-[80%] top-[30%] h-10 w-10 rounded-full border border-white/50 bg-white/40 shadow-inner"
+          >
+          </div>
+          <div
+            class="absolute left-[15%] top-[60%] h-20 w-20 rounded-full border border-white/50 bg-white/40 shadow-inner"
+          >
+          </div>
+          <div
+            class="absolute left-[85%] top-[70%] h-8 w-8 rounded-full border border-white/50 bg-white/40 shadow-inner"
+          >
+          </div>
+          <div
+            class="absolute left-[60%] top-[25%] h-12 w-12 rounded-full border border-white/50 bg-white/40 shadow-inner"
+          >
+          </div>
+
+          <!-- Header -->
+          <div
+            class="relative z-[100] flex h-20 items-center justify-between border-b-2 border-white/50 bg-transparent px-8"
+          >
+            <a
+              href="https://github.com/topics/iflytek-astron"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-4 drop-shadow-md transition-colors hover:text-indigo-600"
+            >
+              <svg
+                class="h-8 w-8 transition-transform group-hover:scale-110 i18n-zh"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                ></path>
+              </svg>
+              <svg
+                class="h-6 w-6 transition-transform group-hover:scale-110 i18n-en"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                ></path>
+              </svg>
+              <span class="i18n-zh text-3xl font-black text-slate-900">讯飞 Astron 开源生态全景图</span>
+              <span class="i18n-en text-xl font-black text-slate-900"
+                >iFLYTEK Astron Open Source Ecosystem Landscape</span
+              >
+            </a>
+            <div class="whitespace-nowrap text-base font-bold text-slate-800 opacity-90 drop-shadow-sm">
+              <span class="i18n-zh">全球首个企业级智能体开源项目矩阵全景图</span>
+              <span class="i18n-en">The World's First Enterprise-grade Agent Open Source Project Matrix Landscape</span>
+            </div>
+          </div>
+
+          <!-- Ecosystem Relationship Arrows SVG -->
+          <svg width="1280" height="800" class="pointer-events-none absolute top-0 left-0 z-50">
+            <defs>
+              <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L0,8 L8,4 z" fill="#6366f1"></path>
+              </marker>
+              <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L0,8 L8,4 z" fill="#ec4899"></path>
+              </marker>
+              <marker id="arrowTeal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L0,8 L8,4 z" fill="#14b8a6"></path>
+              </marker>
+            </defs>
+            <g fill="none" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.85">
+              <!-- Engine -> Workflow -->
+              <path d="M 980 450 C 800 480, 700 380, 500 350" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
+              <!-- Engine -> Management -->
+              <path d="M 1200 490 C 1245 440, 1245 310, 1200 260" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
+              <!-- Workflow -> Automation -->
+              <path d="M 50 320 C 15 380, 15 450, 45 495" stroke="#14b8a6" marker-end="url(#arrowTeal)"></path>
+              <!-- Skills -> Workflow -->
+              <path d="M 570 160 C 550 100, 510 100, 490 160" stroke="#ec4899" marker-end="url(#arrowPink)"></path>
+            </g>
+            <g font-size="12" font-weight="700" fill="#334155" style="text-shadow:0 0 4px #fff,0 0 8px #fff">
+              <text x="820" y="415" text-anchor="middle" fill="#4f46e5" class="i18n-zh select-none">驱动编排</text>
+              <text x="820" y="415" text-anchor="middle" fill="#4f46e5" class="i18n-en select-none"
+                >Powers Orchestration</text
+              >
+              <text x="1240" y="375" text-anchor="end" fill="#4f46e5" class="i18n-zh select-none">提供 API</text>
+              <text x="1240" y="375" text-anchor="end" fill="#4f46e5" class="i18n-en select-none">Provides APIs</text>
+              <text x="20" y="435" text-anchor="start" fill="#0d9488" class="i18n-zh select-none">触发 RPA</text>
+              <text x="20" y="435" text-anchor="start" fill="#0d9488" class="i18n-en select-none">Triggers RPA</text>
+              <text x="530" y="115" text-anchor="middle" fill="#db2777" class="i18n-zh select-none">提供能力</text>
+              <text x="530" y="115" text-anchor="middle" fill="#db2777" class="i18n-en select-none"
+                >Provides Capabilities</text
+              >
+            </g>
+          </svg>
+
+          <!-- Treemap Content -->
+          <div class="flex min-h-0 flex-1 gap-2 bg-transparent p-2">
+            <!-- Column 1 (Left 42%): Workflow + Automation -->
+            <div class="flex w-[42%] flex-col gap-2">
+              <!-- Workflow -->
+              <div
+                class="flex min-h-0 flex-[58] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">智能体工作流 (agentic-workflow)</span>
+                  <span class="i18n-en">agentic-workflow</span>
                 </div>
-
-                {/* Project Grid */}
-                <div class="p-6">
-                  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {catProjects.map((project) => (
-                      <a
-                        href={`https://github.com/${project.data.repo}`}
-                        target="_blank"
-                        rel="noopener"
-                        class="group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
-                      >
-                        {/* Project Icon */}
-                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-gradient-start to-gradient-end text-sm font-bold text-white">
-                          {project.data.name.charAt(0)}
+                <div class="flex flex-1 p-2">
+                  {
+                    workflow ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-sky-100/60 to-sky-200/70 p-4 text-sky-900 shadow-inner">
+                        <a
+                          href="https://github.com/iflytek/astron-agent"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / astron-agent
+                        </a>
+                        <div class="mb-2 text-2xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">工作流平台</span>
+                          <span class="i18n-en">Workflow Platform</span>
                         </div>
-
-                        <div class="min-w-0 flex-1">
-                          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400">
-                            {project.data.name}
-                          </h3>
-                          <p class="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
-                            {project.data.description}
-                          </p>
-
-                          {/* Stats */}
-                          <div class="mt-2 flex items-center gap-3 text-xs text-gray-400">
-                            <span class="flex items-center gap-1">
-                              <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                              {(project.data.stars || 0).toLocaleString()}
+                        <div class="mb-3 flex-1 text-sm font-medium leading-relaxed opacity-90">
+                          <span data-lang-zh={workflow.data.description} data-lang-en={workflow.data.descriptionEn}>
+                            {workflow.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(workflow.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'Java' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#b07219" />
+                              )}
+                              {lang === 'Python' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3572A5" />
+                              )}
+                              {lang === 'TypeScript' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3178c6" />
+                              )}
+                              {lang}
                             </span>
-                            <span class="flex items-center gap-1">
-                              <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                  clip-rule="evenodd"
-                                />
-                              </svg>
-                              {(project.data.forks || 0).toLocaleString()}
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-sky-100/60 to-sky-200/70 text-sky-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+              <!-- Automation -->
+              <div
+                class="flex min-h-0 flex-[42] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">智能体自动化 (agentic-automation)</span>
+                  <span class="i18n-en">agentic-automation</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    automation ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-teal-100/60 to-teal-200/70 p-4 text-teal-900 shadow-inner">
+                        <a
+                          href="https://github.com/iflytek/astron-rpa"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / astron-rpa
+                        </a>
+                        <div class="mb-2 text-xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">自动化套件</span>
+                          <span class="i18n-en">Automation Suite</span>
+                        </div>
+                        <div class="mb-3 flex-1 text-sm font-medium leading-relaxed opacity-90">
+                          <span data-lang-zh={automation.data.description} data-lang-en={automation.data.descriptionEn}>
+                            {automation.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(automation.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'Java' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#b07219" />
+                              )}
+                              {lang === 'Python' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3572A5" />
+                              )}
+                              {lang}
                             </span>
-                            {/* Language dots */}
-                            {project.data.languages?.slice(0, 2).map((lang) => (
-                              <span class="flex items-center gap-1">
-                                <span
-                                  class="inline-block h-2 w-2 rounded-full"
-                                  style={`background-color: ${
-                                    lang === 'Java'
-                                      ? '#b07219'
-                                      : lang === 'TypeScript'
-                                        ? '#3178c6'
-                                        : lang === 'Python'
-                                          ? '#3572A5'
-                                          : '#999'
-                                  }`}
-                                />
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-teal-100/60 to-teal-200/70 text-teal-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2 (Center 33%): Skills + Tutorial -->
+            <div class="flex w-[33%] flex-col gap-2">
+              <!-- Skills (2 sub-projects) -->
+              <div
+                class="flex min-h-0 flex-[65] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">智能体技能 (agent-skills)</span>
+                  <span class="i18n-en">agent-skills</span>
+                </div>
+                <div class="flex flex-1 flex-col gap-2 p-2">
+                  <!-- Official Skills (55%) -->
+                  {
+                    skillsOfficial ? (
+                      <div class="flex h-[55%] flex-col rounded-lg border border-white/80 bg-gradient-to-br from-green-100/60 to-green-200/70 p-4 text-green-900 shadow-inner relative z-10">
+                        <a
+                          href="https://github.com/iflytek/iFly-Skills"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / iFly-Skills
+                        </a>
+                        <div class="mb-2 text-xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">讯飞官方技能库</span>
+                          <span class="i18n-en">Official iFLYTEK Skills</span>
+                        </div>
+                        <div class="mb-3 flex-1 text-sm font-medium leading-relaxed opacity-90">
+                          <span
+                            data-lang-zh={skillsOfficial.data.description}
+                            data-lang-en={skillsOfficial.data.descriptionEn}
+                          >
+                            {skillsOfficial.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(skillsOfficial.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'Python' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3572A5" />
+                              )}
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null
+                  }
+                  <!-- Skill Registry (45%) -->
+                  {
+                    skillsRegistry ? (
+                      <div class="flex h-[45%] flex-col rounded-lg border border-white/80 bg-gradient-to-br from-emerald-200/60 to-emerald-300/70 p-4 text-green-900 shadow-inner relative z-10">
+                        <a
+                          href="https://github.com/iflytek/skillhub"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / skillhub
+                        </a>
+                        <div class="mb-1 text-lg font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">技能管理平台</span>
+                          <span class="i18n-en">Skill Registry</span>
+                        </div>
+                        <div class="mb-2 flex-1 text-[13px] font-medium leading-relaxed opacity-90">
+                          <span
+                            data-lang-zh={skillsRegistry.data.description}
+                            data-lang-en={skillsRegistry.data.descriptionEn}
+                          >
+                            {skillsRegistry.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(skillsRegistry.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'Java' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#b07219" />
+                              )}
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null
+                  }
+                </div>
+              </div>
+              <!-- Tutorial -->
+              <div
+                class="flex min-h-0 flex-[35] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">教程指南 (tutorial)</span>
+                  <span class="i18n-en">tutorial</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    tutorial ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-yellow-100/60 to-yellow-200/70 p-4 text-yellow-900 shadow-inner">
+                        <a
+                          href="https://github.com/iflytek/astronclaw-tutorial"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / astronclaw-tutorial
+                        </a>
+                        <div class="mb-2 text-xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">从零到一管理 AI 助理</span>
+                          <span class="i18n-en">Zero to AI Assistant Management</span>
+                        </div>
+                        <div class="mb-3 flex-1 text-sm font-medium leading-relaxed opacity-90">
+                          <span data-lang-zh={tutorial.data.description} data-lang-en={tutorial.data.descriptionEn}>
+                            {tutorial.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(tutorial.data.languages || []).map((lang) => (
+                            <span class="whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-yellow-100/60 to-yellow-200/70 text-yellow-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3 (Right 25%): Management + Engine -->
+            <div class="flex w-[25%] flex-col gap-2">
+              <!-- Management (HarnessClaw) -->
+              <div
+                class="flex min-h-0 flex-[50] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">智能体管理 (agent-management)</span>
+                  <span class="i18n-en">agent-management</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    management ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-purple-100/60 to-purple-200/70 p-4 text-purple-900 shadow-inner">
+                        <a
+                          href="https://github.com/harnessclaw/harnessclaw"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-2 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          harnessclaw / harnessclaw
+                        </a>
+                        <div class="mb-2 text-xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">桌面应用程序</span>
+                          <span class="i18n-en">Desktop App</span>
+                        </div>
+                        <div class="mb-3 flex-1 text-sm font-medium leading-relaxed opacity-90">
+                          <span data-lang-zh={management.data.description} data-lang-en={management.data.descriptionEn}>
+                            {management.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(management.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'TypeScript' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3178c6" />
+                              )}
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-purple-100/60 to-purple-200/70 text-purple-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+              <!-- Engine (HarnessClaw Engine) -->
+              <div
+                class="flex min-h-0 flex-[50] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">智能体引擎 (agent-engine)</span>
+                  <span class="i18n-en">agent-engine</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    engine ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-indigo-100/60 to-indigo-200/70 p-3 text-indigo-900 shadow-inner">
+                        <a
+                          href="https://github.com/harnessclaw/harnessclaw-engine"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-1 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          harnessclaw / harnessclaw-engine
+                        </a>
+                        <div class="mb-1 text-xl font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">高性能 LLM 编程助手与 Agent 引擎</span>
+                          <span class="i18n-en">High-Performance LLM Coding Assistant and Agent Engine</span>
+                        </div>
+                        <div class="mb-1 flex-1 text-sm font-medium leading-snug opacity-90">
+                          <span data-lang-zh={engine.data.description} data-lang-en={engine.data.descriptionEn}>
+                            {engine.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex items-start gap-3">
+                          <div class="flex min-w-0 flex-1 flex-wrap gap-2">
+                            {(engine.data.languages || []).map((lang) => (
+                              <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                                {lang === 'Go' && (
+                                  <span class="h-1.5 w-1.5 rounded-full" style="background-color:#00ADD8" />
+                                )}
                                 {lang}
                               </span>
                             ))}
                           </div>
                         </div>
-                      </a>
-                    ))}
-                  </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-indigo-100/60 to-indigo-200/70 text-indigo-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
                 </div>
               </div>
-            );
-          })
-        }
-      </div>
-
-      <!-- Empty state for categories with no projects -->
-      {
-        Object.entries(categoryInfo)
-          .filter(([catKey]) => !grouped[catKey] || grouped[catKey].length === 0)
-          .map(([, info]) => (
-            <div class="mt-8 rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
-              <span class="text-3xl">{info.icon}</span>
-              <h3 class="mt-2 font-semibold text-gray-700 dark:text-gray-300">
-                {info.label} / {info.labelEn}
-              </h3>
-              <p class="mt-1 text-sm text-gray-500">即将开放 / Coming Soon</p>
             </div>
-          ))
-      }
-
-      <!-- Legend / Info -->
-      <div class="mt-12 rounded-xl bg-gray-50 p-6 dark:bg-gray-800/50">
-        <h3 class="font-semibold text-gray-900 dark:text-white">关于全景图 / About Landscape</h3>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          全景图以分类视图展示 iFLYTEK 所有开源项目，数据基于 GitHub 仓库实时更新。 灵感来源于 <a
-            href="https://landscape.cncf.io"
-            target="_blank"
-            rel="noopener"
-            class="text-primary-600 underline dark:text-primary-400">CNCF Landscape</a
-          >。 项目数据每周自动通过 GitHub Actions 更新。
-        </p>
+          </div>
+          <div class="h-2 bg-transparent"></div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- Download Button (fixed bottom-right) -->
+  <div class="fixed right-10 bottom-10 z-[200] flex flex-col items-end gap-3">
+    <button
+      id="landscape-download-btn"
+      class="flex items-center gap-2 rounded-full bg-indigo-600/90 px-6 py-3 font-bold text-white shadow-2xl backdrop-blur-md transition-all hover:scale-105 hover:bg-indigo-700 active:scale-95"
+    >
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+      </svg>
+      <span class="i18n-zh">保存高清图片</span>
+      <span class="i18n-en">Save HD Image</span>
+    </button>
+  </div>
+
+  <script is:inline>
+    function initLandscapeDownload() {
+      const btn = document.getElementById('landscape-download-btn');
+      if (!btn || btn.dataset.initialized) return;
+      btn.dataset.initialized = 'true';
+
+      btn.addEventListener('click', async () => {
+        const card = document.getElementById('landscape-card');
+        if (!card) return;
+
+        const wrapper = card.parentElement;
+        if (!wrapper) return;
+
+        const btnSpan = btn.querySelector('span:last-child') || btn.lastElementChild;
+        const originalText = btnSpan ? btnSpan.textContent : '';
+
+        btn.disabled = true;
+        if (btnSpan) btnSpan.textContent = 'Generating...';
+
+        try {
+          const htmlToImage = await import('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/+esm');
+          const toPng = htmlToImage.toPng;
+
+          const originalWrapperTransform = wrapper.style.transform;
+          const originalWrapperOrigin = wrapper.style.transformOrigin;
+          wrapper.style.transform = 'none';
+          wrapper.style.transformOrigin = 'top left';
+
+          const dataUrl = await toPng(card, {
+            cacheBust: true,
+            width: 1280,
+            height: card.offsetHeight,
+            pixelRatio: 3,
+            skipAutoScale: true,
+            style: { margin: '0', transform: 'none' },
+          });
+          const link = document.createElement('a');
+          link.download = 'iflytek-landscape.png';
+          link.href = dataUrl;
+          link.click();
+
+          wrapper.style.transform = originalWrapperTransform;
+          wrapper.style.transformOrigin = originalWrapperOrigin;
+        } catch (err) {
+          console.error('Download failed:', err);
+        } finally {
+          btn.disabled = false;
+          if (btnSpan) btnSpan.textContent = originalText;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initLandscapeDownload);
+    document.addEventListener('astro:after-swap', initLandscapeDownload);
+  </script>
 </Layout>

@@ -53,7 +53,7 @@ const { post, url } = Astro.props;
           {
             post.readingTime && (
               <>
-                &nbsp;· <span>{post.readingTime}</span> min read
+                &nbsp;· <span>{post.readingTime}</span> <span data-i18n="blog.minRead">min read</span>
               </>
             )
           }
