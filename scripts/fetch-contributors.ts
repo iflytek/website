@@ -1,20 +1,31 @@
 /**
  * Fetch contributors data from GitHub API for all iflytek repositories
  * Saves contributor avatars and info to .cache/contributors.json
+ * Uses rate-limit-aware fetching with delays to avoid 403 errors.
  */
 
 import { Octokit } from '@octokit/rest';
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
 const CACHE_DIR = '.cache';
 const CONTRIBUTORS_FILE = `${CACHE_DIR}/contributors.json`;
 const ORG = 'iflytek';
+
+// Also fetch from harnessclaw org (2 repos)
+const EXTRA_REPOS: Array<{ owner: string; repo: string }> = [
+  { owner: 'harnessclaw', repo: 'harnessclaw' },
+  { owner: 'harnessclaw', repo: 'harnessclaw-engine' },
+];
 
 interface Contributor {
   username: string;
   avatar_url: string;
   contributions: number;
   profile_url: string;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function fetchContributors() {
@@ -30,89 +41,123 @@ async function fetchContributors() {
   }
 
   const allContributors = new Map<string, Contributor>();
+  const repos: Array<{ owner: string; repo: string }> = [];
 
   try {
     // Get all public repos for the org
-    const repos = await octokit.paginate(octokit.repos.listForOrg, {
+    const iflytekRepos = await octokit.paginate(octokit.repos.listForOrg, {
       org: ORG,
       type: 'public',
       per_page: 100,
     });
 
-    console.log(`  Found ${repos.length} public repositories`);
-
-    // Filter out forks and archived repos — their contributors belong to upstream projects
-    const forks = repos.filter((r) => r.fork);
-    const archived = repos.filter((r) => r.archived && !r.fork);
-    const activeRepos = repos.filter((r) => !r.fork && !r.archived);
+    // Filter out forks and archived repos
+    const forks = iflytekRepos.filter((r) => r.fork);
+    const archived = iflytekRepos.filter((r) => r.archived && !r.fork);
+    const activeRepos = iflytekRepos.filter((r) => !r.fork && !r.archived);
 
     if (forks.length > 0) {
-      console.log(`  ⏭️  Skipped ${forks.length} fork(s): ${forks.map((r) => r.name).join(', ')}`);
+      console.log(`  ️  Skipped ${forks.length} fork(s): ${forks.map((r) => r.name).join(', ')}`);
     }
     if (archived.length > 0) {
       console.log(`  ⏭️  Skipped ${archived.length} archived: ${archived.map((r) => r.name).join(', ')}`);
     }
-    console.log(`  ✅ Processing ${activeRepos.length} original repositories`);
 
-    // Fetch contributors for each repo
-    for (const repo of activeRepos) {
-      try {
-        const contributors = await octokit.paginate(octokit.repos.listContributors, {
-          owner: ORG,
-          repo: repo.name,
-          per_page: 100,
-        });
+    repos.push(...activeRepos.map((r) => ({ owner: ORG, repo: r.name })));
+    repos.push(...EXTRA_REPOS);
 
-        for (const contributor of contributors) {
-          if (contributor.login && contributor.type === 'User') {
-            const existing = allContributors.get(contributor.login);
-            const contributions = (existing?.contributions || 0) + (contributor.contributions || 0);
-            allContributors.set(contributor.login, {
-              username: contributor.login,
-              avatar_url: contributor.avatar_url || `https://github.com/${contributor.login}.png`,
-              contributions,
-              profile_url: contributor.html_url || `https://github.com/${contributor.login}`,
-            });
-          }
-        }
-      } catch {
-        console.warn(`  ⚠️  Failed to fetch contributors for ${repo.name}`);
-      }
-    }
-
-    // Sort by contributions
-    const sortedContributors = Array.from(allContributors.values()).sort((a, b) => b.contributions - a.contributions);
-
-    // Save to cache
-    if (!existsSync(CACHE_DIR)) {
-      mkdirSync(CACHE_DIR, { recursive: true });
-    }
-
-    writeFileSync(
-      CONTRIBUTORS_FILE,
-      JSON.stringify(
-        {
-          updated_at: new Date().toISOString(),
-          total: sortedContributors.length,
-          contributors: sortedContributors,
-        },
-        null,
-        2
-      )
-    );
-
-    console.log(`  ✅ Saved ${sortedContributors.length} contributors to ${CONTRIBUTORS_FILE}`);
+    console.log(`  ✅ Processing ${repos.length} repositories`);
   } catch (error) {
-    console.error('❌ Failed to fetch contributors:', error instanceof Error ? error.message : error);
+    console.error('❌ Failed to list repos:', error instanceof Error ? error.message : error);
+    return;
+  }
 
-    // Use cached data if available
-    if (existsSync(CONTRIBUTORS_FILE)) {
-      const cached = JSON.parse(readFileSync(CONTRIBUTORS_FILE, 'utf-8'));
-      console.log(`  📦 Using cached data (${cached.total} contributors, updated ${cached.updated_at})`);
-    } else {
-      console.log('  📝 No cached data available');
+  // Check rate limit before starting
+  if (!token) {
+    try {
+      const rateLimit = await octokit.rateLimit.get();
+      const remaining = rateLimit.data.rate.remaining;
+      const resetTime = rateLimit.data.rate.reset * 1000;
+      console.log(
+        `  📊 Rate limit: ${remaining}/${rateLimit.data.rate.limit} remaining, resets at ${new Date(resetTime).toLocaleTimeString()}`
+      );
+
+      if (remaining < repos.length + 5) {
+        const waitMs = resetTime - Date.now() + 1000;
+        if (waitMs > 0) {
+          console.log(`   Waiting ${Math.ceil(waitMs / 1000)}s for rate limit reset...`);
+          await sleep(waitMs);
+        }
+      }
+    } catch {
+      // Ignore rate limit check errors
     }
   }
+
+  // Fetch contributors for each repo with delay to avoid rate limiting
+  for (let i = 0; i < repos.length; i++) {
+    const { owner, repo } = repos[i];
+
+    // Delay between requests (1.5s) to stay within rate limit
+    if (!token && i > 0) {
+      await sleep(1500);
+    }
+
+    try {
+      const contributors = await octokit.paginate(octokit.repos.listContributors, {
+        owner,
+        repo,
+        per_page: 100,
+      });
+
+      for (const contributor of contributors) {
+        if (contributor.login && contributor.type === 'User') {
+          const existing = allContributors.get(contributor.login);
+          const contributions = (existing?.contributions || 0) + (contributor.contributions || 0);
+          allContributors.set(contributor.login, {
+            username: contributor.login,
+            avatar_url: contributor.avatar_url || `https://github.com/${contributor.login}.png`,
+            contributions,
+            profile_url: contributor.html_url || `https://github.com/${contributor.login}`,
+          });
+        }
+      }
+
+      console.log(`  ✅ ${owner}/${repo}: ${contributors.length} contributors`);
+    } catch (error: unknown) {
+      const status = (error as { status?: number }).status;
+      if (status === 403) {
+        console.error(
+          `  ❌ Rate limited at ${owner}/${repo} (${i + 1}/${repos.length}). Set GITHUB_TOKEN to avoid this.`
+        );
+        break;
+      }
+      console.warn(`  ⚠️  Failed to fetch contributors for ${owner}/${repo}`);
+    }
+  }
+
+  // Sort by contributions
+  const sortedContributors = Array.from(allContributors.values()).sort((a, b) => b.contributions - a.contributions);
+
+  // Save to cache
+  if (!existsSync(CACHE_DIR)) {
+    mkdirSync(CACHE_DIR, { recursive: true });
+  }
+
+  writeFileSync(
+    CONTRIBUTORS_FILE,
+    JSON.stringify(
+      {
+        updated_at: new Date().toISOString(),
+        total: sortedContributors.length,
+        contributors: sortedContributors,
+      },
+      null,
+      2
+    )
+  );
+
+  console.log(`  ✅ Saved ${sortedContributors.length} contributors to ${CONTRIBUTORS_FILE}`);
 }
 
 fetchContributors();

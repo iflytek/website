@@ -93,6 +93,7 @@ export const footerData = {
         { text: 'iFLYTEK Official', href: 'https://www.iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
         { text: 'Gitee', href: 'https://gitee.com/organizations/iflytek' },
+        { text: 'AtomGit', href: 'https://atomgit.com/ifly_opensource' },
       ],
     },
     {

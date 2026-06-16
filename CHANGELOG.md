@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 - **CSS Content Visibility**: `.i18n-zh`/`.i18n-en` CSS class system with `html.lang-en` class toggle for full-page bilingual content on static pages
 - **Bilingual Static Pages**: Full Chinese/English content for `/security` (安全策略), `/values` (社区价值观), `/cla` (贡献者许可协议) using dual-div layout
 - **i18n Coverage**: `data-i18n` attributes added to all pages — home, projects, project detail, contribute, events, landscape, blog, blog categories, pagination, post navigation, related posts
+- **Project Icons**: Configure valid icon paths for 5 projects — Astron Agent, Astron RPA, AstronClaw Tutorial, HarnessClaw, SkillHub use local `/images/` icons. Projects without icons (iFly Skills, HarnessClaw Engine) fall back to first-letter display with gradient background
+- **Project Card Icon Background**: Remove gradient background when project has a configured icon — only show gradient for first-letter fallback
 - **New Projects**: Add HarnessClaw (Electron desktop app, agent-management) and HarnessClaw Engine (Go LLM engine, agent-engine) — total 7 projects
 - **Landscape Rewrite**: Complete treemap rewrite matching awesome-astron-workflow.dev/landscape — 6 categories (agentic-workflow, agentic-automation, agent-skills, tutorial, agent-management, agent-engine), 3-column layout (42%/33%/25%), SVG ecosystem arrows, bilingual labels via `.i18n-zh`/`.i18n-en`
 - **Landscape Download Fix**: "Save HD Image" button uses CDN-based `html-to-image` (`is:inline` script) — fixes bundling issue where page-level `<script>` was not processed by Vite; downloads 1280×cardHeight PNG at 3x pixel ratio

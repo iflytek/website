@@ -173,7 +173,9 @@ const newsPosts = posts
           class="event-filter-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
           data-type="all"
         >
-          <span data-lang-zh="全部 ({events.length})" data-lang-en="All ({events.length})">全部 ({events.length})</span>
+          <span data-lang-zh={`全部 (${events.length})`} data-lang-en={`All (${events.length})`}
+            >全部 ({events.length})</span
+          >
         </button>
         {
           eventTypes.map((type) => (

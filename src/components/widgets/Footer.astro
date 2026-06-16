@@ -37,7 +37,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
       <div class="col-span-12 lg:col-span-4">
         <div class="mb-2">
           <a class="inline-block font-bold text-xl" href={getHomePermalink()}
-            ><span data-lang-zh="科大讯飞开源" data-lang-en="iFLYTEK Open Source">{SITE?.name}</span></a
+            ><span data-lang-zh="讯飞开源" data-lang-en="iFLYTEK Open Source">{SITE?.name}</span></a
           >
         </div>
         <div class="text-sm text-muted flex gap-1">
@@ -157,38 +157,53 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
 
 <script is:inline>
   (function () {
-    const modal = document.getElementById('wechat-qr-modal');
-    const closeBtn = document.getElementById('wechat-qr-close');
+    function initWeChatModal() {
+      const modal = document.getElementById('wechat-qr-modal');
+      const closeBtn = document.getElementById('wechat-qr-close');
+      if (!modal || !closeBtn) return;
 
-    function openModal(e) {
-      e.preventDefault();
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      document.body.style.overflow = 'hidden';
+      function openModal(e) {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      // Bind WeChat links (re-bind on every call to handle View Transitions)
+      document.querySelectorAll('[data-wechat="true"]').forEach(function (el) {
+        if (!el.dataset.wechatBound) {
+          el.addEventListener('click', openModal);
+          el.dataset.wechatBound = 'true';
+        }
+      });
+
+      // Close button
+      if (!closeBtn.dataset.wechatBound) {
+        closeBtn.addEventListener('click', closeModal);
+        closeBtn.dataset.wechatBound = 'true';
+      }
+
+      // Click backdrop to close
+      if (!modal.dataset.wechatBound) {
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal();
+        });
+        modal.dataset.wechatBound = 'true';
+      }
+
+      // ESC key to close
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+      });
     }
 
-    function closeModal() {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      document.body.style.overflow = '';
-    }
-
-    // Bind WeChat links
-    document.querySelectorAll('[data-wechat="true"]').forEach(function (el) {
-      el.addEventListener('click', openModal);
-    });
-
-    // Close button
-    closeBtn.addEventListener('click', closeModal);
-
-    // Click backdrop to close
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) closeModal();
-    });
-
-    // ESC key to close
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-    });
+    document.addEventListener('DOMContentLoaded', initWeChatModal);
+    document.addEventListener('astro:after-swap', initWeChatModal);
   })();
 </script>

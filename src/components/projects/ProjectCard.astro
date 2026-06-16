@@ -11,6 +11,7 @@ interface Props {
   stars?: number;
   forks?: number;
   license?: string;
+  icon?: string;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   stars = 0,
   forks = 0,
   license,
+  icon,
 } = Astro.props;
 
 const categoryColors: Record<string, string> = {
@@ -69,9 +71,12 @@ function formatNumber(n: number): string {
   <div class="flex items-start gap-4">
     <!-- Project Icon -->
     <div
-      class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gradient-start to-gradient-end text-xl font-bold text-white"
+      class:list={[
+        'flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden',
+        icon ? '' : 'bg-gradient-to-br from-gradient-start to-gradient-end text-xl font-bold text-white',
+      ]}
     >
-      {name.charAt(0)}
+      {icon ? <img src={icon} alt={name} class="h-full w-full object-contain" loading="lazy" /> : name.charAt(0)}
     </div>
 
     <div class="min-w-0 flex-1">
