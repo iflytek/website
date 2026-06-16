@@ -42,6 +42,7 @@ async function fetchContributors() {
 
   const allContributors = new Map<string, Contributor>();
   const repos: Array<{ owner: string; repo: string }> = [];
+  let cacheWriteSafe = true;
 
   try {
     // Get all public repos for the org
@@ -130,14 +131,25 @@ async function fetchContributors() {
         console.error(
           `  ❌ Rate limited at ${owner}/${repo} (${i + 1}/${repos.length}). Set GITHUB_TOKEN to avoid this.`
         );
+        cacheWriteSafe = false;
         break;
       }
+      cacheWriteSafe = false;
       console.warn(`  ⚠️  Failed to fetch contributors for ${owner}/${repo}`);
     }
   }
 
   // Sort by contributions
   const sortedContributors = Array.from(allContributors.values()).sort((a, b) => b.contributions - a.contributions);
+
+  if (!cacheWriteSafe) {
+    if (existsSync(CONTRIBUTORS_FILE)) {
+      console.warn(`  ⚠️  Keeping existing cache at ${CONTRIBUTORS_FILE} because contributor fetch was incomplete`);
+    } else {
+      console.warn('  ⚠️  Contributor fetch was incomplete and no existing cache is available; skipping cache write');
+    }
+    return;
+  }
 
   // Save to cache
   if (!existsSync(CACHE_DIR)) {

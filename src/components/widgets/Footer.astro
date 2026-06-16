@@ -157,6 +157,15 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
 
 <script is:inline>
   (function () {
+    function handleEscape(e) {
+      const modal = document.getElementById('wechat-qr-modal');
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+
     function initWeChatModal() {
       const modal = document.getElementById('wechat-qr-modal');
       const closeBtn = document.getElementById('wechat-qr-close');
@@ -197,10 +206,11 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
         modal.dataset.wechatBound = 'true';
       }
 
-      // ESC key to close
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-      });
+    }
+
+    if (!document.body.dataset.wechatEscBound) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.dataset.wechatEscBound = 'true';
     }
 
     document.addEventListener('DOMContentLoaded', initWeChatModal);
