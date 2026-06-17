@@ -7,6 +7,10 @@ tags:
   - 制造配套
   - 邮件自动化
   - Excel 自动化
+tagsEn:
+  - Manufacturing
+  - Email automation
+  - Excel automation
 scenario: 订单自动接收、邮件附件自动下载处理、共享文件夹 Excel 自动化。
 scenarioEn: Automatic order intake, email attachment download, and shared-folder Excel processing.
 delivery: 针对邮件组件、Excel 实例调度、路径转义和网页组件问题提供源码级修复与实施指导。

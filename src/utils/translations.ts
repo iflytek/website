@@ -227,6 +227,13 @@ export const translations: Record<string, { zh: string; en: string }> = {
     zh: '探索 Astron 开源生态的用户案例，了解各行业如何利用 AI Agent 平台实现业务创新',
     en: 'Explore Astron open source ecosystem user cases, see how industries leverage AI Agent platform for business innovation',
   },
+  'adopters.modal.scenario': { zh: '业务场景', en: 'Scenario' },
+  'adopters.modal.delivery': { zh: '落地方式', en: 'Delivery' },
+  'adopters.modal.outcome': { zh: '应用成果', en: 'Outcome' },
+  'adopters.disclaimer': {
+    zh: '* 以上案例已获用户授权同意展示',
+    en: '* All cases shown have been authorized by the users',
+  },
 
   // Footer
   'footer.wechatTitle': { zh: '微信扫码加入社区', en: 'Scan QR to join WeChat group' },

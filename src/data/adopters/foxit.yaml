@@ -7,6 +7,10 @@ tags:
   - 软件产品
   - 工作流
   - 共建反馈
+tagsEn:
+  - Software product
+  - Workflow
+  - Co-building feedback
 scenario: 数智员工智能体、插件集成、工作流编排与 RPA 私有化部署。
 scenarioEn: Digital employee agents, plugin integration, workflow orchestration, and private RPA deployment.
 delivery: 通过代码节点绕过接口限制，支持现有后端系统联调，并围绕 Skill 与任务拆分持续共建。

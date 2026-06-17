@@ -7,6 +7,10 @@ tags:
   - 软件服务
   - 财务自动化
   - OCR 扩展
+tagsEn:
+  - Software service
+  - Finance automation
+  - OCR extension
 scenario: 财务系统自动化、自动化测试、验证码与 OCR 扩展。
 scenarioEn: Finance system automation, automated testing, and captcha/OCR capability extension.
 delivery: 排查环境冲突带来的拾取异常，提供第三方 OCR 接入路径和流程配置建议。

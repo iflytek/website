@@ -100,12 +100,39 @@ function loadCachedContributors(): Contributor[] {
 
 const hasToken = !!process.env.GITHUB_TOKEN;
 const contributors: Contributor[] = await (async () => {
+  // Always try cache first for fast cold-start (cache file is committed in .cache/)
+  const cached = loadCachedContributors();
+
+  if (!hasToken) return cached;
+
+  // Try live fetch; on failure or cache-miss fall back to cached data
   try {
-    return hasToken ? await fetchContributorsLive() : loadCachedContributors();
+    const live = await fetchContributorsLive();
+    if (live.length > 0) {
+      // Update cache file for future cold starts
+      try {
+        const cachePath = join(process.cwd(), '.cache/contributors.json');
+        readFileSync(cachePath, 'utf-8'); // ensure readable
+        const existing = JSON.parse(readFileSync(cachePath, 'utf-8'));
+        existing.contributors = live;
+        existing.fetchedAt = Date.now();
+        // best-effort write (read-only filesystems will silently skip)
+        try {
+          const { writeFileSync } = await import('fs');
+          writeFileSync(cachePath, JSON.stringify(existing, null, 2));
+        } catch {
+          /* read-only FS */
+        }
+      } catch {
+        /* cache file missing */
+      }
+      return live;
+    }
   } catch {
-    console.warn('Failed to fetch live contributors, falling back to cache');
-    return loadCachedContributors();
+    console.warn('Failed to fetch live contributors, using cached data');
   }
+
+  return cached.length > 0 ? cached : await fetchContributorsLive();
 })();
 
 // Top contributors for leaderboard

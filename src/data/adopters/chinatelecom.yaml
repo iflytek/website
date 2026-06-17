@@ -7,6 +7,10 @@ tags:
   - 电信
   - 内网部署
   - 业务稽核
+tagsEn:
+  - Telecom
+  - Intranet deployment
+  - Business audit
 scenario: 自动业务受理、业务稽核，全部运行在企业内网环境。
 scenarioEn: Automatic service acceptance and business auditing in a fully isolated enterprise network.
 delivery: 围绕验证码识别、复杂页面定位和内网依赖注入，形成隔离网络下的实施方案。

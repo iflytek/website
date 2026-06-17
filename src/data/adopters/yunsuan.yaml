@@ -7,6 +7,10 @@ tags:
   - 园区运营
   - 数据清洗
   - 生产上线
+tagsEn:
+  - Campus operations
+  - Data cleaning
+  - Production launch
 scenario: 智慧园区客服、竞品与热点分析、非结构化订单数据清洗。
 scenarioEn: Smart campus customer support, competitor and trend analysis, and unstructured order text transformation.
 delivery: 利用大模型和 Prompt 将复杂文本转成结构化 JSON，并通过工作流写回业务系统。

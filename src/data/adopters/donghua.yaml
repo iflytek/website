@@ -7,6 +7,10 @@ tags:
   - 金融
   - 数据处理
   - Agent + RPA
+tagsEn:
+  - Finance
+  - Data processing
+  - Agent + RPA
 scenario: 银行征信数据归集、反洗钱报告生成，探索面向金融行业的智能体与自动化能力。
 scenarioEn: Credit data aggregation and anti-money-laundering report generation for banking workflows.
 delivery: 补齐认证、容器部署、模型授权和 RPA 架构配置，串起可验证的业务闭环。
