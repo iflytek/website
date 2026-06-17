@@ -2,7 +2,13 @@
 
 The official open source website for iFLYTEK (科大讯飞), showcasing our open source projects, blog, events, and community contributions.
 
-[![Deploy Production](https://github.com/iflytek/website/actions/workflows/deploy.yml/badge.svg)](https://github.com/iflytek/website/actions/workflows/deploy.yml)
+<p align="center">
+  <br>
+  <a href="https://github.com/iflytek/website/actions/workflows/deploy.yml"><img alt="Deploy Production" src="https://github.com/iflytek/website/actions/workflows/deploy.yml/badge.svg"></a>
+  <a href="https://discord.com/invite/vXzgts4fK" target="_blank"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://github.com/iflytek/website" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://github.com/iflytek/community/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/badge/LICENSE-4CAF50?logo=creativecommons&logoColor=white" alt="LICENSE"></a>
+</p>
 
 ## 🚀 Tech Stack
 
