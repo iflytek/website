@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-17
+
 ### Added
 
 - **i18n Language Toggle**: Client-side 中文/EN toggle button in header (`ToggleLanguage.astro`), persisted via `localStorage.lang`, effective across all pages without reload
@@ -35,6 +37,11 @@ All notable changes to this project will be documented in this file.
 - **Home**: Add card containers with hover animation to 6 feature sections (上移、阴影、边框高亮、标题变色、图标放大)
 - **Copyright**: Use dynamic year `${new Date().getFullYear()}` instead of hardcoded 2026
 - **Blog i18n Link Fix**: `BlogHighlightedPosts.astro` and `BlogLatestPosts.astro` now use `set:html` for `linkText` to properly render `data-i18n` attributes (was rendering raw HTML tags as text). Homepage passes i18n-aware `linkText` to `BlogLatestPosts`
+- **Stats Mobile Layout Fix**: Merged icon/amount and label into same container so labels stay aligned with their values on mobile; removed `min-w-[220px]` to keep 4 items in one row on desktop
+- **Adopters Modal**: Click any adopter card to open a macOS/iOS-style frosted-glass detail modal with logo, full scenario, delivery and outcome sections. URL hash routing (`#adopter-{slug}`) for direct linking. Mobile bottom sheet, desktop centered. i18n-aware (zh/en), ESC/overlay close, language toggle sync
+- **Adopters Tags i18n**: Add `tagsEn` field to all 10 adopter YAML files and content schema. Card tags use `data-lang-zh`/`data-lang-en` for language switching. Modal JS selects `tagsEn`/`tags` based on current language
+- **Adopters Disclaimer**: Add `* 以上案例已获用户授权同意展示` / `* All cases shown have been authorized by the users` footer note below marquee sections, using `data-i18n` translation key
+- **Contribute Cold-Start Optimization**: `contribute.astro` now reads `.cache/contributors.json` first (committed with build, served from Vercel filesystem) for instant render on cold start. Live GitHub API fetch runs in background to refresh cache. Previous logic (API → cache fallback) inverted to cache → API refresh
 
 ### Changed
 
@@ -48,6 +55,7 @@ All notable changes to this project will be documented in this file.
 - **Stats Layout**: Amounts row (7, 18.4K, 2.2K, Apache 2.0) and labels row (开源项目, GitHub Stars, Forks, 开源协议) now render as two separate flex rows in `Stats.astro` — amounts on top line, labels on bottom line
 - **Contribute PR Workflow**: Step descriptions now bilingual (`descZh`/`descEn`) with `data-lang-zh`/`data-lang-en` switching
 - **Brand Name i18n**: "iFLYTEK Open Source" displays as "科大讯飞开源" in Chinese mode across logo, header, homepage title, and all widget default texts via `data-lang-zh`/`data-lang-en`
+- **Language Change Event**: `BasicScripts.astro` language toggle now dispatches `CustomEvent('languagechange')` so page-specific scripts (e.g. adopters modal) can react and re-render when language switches
 - **Font Stack**: Add `'PingFang SC'` to `--font-sans` and `--font-heading` CSS font stacks (Apple device local font only, no `@font-face` or font file upload)
 - **Blog Watermark Architecture**: Watermark images now pre-baked to `public/images/watermarked/` via `scripts/watermark-images.ts`; originals in `src/assets/images/` remain untouched; `<Image watermark>` resolves watermarked copies via `findWatermarkedImage()`
 - **Blog Detail Page**: Move featured image below article body; hide title/excerpt in header (`sr-only` for SEO); reduce prose font size to `prose-sm lg:prose-lg`

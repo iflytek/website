@@ -19,12 +19,13 @@ const {
 
 <WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
   <Headline title={title} subtitle={subtitle} tagline={tagline} />
-  <div class="flex flex-wrap justify-center text-center">
+  <!-- Desktop: two rows (amounts row + labels row), same as before -->
+  <div class="hidden md:flex flex-wrap justify-center text-center">
     <div class="flex flex-wrap justify-center w-full">
       {
         stats &&
           stats.map(({ amount, icon }) => (
-            <div class="p-4 md:w-1/4 sm:w-1/2 w-full min-w-[220px] text-center intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
+            <div class="p-4 md:w-1/4 sm:w-1/2 w-full text-center intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
               {icon && (
                 <div class="flex items-center justify-center mx-auto mb-2 text-primary">
                   <Icon name={icon} class="w-10 h-10" />
@@ -43,7 +44,7 @@ const {
       {
         stats &&
           stats.map(({ title }) => (
-            <div class="p-4 md:w-1/4 sm:w-1/2 w-full min-w-[220px] text-center intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
+            <div class="p-4 md:w-1/4 sm:w-1/2 w-full text-center intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
               {title && (
                 <div
                   class="text-sm font-medium tracking-widest text-gray-800 dark:text-slate-400 lg:text-base"
@@ -54,5 +55,31 @@ const {
           ))
       }
     </div>
+  </div>
+  <!-- Mobile: each stat is a single block with icon+amount+label together -->
+  <div class="flex flex-wrap justify-center md:hidden">
+    {
+      stats &&
+        stats.map(({ amount, icon, title }) => (
+          <div class="p-4 w-1/2 text-center intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade intersect-quarter">
+            {icon && (
+              <div class="flex items-center justify-center mx-auto mb-2 text-primary">
+                <Icon name={icon} class="w-10 h-10" />
+              </div>
+            )}
+            {amount && (
+              <div class="font-heading text-primary text-[2.6rem] font-bold dark:text-white lg:text-5xl xl:text-6xl">
+                {amount}
+              </div>
+            )}
+            {title && (
+              <div
+                class="mt-2 text-sm font-medium tracking-widest text-gray-800 dark:text-slate-400 lg:text-base"
+                set:html={title}
+              />
+            )}
+          </div>
+        ))
+    }
   </div>
 </WidgetWrapper>

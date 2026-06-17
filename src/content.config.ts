@@ -95,6 +95,7 @@ const adopterCollection = defineCollection({
     subtitle: z.string(),
     subtitleEn: z.string().optional(),
     tags: z.array(z.string()).optional(),
+    tagsEn: z.array(z.string()).optional(),
     scenario: z.string(),
     scenarioEn: z.string().optional(),
     delivery: z.string(),

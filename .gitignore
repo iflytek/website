@@ -88,3 +88,8 @@ ehthumbs_vista.db
 # ============================================
 public/images/watermarked/
 
+# ============================================
+# Build-generated community files
+# ============================================
+.github/ISSUE_TEMPLATE/repo-create.yml
+

@@ -7,6 +7,10 @@ tags:
   - 通信
   - 离线内网
   - Open API
+tagsEn:
+  - Telecom
+  - Offline intranet
+  - Open API
 scenario: 离线内网 RPA 自动化、界面录制回放、内网 AI 模型接入、与 Jenkins 等系统联动。
 scenarioEn: Offline RPA automation, recording and playback, private AI model access, and Jenkins integration.
 delivery: 打通离线镜像导入、模拟人工输入、动态元素定位、自定义 AI 模型和 Open API 对接。

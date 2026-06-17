@@ -150,6 +150,7 @@ import { translations } from '~/utils/translations';
       const lang = elem.getAttribute('data-aw-lang-btn');
       localStorage.lang = lang;
       applyLanguage(lang);
+      document.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
