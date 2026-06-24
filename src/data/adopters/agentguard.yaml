@@ -1,0 +1,19 @@
+name: AgentGuard
+nameEn: AgentGuard
+logo: /images/adopters/agentguard.svg
+subtitle: AI Agent 安全层
+subtitleEn: AI Agent security layer
+tags:
+  - AI 安全
+  - SkillHub
+  - 运行时风控
+tagsEn:
+  - AI Security
+  - SkillHub
+  - Runtime risk control
+scenario: 通过 SkillHub 分发 AgentGuard 作为 AI Agent 安全技能，用户可以从 SkillHub 生态中轻松发现和安装。AgentGuard 作为即用型安全层，涵盖安全检查、恶意技能扫描、运行时风控和信任审计管理。
+scenarioEn: Distribute AgentGuard as an AI agent security skill through SkillHub for easy discovery and installation. AgentGuard serves as a ready-to-use security layer covering security checkup, malicious skill scanning, runtime risk control, and trust/audit management.
+delivery: 通过 SkillHub 技能市场实现即插即用的安全层集成，覆盖安全检查、恶意技能扫描、运行时风控和信任审计管理四大能力。
+deliveryEn: Delivered as a plug-and-play security layer through the SkillHub marketplace, covering security checks, malicious skill scanning, runtime risk control, and trust audit management.
+outcome: 收集社区关于安装体验、真实使用场景和不同 AI Agent 工作流兼容性的反馈，持续优化产品。
+outcomeEn: Gather community feedback on installation experience, real-world usage scenarios, and compatibility with different AI agent workflows to continuously improve the product.
