@@ -1,5 +1,12 @@
 import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
 
+// Inline SVG icons for brands not available in tabler icon set
+const HUGGINGFACE_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9.5" r=".75" fill="currentColor" stroke="none"/><circle cx="15" cy="9.5" r=".75" fill="currentColor" stroke="none"/></svg>';
+
+const MODELSCOPE_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>';
+
 export const headerData = {
   links: [
     {
@@ -60,13 +67,7 @@ export const headerData = {
       href: getPermalink('/adopters'),
     },
   ],
-  actions: [
-    {
-      text: 'GitHub',
-      href: 'https://github.com/iflytek',
-      target: '_blank',
-    },
-  ],
+  actions: [],
 };
 
 export const footerData = {
@@ -100,6 +101,8 @@ export const footerData = {
         { text: 'GitHub', href: 'https://github.com/iflytek' },
         { text: 'Gitee', href: 'https://gitee.com/organizations/iflytek' },
         { text: 'AtomGit', href: 'https://atomgit.com/ifly_opensource' },
+        { text: 'Hugging Face', href: 'https://huggingface.co/iFlytekOpenSource' },
+        { text: 'ModelScope', href: 'https://modelscope.cn/organization/iflytek' },
       ],
     },
     {
@@ -121,6 +124,12 @@ export const footerData = {
     { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/in/astron-ai' },
     { ariaLabel: 'WeChat', icon: 'tabler:brand-wechat', href: '#' },
     { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.com/invite/vXzgts4fK' },
+    {
+      ariaLabel: 'Hugging Face',
+      iconHtml: HUGGINGFACE_ICON,
+      href: 'https://huggingface.co/iFlytekOpenSource',
+    },
+    { ariaLabel: 'ModelScope', iconHtml: MODELSCOPE_ICON, href: 'https://modelscope.cn/organization/iflytek' },
     { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
     { ariaLabel: 'GitHub', icon: 'tabler:brand-github', href: 'https://github.com/iflytek' },
   ],

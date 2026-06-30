@@ -9,6 +9,7 @@ interface Link {
   href?: string;
   ariaLabel?: string;
   icon?: string;
+  iconHtml?: string;
 }
 
 interface Links {
@@ -92,7 +93,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
       {
         socialLinks?.length ? (
           <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4">
-            {socialLinks.map(({ ariaLabel, href, text, icon }) => (
+            {socialLinks.map(({ ariaLabel, href, text, icon, iconHtml }) => (
               <li>
                 <a
                   class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
@@ -100,7 +101,11 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
                   href={href}
                   data-wechat={ariaLabel === 'WeChat' ? 'true' : undefined}
                 >
-                  {icon && <Icon name={icon} class="w-5 h-5" />}
+                  {iconHtml ? (
+                    <span class="w-5 h-5 inline-flex items-center justify-center" set:html={iconHtml} />
+                  ) : (
+                    icon && <Icon name={icon} class="w-5 h-5" />
+                  )}
                   <Fragment set:html={text} />
                 </a>
               </li>
