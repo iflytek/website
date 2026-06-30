@@ -133,3 +133,5 @@ Third-party licenses are listed in [NOTICE](NOTICE).
 - **iFLYTEK Official**: https://www.iflytek.com
 - **Discord**: https://discord.com/invite/vXzgts4fK
 - **LinkedIn**: https://www.linkedin.com/in/astron-ai
+- **Hugging Face**: https://huggingface.co/iFlytekOpenSource
+- **ModelScope**: https://modelscope.cn/organization/iflytek

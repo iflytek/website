@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **Footer Hugging Face & ModelScope Links**: Add Hugging Face (`https://huggingface.co/iFlytekOpenSource`) and ModelScope (`https://modelscope.cn/organization/iflytek`) links to footer "Related Sites" column and social icon bar (inline SVG icons via `iconHtml` field)
+- **Footer `iconHtml` Support**: Extend `Footer.astro` `Link` interface with `iconHtml` field to support custom inline SVG icons for brands not available in tabler icon set
+- **Footer WeChat QR Modal**: Add WeChat QR code modal — clicking WeChat link in footer opens a modal with group QR code image; supports ESC key, backdrop click, and Astro View Transitions re-binding
+- **Footer Bilingual Links**: Add `data-lang-zh`/`data-lang-en` to all footer text links and column titles for language switching
+- **Events**: Add 2 new community events — "AI Agent Industry Practice @ AtomGit & Ascend Meetup · Shanghai" (2026-06-27) and "2nd AI Innovation Exchange Conference · Tianjin" (2026-07-11)
+- **Auto Event Status**: Event status (`upcoming`/`ongoing`/`past`) auto-calculated by comparing `event.date` with current date, removing manual status maintenance
+
+### Changed
+
+- **Footer Links Updated**: "联系我们" Discord link now uses real URL (`https://discord.com/invite/vXzgts4fK`); "相关网站" Gitee URL updated to org page, OSCHINA replaced with AtomGit; "关注我们" updated with real LinkedIn and Discord URLs, removed X/YouTube placeholders
+- **Secondary Links**: Replaced Privacy/Terms/License with Security Policy, Community Values, and CLA
+- **Header Actions**: Remove GitHub button from header action bar
+- **README**: Add Hugging Face and ModelScope links to the Links section
+
 ## [0.2.0] - 2026-06-17
 
 ### Added
