@@ -27,6 +27,8 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
   tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
   'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
   'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
+  'memory-system': { zh: '记忆系统 (memory-system)', en: 'memory-system' },
+  llm: { zh: '大语言模型 (LLM)', en: 'LLM' },
 };
 
 // Total stats
@@ -82,9 +84,9 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
   <section class="py-12 md:py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Filter Bar -->
-      <div class="mb-4 flex flex-wrap items-center justify-center gap-3">
+      <div class="mb-4 flex flex-wrap items-center justify-center gap-2">
         <button
-          class="category-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
+          class="category-btn rounded-full bg-primary-600 px-4 py-1.5 text-xs font-medium text-white sm:px-5 sm:py-2 sm:text-sm"
           data-category="all"
         >
           <span data-lang-zh={`全部 (${sortedProjects.length})`} data-lang-en={`All (${sortedProjects.length})`}
@@ -94,14 +96,13 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
         {
           categories.map((cat) => (
             <button
-              class="category-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              class="category-btn rounded-full bg-gray-100 px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 sm:px-5 sm:py-2 sm:text-sm"
               data-category={cat}
             >
-              <span
-                data-lang-zh={`${categoryLabels[cat]?.zh || cat} (${sortedProjects.filter((p) => p.data.category === cat).length})`}
-                data-lang-en={`${categoryLabels[cat]?.en || cat} (${sortedProjects.filter((p) => p.data.category === cat).length})`}
-              >
-                {categoryLabels[cat]?.zh || cat} ({sortedProjects.filter((p) => p.data.category === cat).length})
+              <span class="i18n-zh">{categoryLabels[cat]?.zh?.split(' ')[0] || cat}</span>
+              <span class="i18n-en">{categoryLabels[cat]?.en || cat}</span>
+              <span class="ml-1 text-gray-400 dark:text-gray-500">
+                ({sortedProjects.filter((p) => p.data.category === cat).length})
               </span>
             </button>
           ))
@@ -137,7 +138,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
         {
           sortedProjects.map((project) => (
             <div
-              class="project-card"
+              class="project-card h-full"
               data-category={project.data.category}
               data-languages={(project.data.languages || []).join(',')}
             >
@@ -154,6 +155,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
                 forks={project.data.forks}
                 license={project.data.license}
                 icon={project.data.icon}
+                links={project.data.links}
               />
             </div>
           ))
