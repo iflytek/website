@@ -18,6 +18,8 @@ const skillsRegistry = find('iflytek/skillhub');
 const tutorial = find('iflytek/astronclaw-tutorial');
 const management = find('harnessclaw/harnessclaw');
 const engine = find('harnessclaw/harnessclaw-engine');
+const memory = find('iflytek/memflywheel');
+const llm = find('iflytek/domux');
 
 const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
 ---
@@ -142,26 +144,26 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
               </marker>
             </defs>
             <g fill="none" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.85">
-              <!-- Engine -> Workflow -->
-              <path d="M 980 450 C 800 480, 700 380, 500 350" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
-              <!-- Engine -> Management -->
-              <path d="M 1200 490 C 1245 440, 1245 310, 1200 260" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
-              <!-- Workflow -> Automation -->
-              <path d="M 50 320 C 15 380, 15 450, 45 495" stroke="#14b8a6" marker-end="url(#arrowTeal)"></path>
-              <!-- Skills -> Workflow -->
-              <path d="M 570 160 C 550 100, 510 100, 490 160" stroke="#ec4899" marker-end="url(#arrowPink)"></path>
+              <!-- Engine -> Workflow (Col3→Col1, scaled 0.78) -->
+              <path d="M 749 530 C 609 560, 531 460, 375 430" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
+              <!-- Engine -> Management (Col3 bottom→top) -->
+              <path d="M 921 570 C 956 520, 956 390, 921 340" stroke="#6366f1" marker-end="url(#arrowBlue)"></path>
+              <!-- Workflow -> Automation (Col1 top→bottom) -->
+              <path d="M 24 400 C -3 460, -3 530, 20 575" stroke="#14b8a6" marker-end="url(#arrowTeal)"></path>
+              <!-- Skills -> Workflow (Col2→Col1) -->
+              <path d="M 430 240 C 414 180, 383 180, 367 240" stroke="#ec4899" marker-end="url(#arrowPink)"></path>
             </g>
             <g font-size="12" font-weight="700" fill="#334155" style="text-shadow:0 0 4px #fff,0 0 8px #fff">
-              <text x="820" y="415" text-anchor="middle" fill="#4f46e5" class="i18n-zh select-none">驱动编排</text>
-              <text x="820" y="415" text-anchor="middle" fill="#4f46e5" class="i18n-en select-none"
+              <text x="590" y="495" text-anchor="middle" fill="#4f46e5" class="i18n-zh select-none">驱动编排</text>
+              <text x="590" y="495" text-anchor="middle" fill="#4f46e5" class="i18n-en select-none"
                 >Powers Orchestration</text
               >
-              <text x="1240" y="375" text-anchor="end" fill="#4f46e5" class="i18n-zh select-none">提供 API</text>
-              <text x="1240" y="375" text-anchor="end" fill="#4f46e5" class="i18n-en select-none">Provides APIs</text>
-              <text x="20" y="435" text-anchor="start" fill="#0d9488" class="i18n-zh select-none">触发 RPA</text>
-              <text x="20" y="435" text-anchor="start" fill="#0d9488" class="i18n-en select-none">Triggers RPA</text>
-              <text x="530" y="115" text-anchor="middle" fill="#db2777" class="i18n-zh select-none">提供能力</text>
-              <text x="530" y="115" text-anchor="middle" fill="#db2777" class="i18n-en select-none"
+              <text x="965" y="455" text-anchor="end" fill="#4f46e5" class="i18n-zh select-none">提供 API</text>
+              <text x="965" y="455" text-anchor="end" fill="#4f46e5" class="i18n-en select-none">Provides APIs</text>
+              <text x="5" y="515" text-anchor="start" fill="#0d9488" class="i18n-zh select-none">触发 RPA</text>
+              <text x="5" y="515" text-anchor="start" fill="#0d9488" class="i18n-en select-none">Triggers RPA</text>
+              <text x="398" y="195" text-anchor="middle" fill="#db2777" class="i18n-zh select-none">提供能力</text>
+              <text x="398" y="195" text-anchor="middle" fill="#db2777" class="i18n-en select-none"
                 >Provides Capabilities</text
               >
             </g>
@@ -169,8 +171,8 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
 
           <!-- Treemap Content -->
           <div class="flex min-h-0 flex-1 gap-2 bg-transparent p-2">
-            <!-- Column 1 (Left 42%): Workflow + Automation -->
-            <div class="flex w-[42%] flex-col gap-2">
+            <!-- Column 1 (Left 30%): Workflow + Automation -->
+            <div class="flex w-[30%] flex-col gap-2">
               <!-- Workflow -->
               <div
                 class="flex min-h-0 flex-[58] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
@@ -288,8 +290,8 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
               </div>
             </div>
 
-            <!-- Column 2 (Center 33%): Skills + Tutorial -->
-            <div class="flex w-[33%] flex-col gap-2">
+            <!-- Column 2 (Center 26%): Skills + Tutorial -->
+            <div class="flex w-[26%] flex-col gap-2">
               <!-- Skills (2 sub-projects) -->
               <div
                 class="flex min-h-0 flex-[65] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
@@ -435,8 +437,8 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
               </div>
             </div>
 
-            <!-- Column 3 (Right 25%): Management + Engine -->
-            <div class="flex w-[25%] flex-col gap-2">
+            <!-- Column 3 (Right 22%): Management + Engine -->
+            <div class="flex w-[22%] flex-col gap-2">
               <!-- Management (HarnessClaw) -->
               <div
                 class="flex min-h-0 flex-[50] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
@@ -540,6 +542,116 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
                     ) : (
                       <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-indigo-100/60 to-indigo-200/70 text-indigo-900">
                         <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 4 (Far Right 22%): Memory + LLM -->
+            <div class="flex w-[22%] flex-col gap-2">
+              <!-- Memory System -->
+              <div
+                class="flex min-h-0 flex-[50] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">记忆系统 (memory-system)</span>
+                  <span class="i18n-en">memory-system</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    memory ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-violet-100/60 to-violet-200/70 p-3 text-violet-900 shadow-inner">
+                        <a
+                          href="https://github.com/iflytek/memflywheel"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-1 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / memflywheel
+                        </a>
+                        <div class="mb-1 text-lg font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">文件原生记忆飞轮</span>
+                          <span class="i18n-en">File-native Memory Flywheel</span>
+                        </div>
+                        <div class="mb-1 flex-1 text-[13px] font-medium leading-snug opacity-90">
+                          <span data-lang-zh={memory.data.description} data-lang-en={memory.data.descriptionEn}>
+                            {memory.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(memory.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'TypeScript' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3178c6" />
+                              )}
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-violet-100/60 to-violet-200/70 text-violet-900">
+                        <span class="text-3xl opacity-40">🚧</span>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+              <!-- LLM -->
+              <div
+                class="flex min-h-0 flex-[50] flex-col overflow-hidden rounded-xl border border-white/60 bg-white/25 shadow-lg backdrop-blur-md"
+              >
+                <div
+                  class="flex h-[30px] items-center border-b border-white/50 px-3 text-[13px] font-extrabold uppercase tracking-wider text-slate-900"
+                >
+                  <span class="i18n-zh">大语言模型 (LLM)</span>
+                  <span class="i18n-en">LLM</span>
+                </div>
+                <div class="flex flex-1 p-2">
+                  {
+                    llm ? (
+                      <div class="relative z-10 flex w-full flex-col rounded-lg border border-white/80 bg-gradient-to-br from-rose-100/60 to-rose-200/70 p-3 text-rose-900 shadow-inner">
+                        <a
+                          href="https://github.com/iflytek/domux"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="mb-1 flex items-center gap-1.5 text-[13px] font-bold opacity-85 transition-colors hover:text-indigo-600"
+                        >
+                          <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 16 16">
+                            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
+                          </svg>
+                          iflytek / domux
+                        </a>
+                        <div class="mb-1 text-lg font-extrabold leading-tight tracking-tight">
+                          <span class="i18n-zh">智能家居指令模型</span>
+                          <span class="i18n-en">Smart Home Command Model</span>
+                        </div>
+                        <div class="mb-1 flex-1 text-[13px] font-medium leading-snug opacity-90">
+                          <span data-lang-zh={llm.data.description} data-lang-en={llm.data.descriptionEn}>
+                            {llm.data.description}
+                          </span>
+                        </div>
+                        <div class="mt-auto flex flex-wrap gap-2">
+                          {(llm.data.languages || []).map((lang) => (
+                            <span class="flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-white bg-white/85 px-3 py-1 text-[11px] font-bold shadow-sm">
+                              {lang === 'Python' && (
+                                <span class="h-1.5 w-1.5 rounded-full" style="background-color:#3572A5" />
+                              )}
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/60 bg-gradient-to-br from-rose-100/60 to-rose-200/70 text-rose-900">
+                        <span class="text-3xl opacity-40" />
                       </div>
                     )
                   }

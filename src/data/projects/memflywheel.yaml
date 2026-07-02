@@ -1,0 +1,10 @@
+name: MemFlywheel
+nameEn: MemFlywheel
+description: '面向 AI Agent 的文件原生记忆飞轮：执行前召回、执行后沉淀，重复工作流演化为可复用技能。'
+descriptionEn: 'File-native memory flywheel for AI Agents: recall before execution, learn after each run, and evolve repeated workflows into reusable skills.'
+repo: iflytek/memflywheel
+category: memory-system
+tags: [memory, agent-harness, file-native, skill-flywheel]
+languages: [TypeScript]
+license: Apache-2.0
+icon: /images/memflywheel-icon.png

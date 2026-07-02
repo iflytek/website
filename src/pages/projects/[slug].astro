@@ -35,6 +35,8 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
   tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
   'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
   'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
+  'memory-system': { zh: '记忆系统 (memory-system)', en: 'memory-system' },
+  llm: { zh: '大语言模型 (LLM)', en: 'LLM' },
 };
 ---
 
@@ -174,6 +176,52 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
                 <span data-i18n="projectDetail.visitHomepage">访问官网</span>
               </a>
             )
+          }
+          {
+            data.links?.map((link) => {
+              const isHF = link.includes('huggingface');
+              const isMS = link.includes('modelscope');
+              const label = isHF ? 'Hugging Face' : isMS ? 'ModelScope' : 'Link';
+              return (
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3 font-medium text-gray-700 transition-colors hover:border-primary-300 hover:text-primary-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:text-primary-400"
+                >
+                  {isHF ? (
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+                      <circle cx="9" cy="10" r="1.2" />
+                      <circle cx="15" cy="10" r="1.2" />
+                      <path
+                        d="M8.5 13.5s1.5 2 3.5 2 3.5-2 3.5-2"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  ) : isMS ? (
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="6" />
+                      <circle cx="12" cy="12" r="2" />
+                    </svg>
+                  ) : (
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  )}
+                  {label}
+                </a>
+              );
+            })
           }
         </div>
       </div>

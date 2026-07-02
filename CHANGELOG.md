@@ -6,15 +6,24 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **New Projects — MemFlywheel & Domux**: Add MemFlywheel (file-native memory flywheel for AI Agents, category `memory-system`) and Domux (low-latency smart-home command model based on Gemma-4-E2B-it, category `llm`) to `/projects` page, project detail pages, and stats cache
+- **Project Card External Links**: ProjectCard component supports `links` field (HuggingFace, ModelScope) with brand SVG icons, styled same as GitHub button, positioned next to GitHub button in card footer
+- **Project Detail External Links**: Project detail page `[slug].astro` renders external links (HuggingFace, ModelScope) with brand SVG icons in Action Buttons section
+- **Landscape 4-Column Layout**: Expand landscape from 3 to 4 columns (30%+26%+22%+22%) — new Column 4 adds Memory System (MemFlywheel) and LLM (Domux) sections with violet/rose theming; all ecosystem arrows proportionally repositioned
+- **Tech Blog Posts**: Add 2 new tech blog posts — "MemFlywheel：给 AI Agent 装上文件原生记忆飞轮" and "Domux：150ms 内的智能家居指令理解模型", with architecture/benchmark images from GitHub repos, watermarked via `scripts/watermark-images.ts`
+- **Content Schema `links` Field**: Add `links: z.array(z.string()).optional()` to project collection schema in `content.config.ts`
+
+### Changed
+
 - **Footer Hugging Face & ModelScope Links**: Add Hugging Face (`https://huggingface.co/iFlytekOpenSource`) and ModelScope (`https://modelscope.cn/organization/iflytek`) links to footer "Related Sites" column and social icon bar (inline SVG icons via `iconHtml` field)
 - **Footer `iconHtml` Support**: Extend `Footer.astro` `Link` interface with `iconHtml` field to support custom inline SVG icons for brands not available in tabler icon set
 - **Footer WeChat QR Modal**: Add WeChat QR code modal — clicking WeChat link in footer opens a modal with group QR code image; supports ESC key, backdrop click, and Astro View Transitions re-binding
 - **Footer Bilingual Links**: Add `data-lang-zh`/`data-lang-en` to all footer text links and column titles for language switching
 - **Events**: Add 2 new community events — "AI Agent Industry Practice @ AtomGit & Ascend Meetup · Shanghai" (2026-06-27) and "2nd AI Innovation Exchange Conference · Tianjin" (2026-07-11)
 - **Auto Event Status**: Event status (`upcoming`/`ongoing`/`past`) auto-calculated by comparing `event.date` with current date, removing manual status maintenance
-
-### Changed
-
+- **Projects Page Mobile Optimization**: Filter bar buttons responsive sizing (`text-xs`/`px-4` on mobile, `sm:text-sm` on sm+), category labels show only Chinese name on mobile via `i18n-zh`/`i18n-en` classes; card footer stacks vertically on mobile (`flex-col sm:flex-row`)
+- **Card Height Consistency**: ProjectCard uses `h-full` on wrapper and `flex h-full flex-col` on card div for equal-height cards across rows
+- **Project Stats Cache**: `.cache/project-stats.json` updated with 9 repos (MemFlywheel ⭐7, Domux ⭐6); `.cache/contributors.json` updated with 170 contributors from 60 repos
 - **Footer Links Updated**: "联系我们" Discord link now uses real URL (`https://discord.com/invite/vXzgts4fK`); "相关网站" Gitee URL updated to org page, OSCHINA replaced with AtomGit; "关注我们" updated with real LinkedIn and Discord URLs, removed X/YouTube placeholders
 - **Secondary Links**: Replaced Privacy/Terms/License with Security Policy, Community Values, and CLA
 - **Header Actions**: Remove GitHub button from header action bar

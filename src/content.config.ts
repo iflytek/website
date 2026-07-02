@@ -83,6 +83,7 @@ const projectCollection = defineCollection({
     forks: z.number().optional(),
     license: z.string().optional(),
     icon: z.string().optional(),
+    links: z.array(z.string()).optional(),
   }),
 });
 

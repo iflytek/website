@@ -1,0 +1,11 @@
+name: Domux
+nameEn: Domux
+description: '面向智能家居控制的轻量级低延迟指令理解模型，基于 Gemma-4-E2B-it 微调，通过 SFT + GRPO 训练，将自然语言指令转换为结构化槽位。'
+descriptionEn: 'Lightweight low-latency command understanding model for smart-home control. Fine-tuned from Gemma-4-E2B-it via SFT + GRPO, converting natural language commands into structured slots.'
+repo: iflytek/domux
+category: llm
+tags: [smart-home, nlp, model, low-latency]
+languages: [Python]
+license: Apache-2.0
+links:
+  - https://huggingface.co/iFlytekOpenSource/Domux
