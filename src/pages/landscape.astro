@@ -58,12 +58,7 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
   <!-- Treemap -->
   <section class="py-6 md:py-10">
     <div class="flex w-full items-start justify-center px-4">
-      <div
-        style={`
-          transform: scale(min(calc((100vw - 40px) / 1280), 1));
-          transform-origin: center top;
-        `}
-      >
+      <div id="landscape-wrapper" style="transform-origin: center top;">
         <div
           id="landscape-card"
           class="relative flex min-h-[800px] w-[1280px] shrink-0 flex-col overflow-hidden rounded-2xl border-2 border-white/60 shadow-2xl backdrop-blur-xl"
@@ -683,6 +678,22 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
   </div>
 
   <script is:inline>
+    function scaleLandscape() {
+      const card = document.getElementById('landscape-card');
+      const wrapper = document.getElementById('landscape-wrapper');
+      if (!card || !wrapper) return;
+
+      // Reset to measure natural height
+      wrapper.style.transform = 'none';
+      wrapper.style.height = '';
+      const naturalH = card.offsetHeight;
+      const scale = Math.min((window.innerWidth - 40) / 1280, 1);
+
+      wrapper.style.transform = 'scale(' + scale + ')';
+      wrapper.style.transformOrigin = 'center top';
+      wrapper.style.height = Math.ceil(naturalH * scale) + 'px';
+    }
+
     function initLandscapeDownload() {
       const btn = document.getElementById('landscape-download-btn');
       if (!btn || btn.dataset.initialized) return;
@@ -734,7 +745,14 @@ const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
       });
     }
 
-    document.addEventListener('DOMContentLoaded', initLandscapeDownload);
-    document.addEventListener('astro:after-swap', initLandscapeDownload);
+    document.addEventListener('DOMContentLoaded', function () {
+      scaleLandscape();
+      initLandscapeDownload();
+    });
+    document.addEventListener('astro:after-swap', function () {
+      scaleLandscape();
+      initLandscapeDownload();
+    });
+    window.addEventListener('resize', scaleLandscape);
   </script>
 </Layout>

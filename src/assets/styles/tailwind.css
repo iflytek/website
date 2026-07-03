@@ -121,7 +121,7 @@
 .dropdown:focus .dropdown-menu,
 .dropdown:focus-within .dropdown-menu,
 .dropdown:hover .dropdown-menu {
-  display: block;
+  display: block !important;
 }
 
 [astro-icon].icon-light > * {

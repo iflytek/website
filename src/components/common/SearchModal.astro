@@ -1,0 +1,495 @@
+---
+/**
+ * Global search modal.
+ * Uses Fuse.js for client-side fuzzy search with lazy-loaded index.
+ */
+---
+
+<!-- Backdrop -->
+<div id="search-modal" class="fixed inset-0 z-[60] hidden" aria-hidden="true">
+  <div id="search-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm dark:bg-black/60"></div>
+
+  <!-- Modal panel -->
+  <div class="flex items-start justify-center pt-[10vh] px-4 min-h-screen">
+    <div
+      id="search-panel"
+      class="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search"
+    >
+      <!-- Search input -->
+      <div class="flex items-center border-b border-gray-200 dark:border-gray-700 px-4">
+        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          class="w-full bg-transparent px-3 py-4 text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          id="search-close-btn"
+          type="button"
+          class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded"
+          aria-label="Close"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Results area -->
+      <div id="search-results" class="max-h-[60vh] overflow-y-auto overscroll-contain px-2 py-2">
+        <div id="search-placeholder" class="px-3 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          <span data-lang-zh="输入关键词搜索…" data-lang-en="Type to search…">输入关键词搜索…</span>
+        </div>
+        <div id="search-loading" class="hidden px-3 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          <span data-lang-zh="加载中…" data-lang-en="Loading…">加载中…</span>
+        </div>
+        <div id="search-no-results" class="hidden px-3 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          <span data-lang-zh="未找到相关结果" data-lang-en="No results found">未找到相关结果</span>
+        </div>
+        <ul id="search-result-list" class="hidden space-y-1"></ul>
+      </div>
+
+      <!-- Footer hints -->
+      <div
+        class="flex items-center gap-4 border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-400 dark:text-gray-500"
+      >
+        <span class="flex items-center gap-1">
+          <kbd class="rounded bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 font-mono">↑↓</kbd>
+          <span data-lang-zh="导航" data-lang-en="Navigate">导航</span>
+        </span>
+        <span class="flex items-center gap-1">
+          <kbd class="rounded bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 font-mono">↵</kbd>
+          <span data-lang-zh="跳转" data-lang-en="Open">跳转</span>
+        </span>
+        <span class="flex items-center gap-1">
+          <kbd class="rounded bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 font-mono">esc</kbd>
+          <span data-lang-zh="关闭" data-lang-en="Close">关闭</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Search result active item */
+  .search-result-item.active,
+  .search-result-item:hover {
+    background-color: rgb(243 244 246);
+  }
+  .dark .search-result-item.active,
+  .dark .search-result-item:hover {
+    background-color: rgb(55 65 81);
+  }
+  /* Highlight matched text */
+  .search-result-item mark {
+    background-color: transparent;
+    color: rgb(37 99 235);
+    font-weight: 600;
+  }
+  .dark .search-result-item mark {
+    color: rgb(96 165 250);
+  }
+  /* Modal entrance animation */
+  #search-modal:not(.hidden) #search-panel {
+    animation: search-slide-in 0.15s ease-out;
+  }
+  @keyframes search-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // Type badge colors
+    const TYPE_COLORS = {
+      blog: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+      project: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+      adopter: 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+      event: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
+      page: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+    };
+
+    const TYPE_LABELS_ZH = {
+      blog: '博客',
+      project: '项目',
+      adopter: '案例',
+      event: '活动',
+      page: '页面',
+    };
+    const TYPE_LABELS_EN = {
+      blog: 'Blog',
+      project: 'Project',
+      adopter: 'Adopter',
+      event: 'Event',
+      page: 'Page',
+    };
+
+    let fuse = null;
+    let searchIndex = null;
+    let activeIndex = -1;
+    let isLoading = false;
+
+    // DOM references — re-queried after View Transitions via refreshRefs()
+    let modal, input, resultList, placeholder, loading, noResults;
+    function refreshRefs() {
+      modal = document.getElementById('search-modal');
+      input = document.getElementById('search-input');
+      resultList = document.getElementById('search-result-list');
+      placeholder = document.getElementById('search-placeholder');
+      loading = document.getElementById('search-loading');
+      noResults = document.getElementById('search-no-results');
+    }
+
+    function getLang() {
+      return localStorage.lang || 'zh';
+    }
+
+    function openModal() {
+      refreshRefs();
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      input.value = '';
+      resetResults();
+      // Focus input after animation
+      requestAnimationFrame(() => input.focus());
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      // Move focus out of modal before hiding to avoid aria-hidden warning
+      const focused = document.activeElement;
+      if (focused && modal.contains(focused)) {
+        // Move focus to body to ensure no descendant has focus
+        document.body.focus();
+        focused.blur();
+      }
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      activeIndex = -1;
+    }
+
+    function resetResults() {
+      resultList.classList.add('hidden');
+      resultList.innerHTML = '';
+      noResults.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+      loading.classList.add('hidden');
+      activeIndex = -1;
+    }
+
+    async function loadIndex() {
+      if (searchIndex) return;
+      if (isLoading) return;
+      isLoading = true;
+      refreshRefs();
+      placeholder.classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      try {
+        const resp = await fetch('/search-index.json');
+        searchIndex = await resp.json();
+
+        const { default: Fuse } = await import('https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/+esm');
+
+        fuse = new Fuse(searchIndex, {
+          keys: [
+            { name: 'title', weight: 0.4 },
+            { name: 'titleEn', weight: 0.3 },
+            { name: 'excerpt', weight: 0.15 },
+            { name: 'excerptEn', weight: 0.1 },
+            { name: 'tags', weight: 0.05 },
+          ],
+          includeMatches: true,
+          ignoreLocation: true,
+          threshold: 0.3,
+          minMatchCharLength: 1,
+        });
+
+        loading.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+      } catch (err) {
+        console.error('Search index load failed:', err);
+        loading.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+      }
+      isLoading = false;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function highlightMatches(text, indices) {
+      if (!indices || indices.length === 0) return escapeHtml(text);
+      // Sort indices by start position
+      const sorted = [...indices].sort((a, b) => a[0] - b[0]);
+      let result = '';
+      let lastEnd = 0;
+      for (const [start, end] of sorted) {
+        if (start < lastEnd) continue; // skip overlapping
+        result += escapeHtml(text.slice(lastEnd, start));
+        result += '<mark>' + escapeHtml(text.slice(start, end + 1)) + '</mark>';
+        lastEnd = end + 1;
+      }
+      result += escapeHtml(text.slice(lastEnd));
+      return result;
+    }
+
+    function getDisplayTitle(item, lang) {
+      if (lang === 'en' && item.titleEn) return item.titleEn;
+      return item.title;
+    }
+
+    function getDisplayExcerpt(item, lang) {
+      if (lang === 'en' && item.excerptEn) return item.excerptEn;
+      return item.excerpt;
+    }
+
+    function getMatchIndices(matches, key) {
+      if (!matches) return [];
+      const m = matches.find((m) => m.key === key);
+      return m ? m.indices : [];
+    }
+
+    function renderResults(query) {
+      if (!fuse || !query) {
+        resetResults();
+        return;
+      }
+
+      refreshRefs();
+      const lang = getLang();
+      const results = fuse.search(query).slice(0, 20);
+      activeIndex = -1;
+
+      if (results.length === 0) {
+        resultList.classList.add('hidden');
+        placeholder.classList.add('hidden');
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      placeholder.classList.add('hidden');
+
+      // Group by type
+      const grouped = {};
+      for (const r of results) {
+        const t = r.item.type;
+        if (!grouped[t]) grouped[t] = [];
+        grouped[t].push(r);
+      }
+
+      let html = '';
+      let flatIdx = 0;
+      const typeOrder = ['blog', 'project', 'adopter', 'event', 'page'];
+
+      for (const type of typeOrder) {
+        if (!grouped[type]) continue;
+        const labels = lang === 'en' ? TYPE_LABELS_EN : TYPE_LABELS_ZH;
+        html +=
+          '<li class="px-2 pt-2 pb-1 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">' +
+          labels[type] +
+          '</li>';
+        for (const r of grouped[type]) {
+          const item = r.item;
+          const title = getDisplayTitle(item, lang);
+          const excerpt = getDisplayExcerpt(item, lang);
+          const titleIndices = getMatchIndices(r.matches, lang === 'en' ? 'titleEn' : 'title');
+          const excerptIndices = getMatchIndices(r.matches, lang === 'en' ? 'excerptEn' : 'excerpt');
+          const colorClass = TYPE_COLORS[item.type] || '';
+
+          html += '<li>';
+          html +=
+            '<a href="' +
+            escapeHtml(item.url) +
+            '" class="search-result-item block rounded-lg px-3 py-2.5 transition-colors" data-search-index="' +
+            flatIdx +
+            '">';
+          html += '<div class="flex items-center gap-2">';
+          html +=
+            '<span class="flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ' +
+            colorClass +
+            '">' +
+            (lang === 'en' ? TYPE_LABELS_EN[item.type] : TYPE_LABELS_ZH[item.type]) +
+            '</span>';
+          html +=
+            '<span class="text-sm font-medium text-gray-900 dark:text-white truncate">' +
+            highlightMatches(title, titleIndices.length ? titleIndices : []) +
+            '</span>';
+          html += '</div>';
+          if (excerpt) {
+            html +=
+              '<p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 pl-0">' +
+              highlightMatches(excerpt, excerptIndices.length ? excerptIndices : []) +
+              '</p>';
+          }
+          html += '</a>';
+          html += '</li>';
+          flatIdx++;
+        }
+      }
+
+      resultList.innerHTML = html;
+      resultList.classList.remove('hidden');
+
+      // Attach click handlers
+      resultList.querySelectorAll('.search-result-item').forEach((el) => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeModal();
+          const href = el.getAttribute('href');
+          if (href) {
+            const [path, hash] = href.split('#');
+            const currentPath = window.location.pathname;
+            // If same page with hash, manually update hash to trigger hashchange
+            if ((path === currentPath || path === '') && hash) {
+              window.location.hash = hash;
+            } else {
+              // Different page, navigate normally
+              window.location.href = href;
+            }
+          }
+        });
+      });
+    }
+
+    function setActiveResult(index) {
+      const items = resultList.querySelectorAll('.search-result-item');
+      items.forEach((el) => el.classList.remove('active'));
+      if (index >= 0 && index < items.length) {
+        items[index].classList.add('active');
+        items[index].scrollIntoView({ block: 'nearest' });
+      }
+      activeIndex = index;
+    }
+
+    function handleKeydown(e) {
+      refreshRefs();
+      if (e.key === 'Escape') {
+        closeModal();
+        return;
+      }
+      const items = resultList.querySelectorAll('.search-result-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        setActiveResult(Math.min(activeIndex + 1, items.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        setActiveResult(Math.max(activeIndex - 1, 0));
+      } else if (e.key === 'Enter' && activeIndex >= 0 && activeIndex < items.length) {
+        e.preventDefault();
+        items[activeIndex].click();
+      }
+    }
+
+    // Debounce search
+    let debounceTimer = null;
+    function onInput() {
+      const query = input.value.trim();
+      if (!query) {
+        resetResults();
+        return;
+      }
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        if (fuse) {
+          renderResults(query);
+        } else {
+          // Index not loaded yet — try loading then search
+          loadIndex().then(() => renderResults(query));
+        }
+      }, 150);
+    }
+
+    function attachElementListeners() {
+      // Attach to current DOM elements (re-called after View Transitions)
+      input?.addEventListener('input', onInput);
+      document.getElementById('search-backdrop')?.addEventListener('click', closeModal);
+      document.getElementById('search-close-btn')?.addEventListener('click', closeModal);
+    }
+
+    function init() {
+      refreshRefs();
+
+      // Element-specific listeners (need re-binding after View Transitions)
+      attachElementListeners();
+
+      // Document-level listeners (survive View Transitions swaps)
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          openModal();
+          loadIndex();
+        }
+      });
+
+      // Keyboard nav
+      document.addEventListener('keydown', handleKeydown);
+
+      // Language change — re-render results
+      document.addEventListener('languagechange', () => {
+        refreshRefs();
+        const query = input?.value.trim();
+        if (query && fuse) renderResults(query);
+      });
+
+      // Attach search button click via document delegation (capture phase)
+      // Works across View Transitions swaps without re-binding
+      document.addEventListener(
+        'click',
+        (e) => {
+          if (e.target.closest('#search-btn')) {
+            openModal();
+            loadIndex();
+          }
+        },
+        true
+      ); // capture phase — runs before bubbling handlers
+
+      // open-search custom event
+      document.addEventListener('open-search', () => {
+        openModal();
+        loadIndex();
+      });
+
+      // View Transitions: refresh DOM refs, reset state, and re-bind element listeners
+      document.addEventListener('astro:after-swap', () => {
+        refreshRefs();
+        closeModal();
+        attachElementListeners();
+      });
+    }
+
+    if (document.readyState !== 'loading') {
+      init();
+    } else {
+      document.addEventListener('DOMContentLoaded', init);
+    }
+  })();
+</script>

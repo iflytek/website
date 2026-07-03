@@ -2,19 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.3.0] - 2026-07-03
 
 ### Added
 
+- **Mobile Drawer Navigation**: Replace hamburger-expanded nav with slide-in drawer panel (`#mobile-drawer`) — tree-structured navigation with always-expanded 2-level hierarchy (section labels + child links with connector dots and trunk lines), close button, backdrop overlay with blur, ESC/backdrop/link-click to dismiss, auto-close on resize to desktop, View Transitions compatible via `astro:after-swap`. Theme toggle (`ToggleTheme`) and language toggle (`ToggleLanguage`) moved into drawer footer for mobile, hidden on desktop via `hidden md:flex` wrappers
+- **Search Modal (`SearchModal.astro`)**: Global `Ctrl+K` / `⌘K` search with Fuse.js fuzzy matching across blog posts, projects, adopters, events, and static pages — lazy-loaded `/search-index.json`, results grouped by type with `<mark>` match highlighting, keyboard navigation (↑↓/Enter/Esc), bilingual support (zh/en), dark mode. `SearchButton.astro` in header triggers modal; `search-index.json.ts` endpoint aggregates all content collections at build time
+- **Adopter Modal (`AdopterModal.astro`)**: Layout-level adopter detail modal — macOS/iOS-style frosted glass, URL hash routing (`#adopter-{slug}`), retry mechanism (20 attempts × 50ms) for DOM readiness, `loadAdopterData()` re-reads embedded JSON on every open/swap for multi-cycle reliability
+- **Project Detail Page Icons**: `[slug].astro` now renders project icon image (`data.icon`) when available, with first-letter gradient circle fallback for projects without icons
 - **New Projects — MemFlywheel & Domux**: Add MemFlywheel (file-native memory flywheel for AI Agents, category `memory-system`) and Domux (low-latency smart-home command model based on Gemma-4-E2B-it, category `llm`) to `/projects` page, project detail pages, and stats cache
 - **Project Card External Links**: ProjectCard component supports `links` field (HuggingFace, ModelScope) with brand SVG icons, styled same as GitHub button, positioned next to GitHub button in card footer
 - **Project Detail External Links**: Project detail page `[slug].astro` renders external links (HuggingFace, ModelScope) with brand SVG icons in Action Buttons section
 - **Landscape 4-Column Layout**: Expand landscape from 3 to 4 columns (30%+26%+22%+22%) — new Column 4 adds Memory System (MemFlywheel) and LLM (Domux) sections with violet/rose theming; all ecosystem arrows proportionally repositioned
 - **Tech Blog Posts**: Add 2 new tech blog posts — "MemFlywheel：给 AI Agent 装上文件原生记忆飞轮" and "Domux：150ms 内的智能家居指令理解模型", with architecture/benchmark images from GitHub repos, watermarked via `scripts/watermark-images.ts`
 - **Content Schema `links` Field**: Add `links: z.array(z.string()).optional()` to project collection schema in `content.config.ts`
+- **Events Data (`events.ts`)**: Extract event data to shared `src/data/events.ts` for reuse across events page and search index
 
 ### Changed
 
+- **Header Layout Redesign**: Desktop nav keeps horizontal links; mobile nav delegates to drawer. `ToggleTheme` and `ToggleLanguage` wrapped in `hidden md:flex` divs (fixes Tailwind v4 `inline-flex` overriding `hidden`). BasicScripts mobile menu handlers cleaned up — no longer toggles `h-screen`/`bg-page`/`overflow-hidden` on header
+- **Adopter Modal Moved to Layout**: Modal HTML + JS moved from `adopters.astro` (page-level) to `AdopterModal.astro` (layout-level in `Layout.astro`) — fixes View Transitions issue where page-level `is:inline` script wouldn't re-execute after navigation
+- **Landscape Mobile Scaling**: Replace CSS-only `transform: scale()` with JS `scaleLandscape()` that dynamically sets wrapper height (`naturalHeight × scale`) — fixes excess scroll space caused by CSS transform not affecting layout box. Listens to `resize` and `astro:after-swap`
 - **Footer Hugging Face & ModelScope Links**: Add Hugging Face (`https://huggingface.co/iFlytekOpenSource`) and ModelScope (`https://modelscope.cn/organization/iflytek`) links to footer "Related Sites" column and social icon bar (inline SVG icons via `iconHtml` field)
 - **Footer `iconHtml` Support**: Extend `Footer.astro` `Link` interface with `iconHtml` field to support custom inline SVG icons for brands not available in tabler icon set
 - **Footer WeChat QR Modal**: Add WeChat QR code modal — clicking WeChat link in footer opens a modal with group QR code image; supports ESC key, backdrop click, and Astro View Transitions re-binding
@@ -28,6 +36,19 @@ All notable changes to this project will be documented in this file.
 - **Secondary Links**: Replaced Privacy/Terms/License with Security Policy, Community Values, and CLA
 - **Header Actions**: Remove GitHub button from header action bar
 - **README**: Add Hugging Face and ModelScope links to the Links section
+- **Code Quality**: Add `is:inline` to AdopterModal JSON `<script>` tag (silences astro(4000) hint); remove deprecated `position="right"` from `LandingLayout.astro` Header — 0 errors, 0 warnings, 0 hints
+- **Gitignore**: Add `TEST_REPORT.md` to temporary files section
+
+### Fixed
+
+- **Search View Transitions**: `const` DOM refs became stale after page swap — changed to `let` with `refreshRefs()` + `attachElementListeners()` called in `astro:after-swap`
+- **Adopter Multi-Cycle Failure**: Modal broke after multiple open/close/navigation cycles — fixed by calling `loadAdopterData()` in every `openModal()`, `syncHash()`, and `astro:after-swap` handler
+- **Adopter Direct URL Hash**: Navigating to `/adopters#adopter-xxx` didn't show card when DOM wasn't ready — fixed with retry mechanism (20 attempts × 50ms)
+- **Same-Page Hash Navigation**: Search results linking to same page with hash (e.g. `/adopters#adopter-agentguard`) didn't trigger `hashchange` — fixed with `e.preventDefault()` + manual `window.location.hash` assignment
+- **aria-hidden Accessibility Warning**: Focused element retained inside hidden modal — fixed by calling `document.body.focus()` and `focused.blur()` before hiding
+- **"博客" Nav Link**: Added `href: getBlogPermalink()` to navigation config — was missing, causing the link to render as a non-navigable element
+- **Window Resize Losing Header Elements**: BasicScripts resize handler was adding `hidden` class to `#header > div > div:last-child` (the entire right-side container including search box) — removed the offending line
+- **Mobile Toggle Visibility**: Desktop `ToggleTheme`/`ToggleLanguage` visible in mobile menu due to Tailwind v4 class ordering (`inline-flex` overriding `hidden`) — fixed by wrapping in `hidden md:flex` divs
 
 ## [0.2.0] - 2026-06-17
 
