@@ -4,6 +4,7 @@ import Logo from '~/components/Logo.astro';
 import ToggleTheme from '~/components/common/ToggleTheme.astro';
 import ToggleLanguage from '~/components/common/ToggleLanguage.astro';
 import ToggleMenu from '~/components/common/ToggleMenu.astro';
+import SearchButton from '~/components/common/SearchButton.astro';
 import Button from '~/components/ui/Button.astro';
 
 import { getHomePermalink } from '~/utils/permalinks';
@@ -33,6 +34,7 @@ export interface Props {
   showToggleTheme?: boolean;
   showToggleLanguage?: boolean;
   showRssFeed?: boolean;
+  /** @deprecated No longer used — header now uses flex layout */
   position?: string;
 }
 
@@ -46,7 +48,6 @@ const {
   showToggleTheme = false,
   showToggleLanguage = false,
   showRssFeed = false,
-  position = 'center',
 } = Astro.props;
 
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
@@ -63,50 +64,61 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
   <div class="absolute inset-0"></div>
   <div
     class:list={[
-      'relative text-default py-3 px-3 md:px-6 mx-auto w-full',
-      {
-        'md:flex md:justify-between': position !== 'center',
-      },
-      {
-        'md:grid md:grid-cols-3 md:items-center': position === 'center',
-      },
+      'relative text-default py-3 px-3 md:px-6 mx-auto w-full flex items-center justify-between gap-4',
       {
         'max-w-7xl': !isFullWidth,
       },
     ]}
   >
-    <div class:list={[{ 'mr-auto rtl:mr-0 rtl:ml-auto': position === 'right' }, 'flex justify-between']}>
-      <a class="flex items-center" href={getHomePermalink()}>
-        <Logo />
-      </a>
-      <div class="flex items-center md:hidden">
-        <ToggleMenu />
-      </div>
+    <a class="flex items-center flex-shrink-0" href={getHomePermalink()}>
+      <Logo />
+    </a>
+    <div class="flex items-center md:hidden flex-1 justify-center mx-2 min-w-0">
+      <SearchButton />
     </div>
-    <nav
-      class="items-center w-full md:w-auto hidden md:flex md:mx-5 text-default overflow-y-auto overflow-x-hidden md:overflow-visible md:justify-self-center"
-      aria-label="Main navigation"
-    >
-      <ul
-        class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[0.9375rem] tracking-[0.01rem] font-medium md:justify-center"
-      >
+    <!-- Desktop navigation -->
+    <nav class="hidden md:flex items-center flex-1 justify-start mx-2 text-default" aria-label="Main navigation">
+      <ul class="flex flex-row items-center text-[0.9375rem] tracking-[0.01rem] font-medium">
         {
           links.map(({ text, textEn, href, links }) => (
-            <li class={links?.length ? 'dropdown' : ''}>
+            <li class:list={[links?.length ? 'dropdown relative' : '']}>
               {links?.length ? (
                 <>
-                  <button
-                    type="button"
-                    class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap"
-                    data-lang-zh={text}
-                    data-lang-en={textEn || text}
-                  >
-                    <span data-lang-zh={text} data-lang-en={textEn || text}>
-                      {text}
-                    </span>{' '}
-                    <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
-                  </button>
-                  <ul class="dropdown-menu md:backdrop-blur-md dark:md:bg-dark rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white/90 md:min-w-[200px] drop-shadow-xl">
+                  {href ? (
+                    <a
+                      class:list={[
+                        'hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap',
+                        { 'aw-link-active': href === currentPath },
+                      ]}
+                      href={href}
+                      data-lang-zh={text}
+                      data-lang-en={textEn || text}
+                    >
+                      <span data-lang-zh={text} data-lang-en={textEn || text}>
+                        {text}
+                      </span>{' '}
+                      <Icon
+                        name="tabler:chevron-down"
+                        class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline"
+                      />
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap"
+                      data-lang-zh={text}
+                      data-lang-en={textEn || text}
+                    >
+                      <span data-lang-zh={text} data-lang-en={textEn || text}>
+                        {text}
+                      </span>{' '}
+                      <Icon
+                        name="tabler:chevron-down"
+                        class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline"
+                      />
+                    </button>
+                  )}
+                  <ul class="dropdown-menu hidden md:hidden md:backdrop-blur-md dark:md:bg-dark rounded md:absolute pl-4 md:pl-0 font-medium md:bg-white/90 md:min-w-[200px] drop-shadow-xl">
                     {links.map(({ text: text2, textEn: textEn2, href: href2 }) => (
                       <li>
                         <a
@@ -142,40 +154,373 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
         }
       </ul>
     </nav>
-    <div
-      class:list={[
-        { 'ml-auto rtl:ml-0 rtl:mr-auto': position === 'left' },
-        'hidden md:self-center md:flex items-center md:mb-0 fixed w-full md:w-auto md:static justify-end left-0 rtl:left-auto rtl:right-0 bottom-0 p-3 md:p-0 md:justify-self-end',
-      ]}
-    >
-      <div class="items-center flex justify-between w-full md:w-auto">
-        <div class="flex">
-          {showToggleTheme && <ToggleTheme iconClass="w-6 h-6 md:w-5 md:h-5 md:inline-block" />}
-          {
-            showRssFeed && (
-              <a
-                class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
-                aria-label="RSS Feed"
-                href={getAsset('/rss.xml')}
-              >
-                <Icon name="tabler:rss" class="w-5 h-5" />
-              </a>
-            )
-          }
-          {showToggleLanguage && <ToggleLanguage class="ml-2" />}
-        </div>
-        {
-          actions?.length ? (
-            <span class="ml-4 rtl:ml-0 rtl:mr-4">
-              {actions.map((btnProps) => (
-                <Button {...btnProps} class="ml-2 py-2.5 px-5.5 md:px-6 font-semibold shadow-none text-sm w-auto" />
-              ))}
-            </span>
-          ) : (
-            ''
-          )
-        }
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <div class="hidden md:block">
+        <SearchButton />
       </div>
+      <div class="hidden md:flex"><ToggleTheme iconClass="w-5 h-5" /></div>
+      {
+        showRssFeed && (
+          <a
+            class="hidden md:inline-flex text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2 items-center"
+            aria-label="RSS Feed"
+            href={getAsset('/rss.xml')}
+          >
+            <Icon name="tabler:rss" class="w-5 h-5" />
+          </a>
+        )
+      }
+      {
+        showToggleLanguage && (
+          <div class="hidden md:flex">
+            <ToggleLanguage />
+          </div>
+        )
+      }
+      <div class="flex items-center md:hidden">
+        <ToggleMenu />
+      </div>
+      {
+        actions?.length ? (
+          <span class="ml-4 rtl:ml-0 rtl:mr-4">
+            {actions.map((btnProps) => (
+              <Button {...btnProps} class="ml-2 py-2.5 px-5.5 md:px-6 font-semibold shadow-none text-sm w-auto" />
+            ))}
+          </span>
+        ) : (
+          ''
+        )
+      }
     </div>
   </div>
+
+  <!-- Mobile drawer backdrop -->
+  <div id="drawer-backdrop" class="mobile-drawer-backdrop" aria-hidden="true"></div>
+
+  <!-- Mobile drawer panel -->
+  <aside id="mobile-drawer" class="mobile-drawer" aria-label="Mobile navigation">
+    <div
+      class="flex items-center justify-between px-5 h-14 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0"
+    >
+      <Logo />
+      <button
+        type="button"
+        id="drawer-close-btn"
+        class="flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        aria-label="Close menu"
+      >
+        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tree navigation -->
+    <nav class="flex-1 overflow-y-auto py-3 overscroll-contain">
+      <ul class="drawer-tree px-3">
+        {
+          links.map(({ text, textEn, href, links: subLinks }) => {
+            const hasChildren = subLinks && subLinks.length > 0;
+            const isActive = href === currentPath;
+            return (
+              <li class:list={['drawer-tree-section', { 'has-children': hasChildren }]}>
+                {hasChildren ? (
+                  <>
+                    <div class:list={['drawer-tree-label', { active: isActive }]}>
+                      <span data-lang-zh={text} data-lang-en={textEn || text}>
+                        {text}
+                      </span>
+                    </div>
+                    <ul class="drawer-tree-children">
+                      {subLinks.map(({ text: text2, textEn: textEn2, href: href2 }) => (
+                        <li>
+                          <a
+                            class:list={['drawer-tree-link', { active: href2 === currentPath }]}
+                            href={href2}
+                            data-lang-zh={text2}
+                            data-lang-en={textEn2 || text2}
+                          >
+                            {text2}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a
+                    class:list={['drawer-tree-link leaf', { active: isActive }]}
+                    href={href}
+                    data-lang-zh={text}
+                    data-lang-en={textEn || text}
+                  >
+                    {text}
+                  </a>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <!-- Footer: theme + language + RSS -->
+    <div
+      class="flex-shrink-0 border-t border-gray-200/60 dark:border-gray-700/60 p-4 flex items-center justify-center gap-3"
+    >
+      {showToggleTheme && <ToggleTheme iconClass="w-4 h-4" />}
+      {showToggleLanguage && <ToggleLanguage />}
+      {
+        showRssFeed && (
+          <a
+            class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm p-2 flex items-center"
+            aria-label="RSS Feed"
+            href={getAsset('/rss.xml')}
+          >
+            <Icon name="tabler:rss" class="w-4 h-4" />
+          </a>
+        )
+      }
+    </div>
+  </aside>
 </header>
+
+<style is:global>
+  /* ── Mobile drawer ── */
+  .mobile-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .mobile-drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    width: 18rem;
+    max-width: 85vw;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  .dark .mobile-drawer {
+    background: rgba(17, 24, 39, 0.97);
+    border-left-color: rgba(255, 255, 255, 0.08);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+  }
+  .mobile-drawer.open {
+    transform: translateX(0);
+  }
+  @media (min-width: 768px) {
+    .mobile-drawer,
+    .mobile-drawer-backdrop {
+      display: none !important;
+    }
+  }
+
+  /* ── Drawer tree navigation ── */
+  .drawer-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .drawer-tree-section {
+    position: relative;
+    margin-bottom: 2px;
+  }
+  /* Tree trunk line — always visible */
+  .drawer-tree-section.has-children::before {
+    content: '';
+    position: absolute;
+    left: 1.1rem;
+    top: 2.25rem;
+    bottom: 0.5rem;
+    width: 1.5px;
+    background: linear-gradient(to bottom, rgb(209 213 219), transparent);
+  }
+  .dark .drawer-tree-section.has-children::before {
+    background: linear-gradient(to bottom, rgb(55 65 81), transparent);
+  }
+
+  /* Section label (non-clickable header) */
+  .drawer-tree-label {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgb(107 114 128);
+    text-transform: uppercase;
+  }
+  .dark .drawer-tree-label {
+    color: rgb(156 163 175);
+  }
+  .drawer-tree-label.active {
+    color: rgb(37 99 235);
+  }
+  .dark .drawer-tree-label.active {
+    color: rgb(96 165 250);
+  }
+
+  /* Children list — always expanded */
+  .drawer-tree-children {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.375rem 0.5rem;
+  }
+
+  /* Child link */
+  .drawer-tree-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem 0.5rem 1.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: rgb(107 114 128);
+    transition: all 0.15s ease;
+    text-decoration: none;
+    position: relative;
+  }
+  .dark .drawer-tree-link {
+    color: rgb(156 163 175);
+  }
+  .drawer-tree-link:hover {
+    color: rgb(37 99 235);
+    background: rgb(243 244 246);
+  }
+  .dark .drawer-tree-link:hover {
+    color: rgb(96 165 250);
+    background: rgb(31 41 55);
+  }
+  .drawer-tree-link.active {
+    color: rgb(37 99 235);
+    background: rgb(239 246 255);
+    font-weight: 500;
+  }
+  .dark .drawer-tree-link.active {
+    color: rgb(96 165 250);
+    background: rgba(59, 130, 246, 0.1);
+  }
+  /* Tree branch connector dot */
+  .drawer-tree-children .drawer-tree-link::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgb(209 213 219);
+    transform: translateY(-50%);
+    transition: background 0.15s ease;
+  }
+  .dark .drawer-tree-children .drawer-tree-link::before {
+    background: rgb(75 85 99);
+  }
+  .drawer-tree-children .drawer-tree-link:hover::before,
+  .drawer-tree-children .drawer-tree-link.active::before {
+    background: rgb(37 99 235);
+  }
+  .dark .drawer-tree-children .drawer-tree-link:hover::before,
+  .dark .drawer-tree-children .drawer-tree-link.active::before {
+    background: rgb(96 165 250);
+  }
+  /* Leaf link (no children, no indent dot) */
+  .drawer-tree-link.leaf {
+    padding-left: 0.75rem;
+  }
+  .drawer-tree-link.leaf::before {
+    display: none;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    let drawer, backdrop;
+
+    function refreshRefs() {
+      drawer = document.getElementById('mobile-drawer');
+      backdrop = document.getElementById('drawer-backdrop');
+    }
+
+    function openDrawer() {
+      refreshRefs();
+      if (!drawer || !backdrop) return;
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      refreshRefs();
+      if (!drawer || !backdrop) return;
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function init() {
+      refreshRefs();
+
+      // Hamburger toggle
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('[data-aw-toggle-menu]')) {
+          e.preventDefault();
+          openDrawer();
+        }
+        // Close button
+        if (e.target.closest('#drawer-close-btn')) {
+          e.preventDefault();
+          closeDrawer();
+        }
+        // Backdrop click
+        if (e.target.id === 'drawer-backdrop') {
+          closeDrawer();
+        }
+        // Close drawer on nav link click
+        const link = e.target.closest('.drawer-tree-link');
+        if (link) {
+          closeDrawer();
+        }
+      });
+
+      // ESC closes drawer
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeDrawer();
+      });
+
+      // Window resize: close drawer when going to desktop
+      window.matchMedia('(min-width: 768px)').addEventListener('change', function (e) {
+        if (e.matches) closeDrawer();
+      });
+
+      // View Transitions: ensure drawer is closed after page swap
+      document.addEventListener('astro:after-swap', function () {
+        closeDrawer();
+      });
+    }
+
+    if (document.readyState !== 'loading') {
+      init();
+    } else {
+      document.addEventListener('DOMContentLoaded', init);
+    }
+  })();
+</script>

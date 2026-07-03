@@ -36,6 +36,7 @@
     "astro-embed": "^0.13.0",
     "astro-icon": "^1.1.5",
     "astro-seo": "^1.1.0",
+    "fuse.js": "^7.4.2",
     "html-to-image": "^1.11.13",
     "limax": "4.2.3",
     "lodash.merge": "^4.6.2",

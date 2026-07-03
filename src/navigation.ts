@@ -17,6 +17,7 @@ export const headerData = {
     {
       text: '项目',
       textEn: 'Projects',
+      href: getPermalink('/projects'),
       links: [
         {
           text: '项目列表',
@@ -38,6 +39,7 @@ export const headerData = {
     {
       text: '博客',
       textEn: 'Blog',
+      href: getBlogPermalink(),
       links: [
         {
           text: '全部文章',
