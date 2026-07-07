@@ -155,3 +155,5 @@ python eval/run_eval.py
 - 许可证：Apache-2.0
 
 Domux 是一次关于"极致延迟下文本语义解析能做到什么"的实验。如果你的智能家居项目需要低延迟、高准确率的指令理解能力，欢迎尝试并一起探索。
+
+![](~/assets/images/domux-card.png)
