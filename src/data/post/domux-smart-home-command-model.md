@@ -68,7 +68,7 @@ set|Light|mode|Reading|*|Master Bedroom|Second Floor
 
 ### 模糊指令处理
 
-对于没有明确数值的调整指令（如"brighten it up a little"、"lower the temperature a bit"），模型会输出 `adjustUp` 或 `adjustDown`，值字段留空（`*`），由下游系统根据当前状态决定调整幅度。
+对于没有明确数值的调整指令（如"调亮一点"、"温度调低一些"），模型会输出 `adjustUp` 或 `adjustDown`，值字段留空（`*`），由下游系统根据当前状态决定调整幅度。
 
 ## 性能评测
 
