@@ -1,6 +1,7 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import { getProjectsWithStats } from '~/utils/project-stats';
+import hfIcon from '~/assets/images/hugging-face.svg';
 
 export const prerender = false;
 
@@ -199,18 +200,7 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
                   class="inline-flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3 font-medium text-gray-700 transition-colors hover:border-primary-300 hover:text-primary-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:text-primary-400"
                 >
                   {isHF ? (
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
-                      <circle cx="9" cy="10" r="1.2" />
-                      <circle cx="15" cy="10" r="1.2" />
-                      <path
-                        d="M8.5 13.5s1.5 2 3.5 2 3.5-2 3.5-2"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1"
-                        stroke-linecap="round"
-                      />
-                    </svg>
+                    <img src={hfIcon.src} alt="Hugging Face" class="h-5 w-5" />
                   ) : isMS ? (
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                       <circle cx="12" cy="12" r="10" />
