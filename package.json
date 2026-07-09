@@ -1,6 +1,6 @@
 {
   "name": "@iflytek/website",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "iFLYTEK Open Source Website - Showcasing open source projects, blog, events and community contributions.",
   "type": "module",
   "private": true,

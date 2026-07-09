@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- **Hugging Face Icon Asset**: Download official Hugging Face SVG logo to `src/assets/images/hugging-face.svg`; replace inline placeholder SVGs in `ProjectCard.astro` and `[slug].astro` with `<img src={hfIcon.src}>`
+
 ## [0.3.0] - 2026-07-03
 
 ### Added
