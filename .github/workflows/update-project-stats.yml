@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ADMIN_PAT }}
       - uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -23,7 +23,7 @@ jobs:
       - name: Fetch project stats from GitHub API
         run: npm run fetch:project-stats
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
