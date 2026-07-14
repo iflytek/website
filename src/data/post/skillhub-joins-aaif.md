@@ -28,7 +28,7 @@ Agentic AI Foundation（AAIF）是 Linux Foundation 于 2025 年 12 月宣布成
 
 [Astron SkillHub](https://github.com/iflytek/skillhub) 是一个企业级开源智能体技能注册中心，帮助团队在组织内发布、发现和管理可复用的技能包，支持私有化部署、语义化版本管理、团队命名空间、RBAC 权限治理与审计日志，采用 Apache 2.0 许可证开源。
 
-SkillHub 也是讯飞开源 [Astron Landscape](https://opensource.iflytek.com/landscape) 的核心项目之一。Astron Landscape 是面向企业级 AI Agent 的开源项目全景图，此前已被 [中国日报](https://caijing.chinadaily.com.cn/a/202604/28/WS69f05c60a310942cc49a9d52.html) 等媒体报道。
+SkillHub 也是讯飞开源 [Astron Landscape](https://opensource.iflytek.com/landscape) 的核心项目之一。Astron Landscape 是全球首个企业级智能体开源项目矩阵全景图，以 CNCF Landscape 的方式完整呈现讯飞 Astron 开源生态：涵盖智能体编排平台 astron-agent、RPA 自动化套件 astron-rpa、官方技能库 iFly-Skills 与技能注册中心 SkillHub 等开源项目，覆盖从逻辑编排、工具调用到技能治理的完整 Agentic Workflow 技术栈。
 
 ## 相关链接
 
