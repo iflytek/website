@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - **Hugging Face Icon Asset**: Download official Hugging Face SVG logo to `src/assets/images/hugging-face.svg`; replace inline placeholder SVGs in `ProjectCard.astro` and `[slug].astro` with `<img src={hfIcon.src}>`
 
+### Fixed
+
+- **CI Auto-Update Workflows**: Scheduled workflows (`Update Project Stats`, `Update Contributors`) failed with GH013 because `GITHUB_TOKEN` cannot bypass the "Protect default branch" ruleset — replaced with `ADMIN_PAT` secret (repo admin added to ruleset bypass list)
+- **Observer Redeclaration on View Transitions**: `const Observer` in `BasicScripts.astro` top-level `is:inline` script caused `SyntaxError: Identifier 'Observer' has already been declared` when Astro client router swapped pages — wrapped in IIFE `(() => { ... })()` to create function scope
+
 ## [0.3.0] - 2026-07-03
 
 ### Added
