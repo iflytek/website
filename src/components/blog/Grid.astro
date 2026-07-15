@@ -10,5 +10,20 @@ const { posts } = Astro.props;
 ---
 
 <div class="grid gap-6 row-gap-5 md:grid-cols-2 lg:grid-cols-4 -mb-6">
-  {posts.map((post) => <Item post={post} />)}
+  {
+    posts.map((post) =>
+      post.translation ? (
+        <div>
+          <div class="i18n-zh">
+            <Item post={post} />
+          </div>
+          <div class="i18n-en">
+            <Item post={post.translation} />
+          </div>
+        </div>
+      ) : (
+        <Item post={post} />
+      )
+    )
+  }
 </div>

@@ -22,6 +22,13 @@ export interface Post {
   tags?: Taxonomy[];
   author?: string;
 
+  /** Content language of the post ('zh' when omitted in frontmatter). */
+  lang?: string;
+  /** ID of the counterpart post in the other language. */
+  translationId?: string;
+  /** Counterpart post in the other language, resolved at load time. */
+  translation?: Post;
+
   metadata?: MetaData;
 
   draft?: boolean;

@@ -53,6 +53,8 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     tags: rawTags = [],
     category: rawCategory,
     author,
+    lang = 'zh',
+    translationId,
     draft = false,
     metadata = {},
   } = data;
@@ -89,6 +91,9 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     tags: tags,
     author: author,
 
+    lang: lang,
+    translationId: translationId,
+
     draft: draft,
 
     metadata,
@@ -110,9 +115,17 @@ const load = async function (): Promise<Array<Post>> {
     .sort((a, b) => b.publishDate.valueOf() - a.publishDate.valueOf())
     .filter((post) => !post.draft);
 
+  // Link language variants declared via `translationId` frontmatter
+  results.forEach((post) => {
+    if (post.translationId) {
+      post.translation = results.find((p) => p.id === post.translationId || p.slug === post.translationId);
+    }
+  });
+
   return results;
 };
 
+let _allPosts: Array<Post>;
 let _posts: Array<Post>;
 
 /** */
@@ -130,10 +143,19 @@ export const blogTagRobots = APP_BLOG.tag.robots;
 
 export const blogPostsPerPage = APP_BLOG?.postsPerPage;
 
-/** */
+/** All posts, including non-default-language variants (used to build post pages). */
+export const fetchAllPosts = async (): Promise<Array<Post>> => {
+  if (!_allPosts) {
+    _allPosts = await load();
+  }
+
+  return _allPosts;
+};
+
+/** Posts in the default language; translated variants are reachable via the language toggle. */
 export const fetchPosts = async (): Promise<Array<Post>> => {
   if (!_posts) {
-    _posts = await load();
+    _posts = (await fetchAllPosts()).filter((post) => post.lang === 'zh');
   }
 
   return _posts;
@@ -187,7 +209,7 @@ export const getStaticPathsBlogList = async ({ paginate }: { paginate: PaginateF
 /** */
 export const getStaticPathsBlogPost = async () => {
   if (!isBlogEnabled || !isBlogPostRouteEnabled) return [];
-  return (await fetchPosts()).flatMap((post) => ({
+  return (await fetchAllPosts()).flatMap((post) => ({
     params: {
       blog: post.permalink,
     },
@@ -252,6 +274,7 @@ export async function getRelatedPosts(originalPost: Post, maxResults: number = 4
 
   const postsWithScores = allPosts.reduce((acc: { post: Post; score: number }[], iteratedPost: Post) => {
     if (iteratedPost.slug === originalPost.slug) return acc;
+    if (originalPost.translation && iteratedPost.slug === originalPost.translation.slug) return acc;
 
     let score = 0;
     if (iteratedPost.category && originalPost.category && iteratedPost.category.slug === originalPost.category.slug) {
@@ -285,7 +308,9 @@ export async function getRelatedPosts(originalPost: Post, maxResults: number = 4
 /** */
 export async function getAdjacentPosts(currentPost: Post): Promise<{ prev?: Post; next?: Post }> {
   const posts = await fetchPosts();
-  const idx = posts.findIndex((p) => p.slug === currentPost.slug);
+  // A translated variant is not in the default-language list; anchor on its counterpart
+  const anchor = currentPost.lang !== 'zh' && currentPost.translation ? currentPost.translation : currentPost;
+  const idx = posts.findIndex((p) => p.slug === anchor.slug);
   if (idx === -1) return {};
   return {
     prev: idx < posts.length - 1 ? posts[idx + 1] : undefined,
