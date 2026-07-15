@@ -16,6 +16,8 @@ author: 'iFLYTEK Open Source Team'
 
 完整成员列表可在 AAIF 官网查看：[aaif.io/members](https://aaif.io/members/)
 
+> English version: [Astron SkillHub Joins AAIF as an Associate Member](/blog/skillhub-joins-aaif-en)
+
 ## 关于 AAIF
 
 Agentic AI Foundation（AAIF）是 Linux Foundation 于 2025 年 12 月宣布成立的中立、开放的基金会，致力于以透明、协作和标准化的方式推动 Agentic AI 领域的开源创新。基金会由 Anthropic 捐赠的 Model Context Protocol（MCP）、Block 捐赠的 goose 以及 OpenAI 捐赠的 AGENTS.md 三大项目锚定，白金创始成员包括 AWS、Anthropic、Block、Bloomberg、Cloudflare、Google、Microsoft、OpenAI 等。
