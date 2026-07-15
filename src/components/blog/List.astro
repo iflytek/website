@@ -13,7 +13,18 @@ const { posts } = Astro.props;
   {
     posts.map((post) => (
       <li class="mb-12 md:mb-20">
-        <Item post={post} />
+        {post.translation ? (
+          <>
+            <div class="i18n-zh">
+              <Item post={post} />
+            </div>
+            <div class="i18n-en">
+              <Item post={post.translation} />
+            </div>
+          </>
+        ) : (
+          <Item post={post} />
+        )}
       </li>
     ))
   }

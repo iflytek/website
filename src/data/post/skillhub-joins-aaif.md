@@ -6,6 +6,8 @@ category: 'news'
 image: '~/assets/images/aaif-skillhub.png'
 tags: ['skillhub', 'aaif', 'linux-foundation', 'announcement']
 author: 'iFLYTEK Open Source Team'
+lang: 'zh'
+translationId: 'skillhub-joins-aaif-en'
 ---
 
 # Astron SkillHub 正式加入 AAIF 成为 Associate Member
@@ -15,8 +17,6 @@ author: 'iFLYTEK Open Source Team'
 ![Astron SkillHub 出现在 AAIF Associate Members 列表中](~/assets/images/aaif-skillhub.png)
 
 完整成员列表可在 AAIF 官网查看：[aaif.io/members](https://aaif.io/members/)
-
-> English version: [Astron SkillHub Joins AAIF as an Associate Member](/blog/skillhub-joins-aaif-en)
 
 ## 关于 AAIF
 

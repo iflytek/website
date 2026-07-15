@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Hugging Face Icon Asset**: Download official Hugging Face SVG logo to `src/assets/images/hugging-face.svg`; replace inline placeholder SVGs in `ProjectCard.astro` and `[slug].astro` with `<img src={hfIcon.src}>`
+- **Blog Post Language Variants**: Posts can declare `lang` and `translationId` frontmatter to link zh/en versions — the site language toggle switches between variants on post pages (`data-translation-url` navigation in `BasicScripts.astro`), list/grid cards render both variants and swap via `.i18n-zh`/`.i18n-en` classes, and translated variants are excluded from pagination, RSS, related and adjacent posts (`fetchPosts` vs `fetchAllPosts` in `blog.ts`). First bilingual post: Astron SkillHub joining AAIF as Associate Member (news, zh + en)
 
 ### Fixed
 

@@ -6,6 +6,8 @@ category: 'news'
 image: '~/assets/images/aaif-skillhub.png'
 tags: ['skillhub', 'aaif', 'linux-foundation', 'announcement']
 author: 'iFLYTEK Open Source Team'
+lang: 'en'
+translationId: 'skillhub-joins-aaif'
 ---
 
 # Astron SkillHub Joins AAIF as an Associate Member
@@ -15,8 +17,6 @@ Astron SkillHub has recently joined the Agentic AI Foundation (AAIF) as an Assoc
 ![Astron SkillHub listed among AAIF Associate Members](~/assets/images/aaif-skillhub.png)
 
 The full member list is available on the AAIF website: [aaif.io/members](https://aaif.io/members/)
-
-> 中文版：[Astron SkillHub 正式加入 AAIF 成为 Associate Member](/blog/skillhub-joins-aaif)
 
 ## About AAIF
 

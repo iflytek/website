@@ -139,6 +139,12 @@ import { translations } from '~/utils/translations';
       localStorage.lang = lang;
       applyLanguage(lang);
       document.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
+
+      // If the current page has a variant in the selected language, navigate to it
+      const translated = document.querySelector('[data-translation-url]');
+      if (translated && translated.getAttribute('data-post-lang') !== lang) {
+        window.location.assign(translated.getAttribute('data-translation-url'));
+      }
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
