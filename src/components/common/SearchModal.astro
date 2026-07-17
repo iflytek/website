@@ -322,10 +322,12 @@
           const excerptIndices = getMatchIndices(r.matches, lang === 'en' ? 'excerptEn' : 'excerpt');
           const colorClass = TYPE_COLORS[item.type] || '';
 
+          const itemUrl = lang === 'en' && item.urlEn ? item.urlEn : item.url;
+
           html += '<li>';
           html +=
             '<a href="' +
-            escapeHtml(item.url) +
+            escapeHtml(itemUrl) +
             '" class="search-result-item block rounded-lg px-3 py-2.5 transition-colors" data-search-index="' +
             flatIdx +
             '">';

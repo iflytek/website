@@ -230,7 +230,7 @@ import { translations } from '~/utils/translations';
 <script is:inline>
   /* Inspired by: https://github.com/heidkaemper/tailwindcss-intersect */
   (() => {
-    const Observer = {
+    window.Observer = {
       observer: null,
       delayBetweenAnimations: 100,
       animationCounter: 0,

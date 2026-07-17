@@ -4,15 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-17
+
 ### Added
 
 - **Hugging Face Icon Asset**: Download official Hugging Face SVG logo to `src/assets/images/hugging-face.svg`; replace inline placeholder SVGs in `ProjectCard.astro` and `[slug].astro` with `<img src={hfIcon.src}>`
 - **Blog Post Language Variants**: Posts can declare `lang` and `translationId` frontmatter to link zh/en versions — the site language toggle switches between variants on post pages (`data-translation-url` navigation in `BasicScripts.astro`), list/grid cards render both variants and swap via `.i18n-zh`/`.i18n-en` classes, and translated variants are excluded from pagination, RSS, related and adjacent posts (`fetchPosts` vs `fetchAllPosts` in `blog.ts`). First bilingual post: Astron SkillHub joining AAIF as Associate Member (news, zh + en)
 
+### Changed
+
+- **Search Index Blog Deduplication**: `search-index.json.ts` now groups blog posts by `translationId` — bilingual pairs merge into a single entry carrying `title`/`titleEn`, `excerpt`/`excerptEn`, and both `url`/`urlEn`; monolingual posts remain as single entries. Index shrinks from 11 to 9 blog entries for 7 monolingual + 2 bilingual pairs
+- **SearchModal Language-Aware URLs**: `SearchModal.astro` selects `item.urlEn` when system language is English, so search result clicks navigate to the correct language variant of the blog post
+- **PostNavigation Language-Aware**: `PostNavigation.astro` receives the current `post` and uses `display()` helper to show prev/next titles and URLs matching the page language — bilingual posts show the translation title + URL, monolingual posts show their native content
+- **TableOfContents i18n**: TOC sidebar heading "目录" replaced with `data-i18n="blog.tableOfContents"` — shows "Table of Contents" in English mode; translation key added to `translations.ts`
+
 ### Fixed
 
 - **CI Auto-Update Workflows**: Scheduled workflows (`Update Project Stats`, `Update Contributors`) failed with GH013 because `GITHUB_TOKEN` cannot bypass the "Protect default branch" ruleset — replaced with `ADMIN_PAT` secret (repo admin added to ruleset bypass list)
-- **Observer Redeclaration on View Transitions**: `const Observer` in `BasicScripts.astro` top-level `is:inline` script caused `SyntaxError: Identifier 'Observer' has already been declared` when Astro client router swapped pages — wrapped in IIFE `(() => { ... })()` to create function scope
+- **Observer Redeclaration on View Transitions**: `const Observer` in `BasicScripts.astro` top-level `is:inline` script caused `SyntaxError: Identifier 'Observer' has already been declared` when Astro client router swapped pages — wrapped in IIFE `(() => { ... })()` to create function scope, exposed as `window.Observer` so the theme toggle script block can access `Observer.removeAnimationDelay()`
 
 ## [0.3.0] - 2026-07-03
 
@@ -53,6 +62,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Landscape Arrow Label Overlap & Title Truncation**: SVG relationship arrow labels ("触发 RPA"/"提供 API") overlapped section titles; narrow column titles (AGENT-MANAGEMENT) were truncated — rotated labels vertical (`rotate(-90)`), added `whitespace-nowrap` and reduced title font 13→12px for all 8 section headers
 - **Search View Transitions**: `const` DOM refs became stale after page swap — changed to `let` with `refreshRefs()` + `attachElementListeners()` called in `astro:after-swap`
 - **Adopter Multi-Cycle Failure**: Modal broke after multiple open/close/navigation cycles — fixed by calling `loadAdopterData()` in every `openModal()`, `syncHash()`, and `astro:after-swap` handler
 - **Adopter Direct URL Hash**: Navigating to `/adopters#adopter-xxx` didn't show card when DOM wasn't ready — fixed with retry mechanism (20 attempts × 50ms)
