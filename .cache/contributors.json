@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-15T05:53:30.409Z",
-  "total": 170,
+  "updated_at": "2026-07-17T07:34:29.610Z",
+  "total": 169,
   "contributors": [
     {
       "username": "whybeyoung",
@@ -35,7 +35,7 @@
     {
       "username": "dongmucat",
       "avatar_url": "https://avatars.githubusercontent.com/u/70678707?v=4",
-      "contributions": 317,
+      "contributions": 318,
       "profile_url": "https://github.com/dongmucat"
     },
     {
@@ -53,7 +53,7 @@
     {
       "username": "FenjuFu",
       "avatar_url": "https://avatars.githubusercontent.com/u/92919259?v=4",
-      "contributions": 164,
+      "contributions": 169,
       "profile_url": "https://github.com/FenjuFu"
     },
     {
@@ -99,16 +99,16 @@
       "profile_url": "https://github.com/doctorbruce"
     },
     {
+      "username": "dongjiang1989",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5010507?v=4",
+      "contributions": 93,
+      "profile_url": "https://github.com/dongjiang1989"
+    },
+    {
       "username": "Kexinist",
       "avatar_url": "https://avatars.githubusercontent.com/u/108705088?v=4",
       "contributions": 93,
       "profile_url": "https://github.com/Kexinist"
-    },
-    {
-      "username": "dongjiang1989",
-      "avatar_url": "https://avatars.githubusercontent.com/u/5010507?v=4",
-      "contributions": 91,
-      "profile_url": "https://github.com/dongjiang1989"
     },
     {
       "username": "xuehaoweng",
@@ -385,12 +385,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/62798940?v=4",
       "contributions": 13,
       "profile_url": "https://github.com/gaozhenfeng1"
-    },
-    {
-      "username": "OLDyade",
-      "avatar_url": "https://avatars.githubusercontent.com/u/75075125?v=4",
-      "contributions": 13,
-      "profile_url": "https://github.com/OLDyade"
     },
     {
       "username": "tap-top",
@@ -735,10 +729,10 @@
       "profile_url": "https://github.com/fangdudu"
     },
     {
-      "username": "Rsweater",
-      "avatar_url": "https://avatars.githubusercontent.com/u/49091147?v=4",
+      "username": "myml",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13045857?v=4",
       "contributions": 2,
-      "profile_url": "https://github.com/Rsweater"
+      "profile_url": "https://github.com/myml"
     },
     {
       "username": "tenten-shih",
@@ -747,10 +741,10 @@
       "profile_url": "https://github.com/tenten-shih"
     },
     {
-      "username": "myml",
-      "avatar_url": "https://avatars.githubusercontent.com/u/13045857?v=4",
+      "username": "Rsweater",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49091147?v=4",
       "contributions": 2,
-      "profile_url": "https://github.com/myml"
+      "profile_url": "https://github.com/Rsweater"
     },
     {
       "username": "Xparadigm-jay",

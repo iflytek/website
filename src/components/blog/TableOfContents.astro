@@ -26,7 +26,9 @@ const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 {
   tocHeadings.length > 0 && (
     <nav class="hidden lg:block sticky top-24 self-start w-52 shrink-0" aria-label="Table of Contents">
-      <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3">目录</h4>
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3">
+        <span data-i18n="blog.tableOfContents">目录</span>
+      </h4>
       <ul class="space-y-0.5 text-sm">
         {tocHeadings.map((h) => (
           <li class={h.depth === 3 ? 'ml-4' : ''}>

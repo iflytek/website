@@ -188,6 +188,7 @@ export const translations: Record<string, { zh: string; en: string }> = {
   'blog.viewAllPosts': { zh: '查看所有文章', en: 'View All Posts' },
   'blog.newerPosts': { zh: '更新的文章', en: 'Newer posts' },
   'blog.olderPosts': { zh: '更早的文章', en: 'Older posts' },
+  'blog.tableOfContents': { zh: '目录', en: 'Table of Contents' },
 
   // Landscape
   'landscape.titleZh': { zh: '开源全景图', en: 'Open Source Landscape' },

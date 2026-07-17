@@ -2,11 +2,21 @@
 import type { Post } from '~/types';
 
 export interface Props {
+  post: Post;
   prev?: Post;
   next?: Post;
 }
 
-const { prev, next } = Astro.props;
+const { post, prev, next } = Astro.props;
+const currentLang = post.lang || 'zh';
+
+/** Pick the title/permalink that matches the current page language. */
+const display = (p: Post) => {
+  if (currentLang === 'en' && p.translation && p.translation.lang === 'en') {
+    return { title: p.translation.title, href: '/' + p.translation.permalink };
+  }
+  return { title: p.title, href: '/' + p.permalink };
+};
 ---
 
 <div class="mx-auto px-6 sm:px-6 max-w-6xl pt-8 md:pt-4 pb-12 md:pb-20">
@@ -14,14 +24,14 @@ const { prev, next } = Astro.props;
     {
       prev ? (
         <a
-          href={'/' + prev.permalink}
+          href={display(prev).href}
           class="group flex-1 block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-blue-400 transition-colors"
         >
           <span class="text-xs text-gray-400 dark:text-gray-500">
             ← <span data-i18n="blog.prevPost">上一篇</span>
           </span>
           <p class="mt-1 font-semibold text-gray-900 dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-            {prev.title}
+            {display(prev).title}
           </p>
         </a>
       ) : (
@@ -31,14 +41,14 @@ const { prev, next } = Astro.props;
     {
       next ? (
         <a
-          href={'/' + next.permalink}
+          href={display(next).href}
           class="group flex-1 block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-blue-400 transition-colors text-right"
         >
           <span class="text-xs text-gray-400 dark:text-gray-500">
             <span data-i18n="blog.nextPost">下一篇</span> →
           </span>
           <p class="mt-1 font-semibold text-gray-900 dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-            {next.title}
+            {display(next).title}
           </p>
         </a>
       ) : (

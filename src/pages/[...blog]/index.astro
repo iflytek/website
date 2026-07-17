@@ -50,6 +50,6 @@ const metadata = merge(
   <SinglePost post={post} url={url}>
     {post.Content && <post.Content />}
   </SinglePost>
-  <PostNavigation prev={prev} next={next} />
+  <PostNavigation post={post} prev={prev} next={next} />
   <RelatedPosts post={post} />
 </Layout>
