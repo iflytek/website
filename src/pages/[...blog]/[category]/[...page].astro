@@ -18,13 +18,6 @@ const { page, category } = Astro.props as Props;
 
 const currentPage = page.currentPage ?? 1;
 
-const metadata = {
-  title: `Category '${category.title}' ${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
-  robots: {
-    index: blogCategoryRobots?.index,
-    follow: blogCategoryRobots?.follow,
-  },
-};
 const categoryMeta: Record<string, { titleZh: string; titleEn: string; description: string; descriptionEn: string }> = {
   tech: {
     titleZh: '技术博客',
@@ -47,6 +40,15 @@ const cat = categoryMeta[category.slug] || {
   titleEn: category.title,
   description: `${category.title} 相关文章`,
   descriptionEn: `${category.title} related posts`,
+};
+
+const metadata = {
+  title: `Category '${category.title}' ${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
+  description: `${cat.description} — ${cat.descriptionEn}`,
+  robots: {
+    index: blogCategoryRobots?.index,
+    follow: blogCategoryRobots?.follow,
+  },
 };
 ---
 

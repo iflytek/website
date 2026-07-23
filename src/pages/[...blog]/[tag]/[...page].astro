@@ -21,6 +21,7 @@ const currentPage = page.currentPage ?? 1;
 
 const metadata = {
   title: `Posts by tag '${tag.title}'${currentPage > 1 ? ` — Page ${currentPage} ` : ''}`,
+  description: `标签 '${tag.title}' 下的文章 — Posts tagged '${tag.title}' from the iFLYTEK open source blog.`,
   robots: {
     index: blogTagRobots?.index,
     follow: blogTagRobots?.follow,
