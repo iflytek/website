@@ -23,6 +23,8 @@ const currentPage = page.currentPage ?? 1;
 
 const metadata = {
   title: `Blog${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
+  description:
+    '讯飞开源博客 — Articles from the iFLYTEK open source community: technical deep dives, project updates, release notes and community news.',
   robots: {
     index: blogListRobots?.index && currentPage === 1,
     follow: blogListRobots?.follow,
