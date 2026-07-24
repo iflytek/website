@@ -4,227 +4,229 @@ import { translations } from '~/utils/translations';
 ---
 
 <script is:inline define:vars={{ defaultTheme: UI.theme, i18n: translations }}>
-  if (window.basic_script) {
-    return;
-  }
-
-  window.basic_script = true;
-
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    // Update active button highlight
-    const stored = localStorage.theme || 'system';
-    document.querySelectorAll('[data-aw-theme-btn]').forEach((btn) => {
-      if (btn.getAttribute('data-aw-theme-btn') === stored) {
-        btn.setAttribute('data-active', '');
-      } else {
-        btn.removeAttribute('data-active');
-      }
-    });
-  }
-
-  function getEffectiveTheme() {
-    const stored = localStorage.theme;
-    if (stored === 'dark' || stored === 'light') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function applyLanguage(lang) {
-    // Dictionary-based: elements with data-i18n="key"
-    document.querySelectorAll('[data-i18n]').forEach((el) => {
-      const key = el.getAttribute('data-i18n');
-      const t = i18n[key];
-      if (t) {
-        el.textContent = lang === 'en' ? t.en : t.zh;
-      }
-    });
-    // Attribute-based: elements with data-lang-zh / data-lang-en (e.g. nav links)
-    document.querySelectorAll('[data-lang-zh]').forEach((el) => {
-      const zh = el.getAttribute('data-lang-zh');
-      const en = el.getAttribute('data-lang-en');
-      if (lang === 'en' && en) {
-        el.textContent = en;
-      } else if (zh) {
-        el.textContent = zh;
-      }
-    });
-    // Update active button highlight
-    document.querySelectorAll('[data-aw-lang-btn]').forEach((btn) => {
-      if (btn.getAttribute('data-aw-lang-btn') === lang) {
-        btn.setAttribute('data-active', '');
-      } else {
-        btn.removeAttribute('data-active');
-      }
-    });
-    // Toggle language class on <html> for CSS-based content visibility
-    document.documentElement.classList.toggle('lang-en', lang === 'en');
-  }
-
-  const initLang = function () {
-    const lang = localStorage.lang || 'zh';
-    applyLanguage(lang);
-  };
-  initLang();
-
-  const initTheme = function () {
-    if (defaultTheme && defaultTheme.endsWith(':only')) {
-      applyTheme(defaultTheme.replace(':only', ''));
+  (() => {
+    if (window.basic_script) {
       return;
     }
 
-    const stored = localStorage.theme;
-    if (stored === 'dark' || stored === 'light') {
-      applyTheme(stored);
-    } else {
-      // system mode
-      applyTheme(getEffectiveTheme());
-    }
-  };
-  initTheme();
+    window.basic_script = true;
 
-  // Listen for system theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-    if (!localStorage.theme) {
-      applyTheme(e.matches ? 'dark' : 'light');
-    }
-  });
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
 
-  function attachEvent(selector, event, fn) {
-    const matches = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
-    if (matches && matches.length) {
-      matches.forEach((elem) => {
-        elem.addEventListener(event, (e) => fn(e, elem), false);
+      // Update active button highlight
+      const stored = localStorage.theme || 'system';
+      document.querySelectorAll('[data-aw-theme-btn]').forEach((btn) => {
+        if (btn.getAttribute('data-aw-theme-btn') === stored) {
+          btn.setAttribute('data-active', '');
+        } else {
+          btn.removeAttribute('data-active');
+        }
       });
     }
-  }
 
-  const onLoad = function () {
-    let lastKnownScrollPosition = window.scrollY;
-    let ticking = true;
+    function getEffectiveTheme() {
+      const stored = localStorage.theme;
+      if (stored === 'dark' || stored === 'light') return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
 
-    attachEvent('#header nav', 'click', function () {
-      document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
-    });
+    function applyLanguage(lang) {
+      // Dictionary-based: elements with data-i18n="key"
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        const t = i18n[key];
+        if (t) {
+          el.textContent = lang === 'en' ? t.en : t.zh;
+        }
+      });
+      // Attribute-based: elements with data-lang-zh / data-lang-en (e.g. nav links)
+      document.querySelectorAll('[data-lang-zh]').forEach((el) => {
+        const zh = el.getAttribute('data-lang-zh');
+        const en = el.getAttribute('data-lang-en');
+        if (lang === 'en' && en) {
+          el.textContent = en;
+        } else if (zh) {
+          el.textContent = zh;
+        }
+      });
+      // Update active button highlight
+      document.querySelectorAll('[data-aw-lang-btn]').forEach((btn) => {
+        if (btn.getAttribute('data-aw-lang-btn') === lang) {
+          btn.setAttribute('data-active', '');
+        } else {
+          btn.removeAttribute('data-active');
+        }
+      });
+      // Toggle language class on <html> for CSS-based content visibility
+      document.documentElement.classList.toggle('lang-en', lang === 'en');
+    }
 
-    attachEvent('[data-aw-toggle-menu]', 'click', function (_, elem) {
-      elem.classList.toggle('expanded');
-    });
+    const initLang = function () {
+      const lang = localStorage.lang || 'zh';
+      applyLanguage(lang);
+    };
+    initLang();
 
-    attachEvent('[data-aw-theme-btn]', 'click', function (_, elem) {
-      if (defaultTheme.endsWith(':only')) {
+    const initTheme = function () {
+      if (defaultTheme && defaultTheme.endsWith(':only')) {
+        applyTheme(defaultTheme.replace(':only', ''));
         return;
       }
 
-      Observer.removeAnimationDelay();
-
-      const mode = elem.getAttribute('data-aw-theme-btn');
-
-      if (mode === 'system') {
-        localStorage.removeItem('theme');
+      const stored = localStorage.theme;
+      if (stored === 'dark' || stored === 'light') {
+        applyTheme(stored);
       } else {
-        localStorage.theme = mode;
+        // system mode
+        applyTheme(getEffectiveTheme());
       }
-
-      const effective = mode === 'system' ? getEffectiveTheme() : mode;
-      applyTheme(effective);
-    });
-
-    attachEvent('[data-aw-lang-btn]', 'click', function (_, elem) {
-      const lang = elem.getAttribute('data-aw-lang-btn');
-      localStorage.lang = lang;
-      applyLanguage(lang);
-      document.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
-
-      // If the current page has a variant in the selected language, navigate to it
-      const translated = document.querySelector('[data-translation-url]');
-      if (translated && translated.getAttribute('data-post-lang') !== lang) {
-        window.location.assign(translated.getAttribute('data-translation-url'));
-      }
-    });
-
-    attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
-      const network = elem.getAttribute('data-aw-social-share');
-      const url = encodeURIComponent(elem.getAttribute('data-aw-url'));
-      const text = encodeURIComponent(elem.getAttribute('data-aw-text'));
-
-      let href;
-      switch (network) {
-        case 'facebook':
-          href = `https://www.facebook.com/sharer.php?u=${url}`;
-          break;
-        case 'twitter':
-          href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-          break;
-        case 'linkedin':
-          href = `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${text}`;
-          break;
-        case 'whatsapp':
-          href = `https://wa.me/?text=${text}%20${url}`;
-          break;
-        case 'mail':
-          href = `mailto:?subject=%22${text}%22&body=${text}%20${url}`;
-          break;
-
-        default:
-          return;
-      }
-
-      const newlink = document.createElement('a');
-      newlink.target = '_blank';
-      newlink.href = href;
-      newlink.click();
-    });
-
-    const screenSize = window.matchMedia('(max-width: 767px)');
-    screenSize.addEventListener('change', function () {
-      document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
-    });
-
-    function applyHeaderStylesOnScroll() {
-      const header = document.querySelector('#header[data-aw-sticky-header]');
-      if (!header) return;
-      if (lastKnownScrollPosition > 60 && !header.classList.contains('scroll')) {
-        header.classList.add('scroll');
-      } else if (lastKnownScrollPosition <= 60 && header.classList.contains('scroll')) {
-        header.classList.remove('scroll');
-      }
-      ticking = false;
-    }
-    applyHeaderStylesOnScroll();
-
-    attachEvent([document], 'scroll', function () {
-      lastKnownScrollPosition = window.scrollY;
-
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          applyHeaderStylesOnScroll();
-        });
-        ticking = true;
-      }
-    });
-  };
-  const onPageShow = function () {
-    document.documentElement.classList.add('motion-safe:scroll-smooth');
-    const elem = document.querySelector('[data-aw-toggle-menu]');
-    if (elem) {
-      elem.classList.remove('expanded');
-    }
-  };
-
-  window.onload = onLoad;
-  window.onpageshow = onPageShow;
-
-  document.addEventListener('astro:after-swap', () => {
+    };
     initTheme();
-    initLang();
-    onLoad();
-    onPageShow();
-  });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+      if (!localStorage.theme) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+
+    function attachEvent(selector, event, fn) {
+      const matches = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
+      if (matches && matches.length) {
+        matches.forEach((elem) => {
+          elem.addEventListener(event, (e) => fn(e, elem), false);
+        });
+      }
+    }
+
+    const onLoad = function () {
+      let lastKnownScrollPosition = window.scrollY;
+      let ticking = true;
+
+      attachEvent('#header nav', 'click', function () {
+        document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
+      });
+
+      attachEvent('[data-aw-toggle-menu]', 'click', function (_, elem) {
+        elem.classList.toggle('expanded');
+      });
+
+      attachEvent('[data-aw-theme-btn]', 'click', function (_, elem) {
+        if (defaultTheme.endsWith(':only')) {
+          return;
+        }
+
+        Observer.removeAnimationDelay();
+
+        const mode = elem.getAttribute('data-aw-theme-btn');
+
+        if (mode === 'system') {
+          localStorage.removeItem('theme');
+        } else {
+          localStorage.theme = mode;
+        }
+
+        const effective = mode === 'system' ? getEffectiveTheme() : mode;
+        applyTheme(effective);
+      });
+
+      attachEvent('[data-aw-lang-btn]', 'click', function (_, elem) {
+        const lang = elem.getAttribute('data-aw-lang-btn');
+        localStorage.lang = lang;
+        applyLanguage(lang);
+        document.dispatchEvent(new CustomEvent('languagechange', { detail: { lang } }));
+
+        // If the current page has a variant in the selected language, navigate to it
+        const translated = document.querySelector('[data-translation-url]');
+        if (translated && translated.getAttribute('data-post-lang') !== lang) {
+          window.location.assign(translated.getAttribute('data-translation-url'));
+        }
+      });
+
+      attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
+        const network = elem.getAttribute('data-aw-social-share');
+        const url = encodeURIComponent(elem.getAttribute('data-aw-url'));
+        const text = encodeURIComponent(elem.getAttribute('data-aw-text'));
+
+        let href;
+        switch (network) {
+          case 'facebook':
+            href = `https://www.facebook.com/sharer.php?u=${url}`;
+            break;
+          case 'twitter':
+            href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            break;
+          case 'linkedin':
+            href = `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${text}`;
+            break;
+          case 'whatsapp':
+            href = `https://wa.me/?text=${text}%20${url}`;
+            break;
+          case 'mail':
+            href = `mailto:?subject=%22${text}%22&body=${text}%20${url}`;
+            break;
+
+          default:
+            return;
+        }
+
+        const newlink = document.createElement('a');
+        newlink.target = '_blank';
+        newlink.href = href;
+        newlink.click();
+      });
+
+      const screenSize = window.matchMedia('(max-width: 767px)');
+      screenSize.addEventListener('change', function () {
+        document.querySelector('[data-aw-toggle-menu]')?.classList.remove('expanded');
+      });
+
+      function applyHeaderStylesOnScroll() {
+        const header = document.querySelector('#header[data-aw-sticky-header]');
+        if (!header) return;
+        if (lastKnownScrollPosition > 60 && !header.classList.contains('scroll')) {
+          header.classList.add('scroll');
+        } else if (lastKnownScrollPosition <= 60 && header.classList.contains('scroll')) {
+          header.classList.remove('scroll');
+        }
+        ticking = false;
+      }
+      applyHeaderStylesOnScroll();
+
+      attachEvent([document], 'scroll', function () {
+        lastKnownScrollPosition = window.scrollY;
+
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            applyHeaderStylesOnScroll();
+          });
+          ticking = true;
+        }
+      });
+    };
+    const onPageShow = function () {
+      document.documentElement.classList.add('motion-safe:scroll-smooth');
+      const elem = document.querySelector('[data-aw-toggle-menu]');
+      if (elem) {
+        elem.classList.remove('expanded');
+      }
+    };
+
+    window.onload = onLoad;
+    window.onpageshow = onPageShow;
+
+    document.addEventListener('astro:after-swap', () => {
+      initTheme();
+      initLang();
+      onLoad();
+      onPageShow();
+    });
+  })();
 </script>
 
 <script is:inline>
