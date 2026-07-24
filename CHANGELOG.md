@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- **SEO-Friendly Project and Event Filters**: Replace client-side-only filters with server-rendered, shareable query-string URLs for project category/language and event type; add explicit empty states, request-time event status calculation, and page-specific bilingual meta descriptions across list, policy, and blog pages
+
 ## [0.4.0] - 2026-07-17
 
 ### Added

@@ -1,21 +1,26 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
-import { events } from '~/data/events';
+import { events as eventsData } from '~/data/events';
+
+export const prerender = false;
 
 const metadata = {
   title: 'Events',
+  description:
+    '科大讯飞开源社区活动 — iFLYTEK open source community events: meetups, hackathons, workshops and conferences, with the latest community news.',
 };
 
 // Auto-determine status based on event date vs current date
 const now = new Date();
 const todayStr = now.toISOString().split('T')[0];
-events.forEach((event) => {
-  event.status = event.date === todayStr ? 'ongoing' : event.date > todayStr ? 'upcoming' : 'past';
-});
-
-// Sort by date descending
-events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const events = eventsData
+  .map((event) => ({
+    ...event,
+    status: (event.date === todayStr ? 'ongoing' : event.date > todayStr ? 'upcoming' : 'past') as
+      'ongoing' | 'upcoming' | 'past',
+  }))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 const typeLabels: Record<string, string> = {
   conference: 'Conference',
@@ -35,6 +40,15 @@ const typeColors: Record<string, string> = {
 
 // Get unique types for filter
 const eventTypes = [...new Set(events.map((e) => e.type))];
+
+// URL-driven filter state so filtered views are crawlable and shareable
+const typeParam = Astro.url.searchParams.get('type') || 'all';
+const activeType = (eventTypes as string[]).includes(typeParam) ? typeParam : 'all';
+const filteredEvents = activeType === 'all' ? events : events.filter((e) => e.type === activeType);
+
+const activeChipClass = 'bg-primary-600 text-white';
+const inactiveChipClass =
+  'bg-gray-100 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
 
 // Blog posts for news section
 const posts = await getCollection('post');
@@ -75,22 +89,28 @@ const newsPosts = posts
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
       <!-- Filter Tabs -->
       <div class="mb-10 flex flex-wrap items-center justify-center gap-3">
-        <button
-          class="event-filter-btn rounded-full bg-primary-600 px-5 py-2 text-sm font-medium text-white"
-          data-type="all"
+        <a
+          href="/events"
+          class:list={[
+            'rounded-full px-5 py-2 text-sm font-medium',
+            activeType === 'all' ? activeChipClass : inactiveChipClass,
+          ]}
         >
           <span data-lang-zh={`全部 (${events.length})`} data-lang-en={`All (${events.length})`}
             >全部 ({events.length})</span
           >
-        </button>
+        </a>
         {
           eventTypes.map((type) => (
-            <button
-              class="event-filter-btn rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              data-type={type}
+            <a
+              href={`/events?type=${type}`}
+              class:list={[
+                'rounded-full px-5 py-2 text-sm font-medium',
+                activeType === type ? activeChipClass : inactiveChipClass,
+              ]}
             >
               {typeLabels[type]} ({events.filter((e) => e.type === type).length})
-            </button>
+            </a>
           ))
         }
       </div>
@@ -98,8 +118,8 @@ const newsPosts = posts
       <!-- Timeline -->
       <div class="space-y-1">
         {
-          events.map((event, index) => (
-            <div class="event-item relative flex gap-4 sm:gap-8" data-type={event.type}>
+          filteredEvents.map((event, index) => (
+            <div class="relative flex gap-4 sm:gap-8">
               {/* Timeline line & dot */}
               <div class="flex flex-col items-center">
                 <div class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center">
@@ -114,7 +134,7 @@ const newsPosts = posts
                     ]}
                   />
                 </div>
-                {index < events.length - 1 && <div class="w-px flex-1 bg-gray-200 dark:bg-gray-800" />}
+                {index < filteredEvents.length - 1 && <div class="w-px flex-1 bg-gray-200 dark:bg-gray-800" />}
               </div>
 
               {/* Event Card */}
@@ -251,44 +271,4 @@ const newsPosts = posts
       </section>
     )
   }
-
-  <!-- Filter Script -->
-  <script is:inline>
-    (function () {
-      function setupFilters() {
-        const buttons = document.querySelectorAll('.event-filter-btn');
-        const items = document.querySelectorAll('.event-item');
-
-        buttons.forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const type = btn.dataset.type;
-
-            // Update button styles
-            buttons.forEach((b) => {
-              b.classList.remove('bg-primary-600', 'text-white');
-              b.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
-            });
-            btn.classList.add('bg-primary-600', 'text-white');
-            btn.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
-
-            // Filter items
-            items.forEach((item) => {
-              const itemType = item.dataset.type;
-              if (type === 'all' || itemType === type) {
-                item.style.display = '';
-              } else {
-                item.style.display = 'none';
-              }
-            });
-          });
-        });
-      }
-
-      if (document.readyState !== 'loading') {
-        setupFilters();
-      } else {
-        document.addEventListener('DOMContentLoaded', setupFilters);
-      }
-    })();
-  </script>
 </Layout>
