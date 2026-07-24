@@ -1,50 +1,50 @@
 {
-  "updated_at": "2026-07-24T05:45:34.487Z",
+  "updated_at": "2026-07-24T19:19:16.144Z",
   "repos": {
     "iflytek/astron-agent": {
       "stars": 9389,
       "forks": 874,
-      "updated_at": "2026-07-24T05:45:29.462Z"
+      "updated_at": "2026-07-24T19:19:13.896Z"
     },
     "iflytek/astron-rpa": {
-      "stars": 6013,
+      "stars": 6014,
       "forks": 595,
-      "updated_at": "2026-07-24T05:45:30.017Z"
+      "updated_at": "2026-07-24T19:19:14.165Z"
     },
     "iflytek/astronclaw-tutorial": {
       "stars": 429,
       "forks": 45,
-      "updated_at": "2026-07-24T05:45:30.570Z"
+      "updated_at": "2026-07-24T19:19:14.435Z"
     },
     "iflytek/domux": {
       "stars": 28,
       "forks": 2,
-      "updated_at": "2026-07-24T05:45:31.235Z"
+      "updated_at": "2026-07-24T19:19:14.740Z"
     },
     "harnessclaw/harnessclaw-engine": {
       "stars": 283,
       "forks": 91,
-      "updated_at": "2026-07-24T05:45:31.789Z"
+      "updated_at": "2026-07-24T19:19:15.079Z"
     },
     "harnessclaw/harnessclaw": {
       "stars": 342,
-      "forks": 89,
-      "updated_at": "2026-07-24T05:45:32.318Z"
+      "forks": 90,
+      "updated_at": "2026-07-24T19:19:15.351Z"
     },
     "iflytek/iFly-Skills": {
       "stars": 213,
       "forks": 25,
-      "updated_at": "2026-07-24T05:45:33.061Z"
+      "updated_at": "2026-07-24T19:19:15.614Z"
     },
     "iflytek/memflywheel": {
       "stars": 34,
       "forks": 3,
-      "updated_at": "2026-07-24T05:45:33.875Z"
+      "updated_at": "2026-07-24T19:19:15.881Z"
     },
     "iflytek/skillhub": {
-      "stars": 4853,
+      "stars": 4865,
       "forks": 653,
-      "updated_at": "2026-07-24T05:45:34.487Z"
+      "updated_at": "2026-07-24T19:19:16.144Z"
     }
   }
 }
