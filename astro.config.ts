@@ -64,7 +64,13 @@ export default defineConfig({
     ),
 
     compress({
-      CSS: true,
+      // Disable CSS compression: astro-compress's CSS minifier doesn't support
+      // Tailwind CSS v4's modern Media Queries Level 4 range syntax (e.g.
+      // `@media (width>=48rem)`). When CSS compression is enabled, the minifier
+      // silently drops all responsive breakpoint queries, causing the site to
+      // render as mobile-only layout in production.
+      // See: https://github.com/astro-community/astro-compress/issues/XXX
+      CSS: false,
       HTML: {
         'html-minifier-terser': {
           removeAttributeQuotes: false,

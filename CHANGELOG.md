@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Security: 10 Dependency Vulnerabilities Resolved (1 critical, 6 high, 3 moderate)**: `npm audit` reduced from 10 vulnerabilities to 0 — fixed `tar` PAX numeric path type confusion (critical), `astro` reflected XSS via unescaped View Transition animation properties / spread attribute names / `transition:*` directive values (GHSA-4g3v-8h47-v7g6, GHSA-f48w-9m4c-m7f5, GHSA-7pw4-f3q4-r2p2), `sharp` inherited libvips CVE-2026-33327 / CVE-2026-33328 / CVE-2026-35590 / CVE-2026-35591, `svgo` removeScripts executable script bypass + DOCTYPE Billion Laughs DoS (GHSA-2p49-hgcm-8545, GHSA-xpqw-6gx7-v673), `brace-expansion` exponential-time `{} ` group expansion DoS (GHSA-3jxr-9vmj-r5cp), `fast-uri` host confusion via literal backslash authority delimiter and failed IDN canonicalization (GHSA-v2hh-gcrm-f6hx, GHSA-4c8g-83qw-93j6)
+- **Production Build Missing Responsive Layout**: `astro-compress` v2.4.1 CSS minifier silently drops all Tailwind CSS v4 responsive breakpoint queries (`@media (width>=48rem)` etc.) because its CSS parser doesn't support Media Queries Level 4 range syntax — the production build on Vercel rendered every page as mobile-only layout. Disabled `CSS: true` in `astro-compress` config to preserve responsive styles; CSS files grow from ~124 KB to ~142 KB uncompressed
 
 ### Changed
 
