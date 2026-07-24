@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Security: 10 Dependency Vulnerabilities Resolved (1 critical, 6 high, 3 moderate)**: `npm audit` reduced from 10 vulnerabilities to 0 — fixed `tar` PAX numeric path type confusion (critical), `astro` reflected XSS via unescaped View Transition animation properties / spread attribute names / `transition:*` directive values (GHSA-4g3v-8h47-v7g6, GHSA-f48w-9m4c-m7f5, GHSA-7pw4-f3q4-r2p2), `sharp` inherited libvips CVE-2026-33327 / CVE-2026-33328 / CVE-2026-35590 / CVE-2026-35591, `svgo` removeScripts executable script bypass + DOCTYPE Billion Laughs DoS (GHSA-2p49-hgcm-8545, GHSA-xpqw-6gx7-v673), `brace-expansion` exponential-time `{} ` group expansion DoS (GHSA-3jxr-9vmj-r5cp), `fast-uri` host confusion via literal backslash authority delimiter and failed IDN canonicalization (GHSA-v2hh-gcrm-f6hx, GHSA-4c8g-83qw-93j6)
+
+### Changed
+
+- **Astro 6 → 7 Major Upgrade**: `astro` ^6.4.8 → ^7.1.3, `@astrojs/vercel` ^10.0.8 → ^11.0.3, `@astrojs/mdx` ^6.0.3 → ^7.0.3 (Astro 7 ships with Vite 8 + Rolldown, stricter SSR static-build validation)
+- **astro-compress Upgrade**: ^2.3.8 → ^2.4.1 (picks up svgo 4.x, sharp 0.34.x)
+- **npm overrides Update**: Added `"svgo": ">=4.0.2"` and `"sharp": "^0.35.3"` overrides to force transitive dependencies to safe versions; removed conflicting `"vite": "^7"` override (Astro 7 requires Vite 8)
+
+### Compatibility
+
+- **BasicScripts.astro IIFE Wrap**: Astro 7 Rolldown disallows top-level `return` statements inside `<script>` blocks — wrapped the theme/language toggle script in an `(() => { ... })()` IIFE to preserve early-return semantics while satisfying Rolldown strict mode ([context](https://github.com/withastro/astro/issues/17145))
+
 ## [0.4.0] - 2026-07-17
 
 ### Added
