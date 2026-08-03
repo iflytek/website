@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **New Event: Driving Real Hardware with Astron Agent (2026-07-31)**: Online hackathon exploring how to connect user intent with real devices using Astron Agent — featuring Tuya T5 hardware walkthrough (reading sensor data, conditional logic, screen prompts) with a Mock API path for participants without dev boards
+- **Bilingual Event Descriptions**: Added `descriptionEn` field to the `Event` interface and English descriptions for all 12 events. Events page (`events.astro`) and search index (`search-index.json.ts`) now switch between Chinese and English descriptions via the existing `data-lang-zh` / `data-lang-en` language toggle
+
 ### Fixed
 
 - **Security: 10 Dependency Vulnerabilities Resolved (1 critical, 6 high, 3 moderate)**: `npm audit` reduced from 10 vulnerabilities to 0 — fixed `tar` PAX numeric path type confusion (critical), `astro` reflected XSS via unescaped View Transition animation properties / spread attribute names / `transition:*` directive values (GHSA-4g3v-8h47-v7g6, GHSA-f48w-9m4c-m7f5, GHSA-7pw4-f3q4-r2p2), `sharp` inherited libvips CVE-2026-33327 / CVE-2026-33328 / CVE-2026-35590 / CVE-2026-35591, `svgo` removeScripts executable script bypass + DOCTYPE Billion Laughs DoS (GHSA-2p49-hgcm-8545, GHSA-xpqw-6gx7-v673), `brace-expansion` exponential-time `{} ` group expansion DoS (GHSA-3jxr-9vmj-r5cp), `fast-uri` host confusion via literal backslash authority delimiter and failed IDN canonicalization (GHSA-v2hh-gcrm-f6hx, GHSA-4c8g-83qw-93j6)
 - **Production Build Missing Responsive Layout**: `astro-compress` v2.4.1 CSS minifier silently drops all Tailwind CSS v4 responsive breakpoint queries (`@media (width>=48rem)` etc.) because its CSS parser doesn't support Media Queries Level 4 range syntax — the production build on Vercel rendered every page as mobile-only layout. Disabled `CSS: true` in `astro-compress` config to preserve responsive styles; CSS files grow from ~124 KB to ~142 KB uncompressed
+- **CI Build Failure After Astro 7.1.6 Upgrade**: `astro.config.ts` imported `unified` from `@astrojs/markdown-remark`, a transitive dependency nested under `@astrojs/mdx/node_modules/` that npm doesn't hoist to top-level `node_modules` on fresh installs (CI & Vercel). Added `@astrojs/markdown-remark` as a direct dependency to fix module resolution
 
 ### Changed
 
