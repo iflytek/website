@@ -126,6 +126,7 @@ export async function GET() {
       titleEn: event.title,
       url: event.link || '/events',
       excerpt: event.description,
+      excerptEn: event.descriptionEn,
       tags: [event.type],
     });
   }
