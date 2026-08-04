@@ -39,6 +39,8 @@ lang: 'zh'
 
 有意出题或洽谈合作，欢迎[按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)。提交后请等待 [@FenjuFu](https://github.com/FenjuFu) 审核与分配期号；完成标题改名后，赛题才正式发布。你也可以通过下方邮箱、企业微信小助手联系我们。
 
+在带有 [`iflytek-astron`](https://github.com/topics/iflytek-astron) Topic 的参与项目仓库创建出题 Issue 时，请关联 `HER Hack-Astron` 标签。通过出题模板创建时会自动添加；如果提交者看不到标签入口，则由仓库维护者在审核时补充。
+
 ## 邀请开发者参与
 
 如果你是 AI 开发者、开源爱好者或高校学生，欢迎组队参与：
