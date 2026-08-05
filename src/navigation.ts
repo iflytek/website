@@ -92,7 +92,7 @@ export const footerData = {
       links: [
         { text: 'Email', href: 'mailto:opensource@iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
-        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
+        { text: 'Discord', href: 'https://discord.gg/UgnuzaJKwc' },
       ],
     },
     {
@@ -113,7 +113,7 @@ export const footerData = {
       links: [
         { text: 'LinkedIn', href: 'https://www.linkedin.com/in/astron-ai' },
         { text: 'WeChat', href: '#' },
-        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
+        { text: 'Discord', href: 'https://discord.gg/UgnuzaJKwc' },
       ],
     },
   ],
@@ -125,7 +125,7 @@ export const footerData = {
   socialLinks: [
     { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/in/astron-ai' },
     { ariaLabel: 'WeChat', icon: 'tabler:brand-wechat', href: '#' },
-    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.com/invite/vXzgts4fK' },
+    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.gg/UgnuzaJKwc' },
     {
       ariaLabel: 'Hugging Face',
       iconHtml: HUGGINGFACE_ICON,
