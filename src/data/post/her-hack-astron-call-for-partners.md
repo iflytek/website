@@ -58,6 +58,21 @@ lang: 'zh'
 
 ## 赛题信息与赛事进展，第一时间同步
 
+以下为 #2–#9 的预计赛事进程（均为北京时间，具体安排以每期正式公告为准）：
+
+| 期数 | 预计确定赛题 |       赛事比拼        |     评奖与奖励发放     |
+| :--: | :----------: | :-------------------: | :--------------------: |
+|  #2  |  8 月 9 日   | 8 月 10 日–8 月 16 日 | 8 月 17 日–8 月 23 日  |
+|  #3  |  8 月 16 日  | 8 月 17 日–8 月 23 日 | 8 月 24 日–8 月 30 日  |
+|  #4  |  8 月 23 日  | 8 月 24 日–8 月 30 日 |  8 月 31 日–9 月 6 日  |
+|  #5  |  8 月 30 日  | 8 月 31 日–9 月 6 日  |  9 月 7 日–9 月 13 日  |
+|  #6  |  9 月 6 日   | 9 月 7 日–9 月 13 日  | 9 月 14 日–9 月 20 日  |
+|  #7  |  9 月 13 日  | 9 月 14 日–9 月 20 日 | 9 月 21 日–9 月 27 日  |
+|  #8  |  9 月 20 日  | 9 月 21 日–9 月 27 日 | 9 月 28 日–10 月 4 日  |
+|  #9  |  9 月 27 日  | 9 月 28 日–10 月 4 日 | 10 月 5 日–10 月 11 日 |
+
+欢迎公益组织、行业组织、高校与开源社区[按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)，共同把真实需求转化为可落地的开源赛题。也欢迎开发者持续通过官网、GitHub 话题页和社群关注赛事进展，及时参与每期挑战。
+
 我们会在以下渠道**持续发布最新赛题信息与赛事进展**，欢迎关注：
 
 - 官网新闻页：[opensource.iflytek.com/category/news](https://opensource.iflytek.com/category/news)
@@ -74,13 +89,14 @@ lang: 'zh'
 
 **合作伙伴**（排名不分先后，持续招募中）：
 
-|                                                                 |                                                           |                                                                        |
-| :-------------------------------------------------------------: | :-------------------------------------------------------: | :--------------------------------------------------------------------: |
-|      ![AGIVilla](~/assets/images/her-partner-agivilla.jpg)      |  ![Datawhale](~/assets/images/her-partner-datawhale.png)  |         ![Dora SSR](~/assets/images/her-partner-dora-ssr.jpg)          |
-| ![GoodActionHub](~/assets/images/her-partner-goodactionhub.png) |   ![HerStory](~/assets/images/her-partner-herstory.png)   |      ![KHub 罕见病开源社区](~/assets/images/her-partner-khub.jpg)      |
-|        ![NGO 2.0](~/assets/images/her-partner-ngo2.png)         |  ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)  |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
-|  ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)  | ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg) |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
-|         ![狮偶](~/assets/images/her-partner-shiou.png)          |   ![游乐能](~/assets/images/her-partner-youleneng.jpg)    | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
+|                                                                    |                                                           |                                                                        |
+| :----------------------------------------------------------------: | :-------------------------------------------------------: | :--------------------------------------------------------------------: |
+|       ![AGIVilla](~/assets/images/her-partner-agivilla.jpg)        |  ![Datawhale](~/assets/images/her-partner-datawhale.png)  |         ![Dora SSR](~/assets/images/her-partner-dora-ssr.jpg)          |
+|  ![GoodActionHub](~/assets/images/her-partner-goodactionhub.png)   |   ![HerStory](~/assets/images/her-partner-herstory.png)   |      ![KHub 罕见病开源社区](~/assets/images/her-partner-khub.jpg)      |
+|          ![NGO 2.0](~/assets/images/her-partner-ngo2.png)          |  ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)  |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
+|   ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)    | ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg) |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
+|           ![狮偶](~/assets/images/her-partner-shiou.png)           |   ![游乐能](~/assets/images/her-partner-youleneng.jpg)    | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
+| ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) |                                                           |                                                                        |
 
 诚邀更多公益 / 行业组织与开源社区加入共建，成为 HER Hack-Astron 合作伙伴。
 
