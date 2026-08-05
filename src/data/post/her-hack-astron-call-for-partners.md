@@ -3,7 +3,7 @@ publishDate: 2026-08-04T00:00:00Z
 title: 'HER Hack-Astron 女性开发者开源挑战计划：诚邀合作方出题，邀开发者参与'
 excerpt: '讯飞 Astron 开源生态发起「HER Hack-Astron 女性开发者开源挑战计划」，每周一期、面向真实项目贡献。现诚邀公益 / 行业组织与开源社区加入共创出题，邀请开发者组队参与——唯一硬性门槛是 PR 代码改动记录中女性贡献者占比 ≥ 50%，重在提升女性在 AI 开源中的参与率。'
 category: 'news'
-image: '~/assets/images/her-hack-astron-banner.png'
+image: '/images/her-hack-astron-hero.svg'
 tags: ['her-hack-astron', 'astron-agent', 'community', 'women-in-tech', 'call-for-partners']
 author: 'iFLYTEK Open Source Team'
 lang: 'zh'
@@ -79,7 +79,7 @@ lang: 'zh'
 |      ![AGIVilla](~/assets/images/her-partner-agivilla.jpg)      |  ![Datawhale](~/assets/images/her-partner-datawhale.png)  |         ![Dora SSR](~/assets/images/her-partner-dora-ssr.jpg)          |
 | ![GoodActionHub](~/assets/images/her-partner-goodactionhub.png) |   ![HerStory](~/assets/images/her-partner-herstory.png)   |      ![KHub 罕见病开源社区](~/assets/images/her-partner-khub.jpg)      |
 |        ![NGO 2.0](~/assets/images/her-partner-ngo2.png)         |  ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)  |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
-|  ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)  | ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg) |          ![去探索](~/assets/images/her-partner-qutansuo.jpg)           |
+|  ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)  | ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg) |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
 |         ![狮偶](~/assets/images/her-partner-shiou.png)          |   ![游乐能](~/assets/images/her-partner-youleneng.jpg)    | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
 
 诚邀更多公益 / 行业组织与开源社区加入共建，成为 HER Hack-Astron 合作伙伴。

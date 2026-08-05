@@ -141,6 +141,29 @@ const translationAttrs = post.translation
     font-weight: normal;
   }
 
+  .prose table:has(img[src*='her-partner-']) td {
+    height: 7rem;
+    padding: 1rem;
+    vertical-align: middle;
+  }
+  .prose img[src*='her-partner-'] {
+    width: auto;
+    height: 4.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    object-fit: contain;
+    box-shadow: none;
+  }
+
+  @media (max-width: 640px) {
+    .prose table:has(img[src*='her-partner-']) td {
+      height: 5.5rem;
+      padding: 0.5rem;
+    }
+    .prose img[src*='her-partner-'] {
+      height: 3.5rem;
+    }
+  }
   .code-block-wrapper {
     position: relative;
   }
