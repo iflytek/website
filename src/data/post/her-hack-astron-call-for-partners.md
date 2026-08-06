@@ -89,14 +89,14 @@ lang: 'zh'
 
 **合作伙伴**（排名不分先后，持续招募中）：
 
-|                                                                    |                                                           |                                                                        |
-| :----------------------------------------------------------------: | :-------------------------------------------------------: | :--------------------------------------------------------------------: |
-|       ![AGIVilla](~/assets/images/her-partner-agivilla.jpg)        |  ![Datawhale](~/assets/images/her-partner-datawhale.png)  |         ![Dora SSR](~/assets/images/her-partner-dora-ssr.jpg)          |
-|  ![GoodActionHub](~/assets/images/her-partner-goodactionhub.png)   |   ![HerStory](~/assets/images/her-partner-herstory.png)   |      ![KHub 罕见病开源社区](~/assets/images/her-partner-khub.jpg)      |
-|          ![NGO 2.0](~/assets/images/her-partner-ngo2.png)          |  ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)  |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
-|   ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)    | ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg) |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
-|           ![狮偶](~/assets/images/her-partner-shiou.png)           |   ![游乐能](~/assets/images/her-partner-youleneng.jpg)    | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
-| ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) |                                                           |                                                                        |
+|                                                                    |                                                                |                                                                        |
+| :----------------------------------------------------------------: | :------------------------------------------------------------: | :--------------------------------------------------------------------: |
+|       ![AGIVilla](~/assets/images/her-partner-agivilla.jpg)        |    ![Datawhale](~/assets/images/her-partner-datawhale.png)     |         ![Dora SSR](~/assets/images/her-partner-dora-ssr.jpg)          |
+|  ![GoodActionHub](~/assets/images/her-partner-goodactionhub.png)   |     ![HerStory](~/assets/images/her-partner-herstory.png)      |      ![KHub 罕见病开源社区](~/assets/images/her-partner-khub.jpg)      |
+|          ![NGO 2.0](~/assets/images/her-partner-ngo2.png)          |    ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)     |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
+|   ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)    |   ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg)    |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
+|           ![狮偶](~/assets/images/her-partner-shiou.png)           |      ![游乐能](~/assets/images/her-partner-youleneng.jpg)      | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
+| ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) | ![Pancrepal 小胰宝](~/assets/images/her-partner-pancrepal.jpg) |                                                                        |
 
 诚邀更多公益 / 行业组织与开源社区加入共建，成为 HER Hack-Astron 合作伙伴。
 
