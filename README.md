@@ -135,3 +135,5 @@ Third-party licenses are listed in [NOTICE](NOTICE).
 - **LinkedIn**: https://www.linkedin.com/in/astron-ai
 - **Hugging Face**: https://huggingface.co/iFlytekOpenSource
 - **ModelScope**: https://modelscope.cn/organization/iflytek
+
+<!-- osai-verify: 47a03548c83092cc7722 -->
