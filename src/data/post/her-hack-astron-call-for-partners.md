@@ -17,7 +17,7 @@ lang: 'zh'
 
 近年来，越来越多女性开发者参与开源生态建设，但在 AI Agent、智能体平台、MCP 等前沿技术领域，女性贡献者占比仍有较大提升空间。为此，讯飞 [Astron 开源生态](https://opensource.iflytek.com/landscape)（Astron Agent、Astron RPA、SkillHub 等）联合高校、开源社区及技术组织，共同发起「**HER Hack-Astron 女性开发者开源挑战计划**」，鼓励更多女性开发者通过 Issue、PR、文档、测试、案例等形式参与真实项目贡献，在开源协作中提升技术能力与社区影响力。
 
-活动每周一期，每期围绕一个真实场景发布赛题，开发者以团队形式完成一个可运行、可演示、可复用的智能体，并通过 PR 提交到 [astron-agent](https://github.com/iflytek/astron-agent) 仓库的 `examples/` 目录。首期赛题《[HER Hack-Astron #1｜智能穿戴 x 心理陪伴智能体挑战赛](https://github.com/iflytek/astron-agent/issues/1482)》已上线，欢迎参考。
+活动每周一期，每期围绕一个真实开源需求发布赛题。开发者根据当期 Issue 指定的项目仓库、任务范围与验收标准，完成代码、文档、测试、案例或生态集成等实质性贡献，并通过 PR 提交。赛题覆盖 Astron 开源生态及带有 [`iflytek-astron`](https://github.com/topics/iflytek-astron) Topic 的参与项目，不局限于 Astron Agent，也不固定为 `examples/` 目录下的智能体应用。可参考首期《[HER Hack-Astron #1｜智能穿戴 x 心理陪伴智能体挑战赛](https://github.com/iflytek/astron-agent/issues/1482)》和第二期《[HER Hack-Astron #2｜Langfuse 可观测性集成挑战](https://github.com/iflytek/astron-agent/issues/1575)》。
 
 ## 参与门槛：重在女性参与率
 
@@ -34,7 +34,7 @@ lang: 'zh'
 我们诚挚邀请**公益组织、行业组织、高校与开源社区**作为合作方加入，一起把真实场景变成赛题：
 
 - **你出题，我们运营**：由你提供真实场景与命题背景，我们协助润色、评审与发奖；
-- **一键使用出题模板**：我们已在 astron-agent 仓库内置 GitHub Issue 模板，[点此按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)。提交时请保留标题格式 `HER Hack-Astron #出题｜赛题名称`；Issue 创建后仅作为出题申请，须由 [@FenjuFu](https://github.com/FenjuFu) 审核、确定期号并将标题改为 `HER Hack-Astron #期号｜赛题名称` 后，方成为正式赛题。模板涵盖赛题方向、参赛要求、提交规则、评选标准与奖项设置，可参考首期正式赛题 [#1｜智能穿戴 x 心理陪伴智能体挑战赛](https://github.com/iflytek/astron-agent/issues/1482)；
+- **一键使用出题模板**：当前出题模板入口设在 astron-agent 仓库，[点此按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)。正式赛题可落在带有 `iflytek-astron` Topic 的参与项目仓库。提交时请保留标题格式 `HER Hack-Astron #出题｜赛题名称`；Issue 创建后仅作为出题申请，须由 [@FenjuFu](https://github.com/FenjuFu) 审核、确定期号并将标题改为 `HER Hack-Astron #期号｜赛题名称` 后，方成为正式赛题。模板涵盖赛题方向、参赛要求、提交规则、评选标准与奖项设置，可参考正式赛题 [#1｜智能穿戴 x 心理陪伴智能体挑战赛](https://github.com/iflytek/astron-agent/issues/1482)与 [#2｜Langfuse 可观测性集成挑战](https://github.com/iflytek/astron-agent/issues/1575)；
 - **让公益与行业需求被更多开发者看见**：每期赛题都会在官网与社群同步曝光，触达活跃的开源开发者群体。
 
 有意出题或洽谈合作，欢迎[按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)。提交后请等待 [@FenjuFu](https://github.com/FenjuFu) 审核与分配期号；完成标题改名后，赛题才正式发布。你也可以通过下方邮箱、企业微信小助手联系我们。
@@ -46,8 +46,8 @@ lang: 'zh'
 如果你是 AI 开发者、开源爱好者或高校学生，欢迎组队参与：
 
 1. 关注每周发布的赛题 Issue（发布地址：<https://github.com/topics/iflytek-astron>）
-2. Fork 项目、完成任务、提交 PR（PR 标题建议：`[HER Hack-Astron #X] 功能名称`）
-3. 在 PR 评论区留言「参加 HER Hack-Astron 第 X 期活动」，注明队伍成员与女性贡献者占比，并关联活动 Issue
+2. Fork 当期 Issue 指定的项目仓库，按任务范围与验收标准完成实质性贡献并提交 PR（标题与关联方式以当期 Issue 为准）
+3. 在 PR 描述中注明「参加 HER Hack-Astron 第 X 期活动」、队伍成员与女性贡献者占比，并按当期要求关联活动 Issue
 
 ### 奖励机制
 
@@ -60,16 +60,16 @@ lang: 'zh'
 
 以下为 #2–#9 的预计赛事进程（均为北京时间，具体安排以每期正式公告为准）：
 
-| 期数 | 预计确定赛题 |       赛事比拼        |     评奖与奖励发放     |
-| :--: | :----------: | :-------------------: | :--------------------: |
-|  #2  |  8 月 9 日   | 8 月 10 日–8 月 16 日 | 8 月 17 日–8 月 23 日  |
-|  #3  |  8 月 16 日  | 8 月 17 日–8 月 23 日 | 8 月 24 日–8 月 30 日  |
-|  #4  |  8 月 23 日  | 8 月 24 日–8 月 30 日 |  8 月 31 日–9 月 6 日  |
-|  #5  |  8 月 30 日  | 8 月 31 日–9 月 6 日  |  9 月 7 日–9 月 13 日  |
-|  #6  |  9 月 6 日   | 9 月 7 日–9 月 13 日  | 9 月 14 日–9 月 20 日  |
-|  #7  |  9 月 13 日  | 9 月 14 日–9 月 20 日 | 9 月 21 日–9 月 27 日  |
-|  #8  |  9 月 20 日  | 9 月 21 日–9 月 27 日 | 9 月 28 日–10 月 4 日  |
-|  #9  |  9 月 27 日  | 9 月 28 日–10 月 4 日 | 10 月 5 日–10 月 11 日 |
+|                           期数                            | 预计确定赛题 |       赛事比拼        |     评奖与奖励发放     |
+| :-------------------------------------------------------: | :----------: | :-------------------: | :--------------------: |
+| [#2](https://github.com/iflytek/astron-agent/issues/1575) |  8 月 9 日   | 8 月 10 日–8 月 16 日 | 8 月 17 日–8 月 23 日  |
+|                            #3                             |  8 月 16 日  | 8 月 17 日–8 月 23 日 | 8 月 24 日–8 月 30 日  |
+|                            #4                             |  8 月 23 日  | 8 月 24 日–8 月 30 日 |  8 月 31 日–9 月 6 日  |
+|                            #5                             |  8 月 30 日  | 8 月 31 日–9 月 6 日  |  9 月 7 日–9 月 13 日  |
+|                            #6                             |  9 月 6 日   | 9 月 7 日–9 月 13 日  | 9 月 14 日–9 月 20 日  |
+|                            #7                             |  9 月 13 日  | 9 月 14 日–9 月 20 日 | 9 月 21 日–9 月 27 日  |
+|                            #8                             |  9 月 20 日  | 9 月 21 日–9 月 27 日 | 9 月 28 日–10 月 4 日  |
+|                            #9                             |  9 月 27 日  | 9 月 28 日–10 月 4 日 | 10 月 5 日–10 月 11 日 |
 
 欢迎公益组织、行业组织、高校与开源社区[按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)，共同把真实需求转化为可落地的开源赛题。也欢迎开发者持续通过官网、GitHub 话题页和社群关注赛事进展，及时参与每期挑战。
 
@@ -96,7 +96,8 @@ lang: 'zh'
 |          ![NGO 2.0](~/assets/images/her-partner-ngo2.png)          |    ![TECH4GOOD](~/assets/images/her-partner-tech4good.jpg)     |         ![WaytoAGI](~/assets/images/her-partner-waytoagi.png)          |
 |   ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)    |   ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg)    |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
 |           ![狮偶](~/assets/images/her-partner-shiou.png)           |      ![游乐能](~/assets/images/her-partner-youleneng.jpg)      | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
-| ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) | ![Pancrepal 小胰宝](~/assets/images/her-partner-pancrepal.jpg) |                                                                        |
+| ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) | ![Pancrepal 小胰宝](~/assets/images/her-partner-pancrepal.jpg) |        ![成事OPC](~/assets/images/her-partner-chengshi-opc.png)        |
+|  ![野生CEO俱乐部](~/assets/images/her-partner-wild-ceo-club.png)   | ![野生智能](~/assets/images/her-partner-wild-intelligence.png) |                                                                        |
 
 诚邀更多公益 / 行业组织与开源社区加入共建，成为 HER Hack-Astron 合作伙伴。
 
@@ -113,8 +114,8 @@ lang: 'zh'
 
 ## 相关链接
 
-- 首期赛题参考：[HER Hack-Astron #1](https://github.com/iflytek/astron-agent/issues/1482)
-- Astron Agent GitHub 仓库：[github.com/iflytek/astron-agent](https://github.com/iflytek/astron-agent)
+- 正式赛题参考：[HER Hack-Astron #1](https://github.com/iflytek/astron-agent/issues/1482)、[HER Hack-Astron #2](https://github.com/iflytek/astron-agent/issues/1575)
+- Astron 开源生态 GitHub 话题页：[github.com/topics/iflytek-astron](https://github.com/topics/iflytek-astron)
 - Astron Landscape：[opensource.iflytek.com/landscape](https://opensource.iflytek.com/landscape)
 - 讯飞开源官网：[opensource.iflytek.com](https://opensource.iflytek.com)
 
