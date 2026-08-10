@@ -1,0 +1,9 @@
+name: Dolphin MCP Pilot
+nameEn: Dolphin MCP Pilot
+description: '通过 MCP 协议让 AI Agent 操作 Apache DolphinScheduler，实现从智能体到工作流调度的无缝集成。'
+descriptionEn: 'Operate Apache DolphinScheduler from AI agents via MCP — seamless integration from intelligent agents to workflow scheduling.'
+repo: iflytek/dolphin-mcp-pilot
+category: agent-skills
+tags: [mcp, dolphinscheduler, workflow, agent-tools]
+languages: [Python]
+license: Apache-2.0
