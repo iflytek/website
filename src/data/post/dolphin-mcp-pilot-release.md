@@ -1,7 +1,7 @@
 ---
 publishDate: 2026-08-10T00:00:00Z
 title: 'Dolphin MCP Pilot：让 AI Agent 真正操作 DolphinScheduler'
-excerpt: 'Dolphin MCP Pilot 是一个面向 Apache DolphinScheduler 的生产级 MCP Server，提供 53+ 工具覆盖工作流创建、调度管理、实例控制、资源操作等实战场景，让 AI Agent 从"看数据"升级到"做调度"。'
+excerpt: 'Dolphin MCP Pilot 是一个面向 Apache DolphinScheduler 的生产级 MCP Server，提供 58 个工具覆盖工作流创建、调度管理、实例控制、资源操作等实战场景，让 AI Agent 从"看数据"升级到"做调度"。'
 category: 'tech'
 tags: ['dolphin-mcp-pilot', 'mcp', 'dolphinscheduler', 'ai-agent', 'workflow', 'open-source']
 author: 'iFLYTEK Open Source Team'
@@ -11,7 +11,7 @@ author: 'iFLYTEK Open Source Team'
 
 AI Agent 正在渗透到企业的每一个角落，而**大数据调度平台**作为数据基础设施的核心，长期停留在"人看大屏、手动点按钮"的模式。能不能让 Agent 直接操作 DolphinScheduler——一句话建工作流、一键改调度、出问题自动排查？
 
-科大讯飞开源的 **Dolphin MCP Pilot** 给出了答案：一个面向 **Apache DolphinScheduler** 的生产级 MCP Server，提供 **53+ 工具**，覆盖从项目、工作流、调度、实例到资源、日志、监控的全链路操作。它不是又一个"只读列表"演示品，而是为**真实运维场景**而生。
+科大讯飞开源的 **Dolphin MCP Pilot** 给出了答案：一个面向 **Apache DolphinScheduler** 的生产级 MCP Server，提供 **58 个工具**，覆盖从项目、工作流、调度、实例到资源、日志、监控的全链路操作。它不是又一个"只读列表"演示品，而是为**真实运维场景**而生。
 
 ## 为什么要做这个项目？
 
@@ -32,17 +32,17 @@ Dolphin MCP Pilot 基于 **Model Context Protocol (MCP)** 构建，暴露标准�
 
 ### 工具矩阵
 
-53+ 工具按职责分为七大类：
+58 个工具按职责分为七大类：
 
-| 类别           | 覆盖场景                                     | 典型工具                                                         |
-| -------------- | -------------------------------------------- | ---------------------------------------------------------------- |
-| **项目管理**   | 租户 / 项目 CRUD、权限控制                   | `ds_create_project`、`ds_list_projects`                          |
-| **工作流编排** | SQL / DAG 工作流创建、任务节点管理、版本控制 | `ds_create_workflow`、`ds_update_task`、`ds_clone_workflow`      |
-| **调度管理**   | Cron 调度创建 / 上线 / 下线、补数据          | `ds_create_schedule`、`ds_online_schedule`、`ds_complement_data` |
-| **实例控制**   | 运行 / 暂停 / 恢复 / 重跑 / 删除，任务级干预 | `ds_rerun_process`、`ds_force_task_success`                      |
-| **资源管理**   | 文件上传 / 下载 / 内容查看 / 更新            | `ds_list_resources`、`ds_update_resource_content`                |
-| **日志监控**   | 任务日志、实例状态、`next_action` 引导排查   | `ds_view_task_log`、`ds_list_task_instances`                     |
-| **API 透传**   | 未覆盖接口的安全阀                           | `ds_raw_api`                                                     |
+| 类别           | 覆盖场景                                     | 典型工具                                                          |
+| -------------- | -------------------------------------------- | ----------------------------------------------------------------- |
+| **项目管理**   | 租户 / 项目 CRUD、权限控制                   | `ds_create_project`、`ds_list_projects`                           |
+| **工作流编排** | SQL / DAG 工作流创建、任务节点管理、版本控制 | `ds_create_workflow`、`ds_update_task_param`、`ds_clone_workflow` |
+| **调度管理**   | Cron 调度创建 / 上线 / 下线、补数据          | `ds_set_schedule`、`ds_online_schedule`、`ds_complement_data`     |
+| **实例控制**   | 运行 / 暂停 / 恢复 / 重跑 / 删除，任务级干预 | `ds_rerun_process_instance`、`ds_force_task_success`              |
+| **资源管理**   | 文件上传 / 下载 / 内容查看 / 更新            | `ds_list_resources`、`ds_update_resource_content`                 |
+| **日志监控**   | 任务日志、实例状态、`next_action` 引导排查   | `ds_get_task_log`、`ds_list_task_instances`                       |
+| **API 透传**   | 未覆盖接口的安全阀                           | `ds_raw_get` / `ds_raw_post` / `ds_raw_put` / `ds_raw_delete`     |
 
 ### 双认证模式
 
@@ -95,7 +95,7 @@ docker compose --profile dev up -d dolphin-mcp-pilot-dev
 
 > "帮我在 data-team 项目下创建一个 SQL 工作流，每天凌晨 2 点执行 `SELECT * FROM user_behavior WHERE dt = '${bizdate}'`，失败自动重试 3 次。"
 
-Agent 会自动调用 `ds_create_workflow` → `ds_create_schedule` → `ds_online_schedule`，完成从建流到上线的完整闭环。
+Agent 会自动调用 `ds_create_workflow` → `ds_set_schedule` → `ds_online_schedule`，完成从建流到上线的完整闭环。
 
 ## 典型场景
 
@@ -109,13 +109,13 @@ Agent 调用 `ds_complement_data`，串行补数使用 `complementStartDate` / `
 
 > "昨天的 ETL 任务为什么失败了？"
 
-Agent 先调用 `ds_list_process_instances` 找到失败实例，根据返回的 `next_action` 提示，继续调用 `ds_list_task_instances` 定位到具体失败节点，最后调用 `ds_view_task_log` 拉取日志——整个排查链路无需人工介入。
+Agent 先调用 `ds_list_process_instances` 找到失败实例，根据返回的 `next_action` 提示，继续调用 `ds_list_task_instances` 定位到具体失败节点，最后调用 `ds_get_task_log` 拉取日志——整个排查链路无需人工介入。
 
 ### 场景 3：版本回滚
 
 > "把 user_analysis 工作流回滚到上一个版本。"
 
-Agent 调用 `ds_rollback_workflow`，自动定位历史版本并恢复，避免手动在 UI 上翻找。
+Agent 调用 `ds_rollback_workflow_version`，自动定位历史版本并恢复，避免手动在 UI 上翻找。
 
 ## 路线图
 
