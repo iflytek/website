@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-11
+
 ### Added
 
 - **New Project: Dolphin MCP Pilot**: Production-grade MCP Server for Apache DolphinScheduler (`iflytek/dolphin-mcp-pilot`) — 58 tools covering workflow creation, scheduling, instance control, resource management, and raw API passthrough. Category: `agent-skills`, Language: Python, License: Apache-2.0
