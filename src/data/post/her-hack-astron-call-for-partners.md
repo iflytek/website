@@ -97,7 +97,7 @@ lang: 'zh'
 |   ![北京可优瑞斯科技](~/assets/images/her-partner-keyourui.png)    |   ![超越之路](~/assets/images/her-partner-chaoyuezhilu.jpg)    |          ![去探索](~/assets/images/her-partner-qutansuo.png)           |
 |           ![狮偶](~/assets/images/her-partner-shiou.png)           |      ![游乐能](~/assets/images/her-partner-youleneng.jpg)      | ![原子游创（温州）科技](~/assets/images/her-partner-atomyouchuang.png) |
 | ![龙湾开源信创技术研究院](~/assets/images/her-partner-longwan.png) | ![Pancrepal 小胰宝](~/assets/images/her-partner-pancrepal.jpg) |        ![成事OPC](~/assets/images/her-partner-chengshi-opc.png)        |
-|  ![野生CEO俱乐部](~/assets/images/her-partner-wild-ceo-club.png)   | ![野生智能](~/assets/images/her-partner-wild-intelligence.png) |                                                                        |
+|  ![野生CEO俱乐部](~/assets/images/her-partner-wild-ceo-club.png)   | ![野生智能](~/assets/images/her-partner-wild-intelligence.png) |          ![MoonBit](~/assets/images/her-partner-moonbit.png)           |
 
 诚邀更多公益 / 行业组织与开源社区加入共建，成为 HER Hack-Astron 合作伙伴。
 
