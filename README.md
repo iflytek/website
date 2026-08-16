@@ -107,6 +107,7 @@ npm run preview
 | `/projects`       | Project list with category and language filters |
 | `/projects/:slug` | Individual project detail page                  |
 | `/landscape`      | CNCF-style project landscape                    |
+| `/milestone`      | Astron ecosystem milestone timeline             |
 | `/blog`           | Blog list (tech + news)                         |
 | `/events`         | Community events timeline                       |
 | `/contribute`     | Contribution guide + contributor wall           |
