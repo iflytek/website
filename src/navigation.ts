@@ -29,6 +29,11 @@ export const headerData = {
           textEn: 'Landscape',
           href: getPermalink('/landscape'),
         },
+        {
+          text: '里程碑',
+          textEn: 'Milestone',
+          href: getPermalink('/milestone'),
+        },
       ],
     },
     {

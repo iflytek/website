@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **Astron Ecosystem Milestone**: Added a bilingual, responsive `/milestone` Gantt-style timeline alongside Projects and Landscape, covering Astron Agent, Astron RPA, and SkillHub rankings through August 2026, GitHub Trending peaks, foundation membership, ecosystem recognition, and industry awards
+
 ## [0.5.0] - 2026-08-11
 
 ### Added

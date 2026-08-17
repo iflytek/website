@@ -1,0 +1,780 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+
+const metadata = {
+  title: 'Milestone',
+  description:
+    'Milestones of the iFLYTEK Astron open source ecosystem across community rankings, global trends, ecosystem recognition, and industry awards.',
+};
+
+type ProjectKey = 'agent' | 'rpa' | 'skillhub' | 'ecosystem';
+
+const projectThemes: Record<
+  ProjectKey,
+  { label: string; badge: string; icon: string; dot: string; bar: string; point: string; soft: string }
+> = {
+  agent: {
+    label: 'Astron Agent',
+    badge: 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/70 dark:bg-sky-950/60 dark:text-sky-300',
+    icon: 'bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-sky-500/25',
+    dot: 'border-sky-200 bg-sky-500 shadow-sky-500/30 dark:border-sky-800',
+    bar: 'from-sky-500 to-indigo-600 shadow-sky-500/20',
+    point: 'border-sky-200 bg-sky-500 shadow-sky-500/30 dark:border-sky-800',
+    soft: 'bg-sky-50/80 dark:bg-sky-950/30',
+  },
+  rpa: {
+    label: 'Astron RPA',
+    badge: 'border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800/70 dark:bg-teal-950/60 dark:text-teal-300',
+    icon: 'bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-teal-500/25',
+    dot: 'border-teal-200 bg-teal-500 shadow-teal-500/30 dark:border-teal-800',
+    bar: 'from-teal-500 to-emerald-600 shadow-teal-500/20',
+    point: 'border-teal-200 bg-teal-500 shadow-teal-500/30 dark:border-teal-800',
+    soft: 'bg-teal-50/80 dark:bg-teal-950/30',
+  },
+  skillhub: {
+    label: 'SkillHub',
+    badge:
+      'border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 dark:border-fuchsia-800/70 dark:bg-fuchsia-950/60 dark:text-fuchsia-300',
+    icon: 'bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-fuchsia-500/25',
+    dot: 'border-fuchsia-200 bg-fuchsia-500 shadow-fuchsia-500/30 dark:border-fuchsia-800',
+    bar: 'from-fuchsia-500 to-violet-600 shadow-fuchsia-500/20',
+    point: 'border-fuchsia-200 bg-fuchsia-500 shadow-fuchsia-500/30 dark:border-fuchsia-800',
+    soft: 'bg-fuchsia-50/80 dark:bg-fuchsia-950/30',
+  },
+  ecosystem: {
+    label: 'Astron Agent & RPA & AgentBridge',
+    badge:
+      'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800/70 dark:bg-amber-950/60 dark:text-amber-300',
+    icon: 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-amber-500/25',
+    dot: 'border-amber-200 bg-amber-500 shadow-amber-500/30 dark:border-amber-800',
+    bar: 'from-amber-500 to-orange-600 shadow-amber-500/20',
+    point: 'border-amber-200 bg-amber-500 shadow-amber-500/30 dark:border-amber-800',
+    soft: 'bg-amber-50/80 dark:bg-amber-950/30',
+  },
+};
+
+const milestones: Array<{
+  dateZh: string;
+  dateEn: string;
+  datetime: string;
+  project: ProjectKey;
+  icon: string;
+  titleZh: string;
+  titleEn: string;
+  descriptionZh: string;
+  descriptionEn: string;
+  highlights?: Array<{ zh: string; en: string }>;
+  link?: { href: string; zh: string; en: string };
+}> = [
+  {
+    dateZh: '2025.09—2026.08',
+    dateEn: 'Sep 2025—Aug 2026',
+    datetime: '2025-09',
+    project: 'agent',
+    icon: 'tabler:chart-bar',
+    titleZh: '中国 Agent 活跃度第一，全球 Java 趋势 TOP 5',
+    titleEn: 'China’s No. 1 Agent by activity and a global Java TOP 5 project',
+    descriptionZh: 'Astron Agent 在国内与全球开源观测平台上保持长期领先，展现持续的项目活跃度与开发者关注度。',
+    descriptionEn:
+      'Astron Agent sustained strong visibility across Chinese and global open-source analytics platforms, reflecting lasting project activity and developer interest.',
+    highlights: [
+      {
+        zh: 'OpenLeaderboard 活跃度于 2025 年 9 月至 2026 年 1 月位列中国 Agent 第一',
+        en: 'Ranked No. 1 among Chinese agent projects by OpenLeaderboard activity from Sep 2025 to Jan 2026',
+      },
+      {
+        zh: 'OSS Insight 全球开源趋势 Java 语言榜单于 2025 年 9 月至 2026 年 8 月位居 TOP 5',
+        en: 'Placed in the OSS Insight global Java trending TOP 5 from Sep 2025 to Aug 2026',
+      },
+    ],
+  },
+  {
+    dateZh: '2026.01.29',
+    dateEn: 'Jan 29, 2026',
+    datetime: '2026-01-29',
+    project: 'ecosystem',
+    icon: 'tabler:award',
+    titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
+    titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
+    descriptionZh:
+      'Astron Agent、Astron RPA 与 AgentBridge 共同获得 Gitee 2025 年度开源项目评选“人工智能 TOP 10”荣誉。',
+    descriptionEn:
+      'Astron Agent, Astron RPA, and AgentBridge were named to the AI TOP 10 in the Gitee 2025 Annual Open Source Project Awards.',
+    link: {
+      href: 'https://blog.gitee.com/2026/01/29/gitee-annual-open-source-project-awards-top-10-projects-across-7-major-tracks-announced/',
+      zh: '查看榜单',
+      en: 'View the list',
+    },
+  },
+  {
+    dateZh: '2026.01—2026.06',
+    dateEn: 'Jan—Jun 2026',
+    datetime: '2026-01',
+    project: 'rpa',
+    icon: 'tabler:chart-arrows-vertical',
+    titleZh: '中国 RPA 第一，全球 Java 趋势 TOP 10',
+    titleEn: 'China’s No. 1 RPA and a global Java TOP 10 project',
+    descriptionZh: 'Astron RPA 在 RPA 赛道的国内活跃度与全球开源趋势中同步取得突破。',
+    descriptionEn: 'Astron RPA broke through simultaneously in domestic RPA activity and global open-source trends.',
+    highlights: [
+      {
+        zh: 'OpenLeaderboard 于 2026 年 1 月至 2 月位列中国 RPA 第一',
+        en: 'Ranked No. 1 among Chinese RPA projects on OpenLeaderboard from Jan to Feb 2026',
+      },
+      {
+        zh: 'OSS Insight 全球 Java 语言榜单于 2026 年 1 月至 6 月位居 TOP 10',
+        en: 'Placed in the OSS Insight global Java TOP 10 from Jan to Jun 2026',
+      },
+    ],
+  },
+  {
+    dateZh: '2026.02',
+    dateEn: 'Feb 2026',
+    datetime: '2026-02',
+    project: 'agent',
+    icon: 'tabler:trending-up',
+    titleZh: 'OpenRank 值位列中国 Agent 第一',
+    titleEn: 'No. 1 Chinese agent project by OpenRank',
+    descriptionZh: 'Astron Agent 于 2026 年 2 月在 OpenLeaderboard 的 OpenRank 指标中位列中国 Agent 第一。',
+    descriptionEn:
+      'Astron Agent ranked No. 1 among Chinese agent projects by the OpenRank metric on OpenLeaderboard in February 2026.',
+  },
+  {
+    dateZh: '2026.03.28',
+    dateEn: 'Mar 28, 2026',
+    datetime: '2026-03-28',
+    project: 'rpa',
+    icon: 'tabler:trophy',
+    titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
+    titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
+    descriptionZh: 'Astron RPA 凭借开源智能自动化领域的技术创新与实践，获得 OS2ATC 2026“最佳开源智能突破奖”。',
+    descriptionEn:
+      'Astron RPA received the OS2ATC 2026 Best Open Source Intelligent Breakthrough Award for its innovation and practice in open-source intelligent automation.',
+    link: { href: 'https://os2atc.cn/award.html', zh: '查看大会奖项', en: 'View conference awards' },
+  },
+  {
+    dateZh: '2026.03—2026.08',
+    dateEn: 'Mar—Aug 2026',
+    datetime: '2026-03',
+    project: 'skillhub',
+    icon: 'tabler:chart-histogram',
+    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+    titleEn: 'OSS Insight global Java trending TOP 5',
+    descriptionZh: 'SkillHub 于 2026 年 3 月至 8 月持续位居 OSS Insight 全球开源趋势 Java 语言榜单 TOP 5。',
+    descriptionEn: 'SkillHub remained in the OSS Insight global Java trending TOP 5 from March through August 2026.',
+  },
+  {
+    dateZh: '2026.04.03',
+    dateEn: 'Apr 3, 2026',
+    datetime: '2026-04-03',
+    project: 'agent',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #1',
+    titleEn: 'GitHub Trending #1',
+    descriptionZh: 'Astron Agent 登顶 GitHub Trending，成为 #1 Repository of the Day。',
+    descriptionEn: 'Astron Agent topped GitHub Trending as the #1 Repository of the Day.',
+    link: { href: 'https://github.com/iflytek/astron-agent', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.04.04',
+    dateEn: 'Apr 4, 2026',
+    datetime: '2026-04-04',
+    project: 'rpa',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    descriptionZh: 'Astron RPA 登上 GitHub Trending，达到 #2 Repository of the Day。',
+    descriptionEn: 'Astron RPA reached #2 Repository of the Day on GitHub Trending.',
+    link: { href: 'https://github.com/iflytek/astron-rpa', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.05.20',
+    dateEn: 'May 20, 2026',
+    datetime: '2026-05-20',
+    project: 'agent',
+    icon: 'tabler:sparkles',
+    titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
+    titleEn: 'QbitAI’s 2026 China AIGC Companies & Products to Watch',
+    descriptionZh: 'Astron Agent 申获量子位“2026 中国 AIGC 最值得关注的企业（科大讯飞）& 产品”荣誉。',
+    descriptionEn:
+      'Astron Agent was recognized in QbitAI’s 2026 China AIGC Companies (iFLYTEK) & Products to Watch selection.',
+    link: {
+      href: 'https://finance.sina.com.cn/wm/2026-05-20/doc-inhyphnp1790438.shtml',
+      zh: '查看评选',
+      en: 'View the selection',
+    },
+  },
+  {
+    dateZh: '2026.05.30',
+    dateEn: 'May 30, 2026',
+    datetime: '2026-05-30',
+    project: 'skillhub',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    descriptionZh: 'SkillHub 登上 GitHub Trending，达到 #2 Repository of the Day。',
+    descriptionEn: 'SkillHub reached #2 Repository of the Day on GitHub Trending.',
+    link: { href: 'https://github.com/iflytek/skillhub', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.07.14',
+    dateEn: 'Jul 14, 2026',
+    datetime: '2026-07-14',
+    project: 'skillhub',
+    icon: 'tabler:users-group',
+    titleZh: '加入 AAIF，成为 Associate Member',
+    titleEn: 'Joined AAIF as an Associate Member',
+    descriptionZh:
+      'SkillHub 以 Associate Member 身份加入 Agentic AI Foundation（AAIF），与全球社区共同推动 Agentic AI 开源生态。',
+    descriptionEn:
+      'SkillHub joined the Agentic AI Foundation (AAIF) as an Associate Member to advance the open-source agentic AI ecosystem with the global community.',
+    link: { href: '/blog/skillhub-joins-aaif', zh: '了解更多', en: 'Learn more' },
+  },
+  {
+    dateZh: '2026.07.16',
+    dateEn: 'Jul 16, 2026',
+    datetime: '2026-07-16',
+    project: 'agent',
+    icon: 'tabler:world',
+    titleZh: '进入 CNCF 云原生全景图',
+    titleEn: 'Added to the CNCF Landscape',
+    descriptionZh:
+      'Astron Agent 被收录至 CNCF Landscape 的 AI Native — Workflow Orchestration 分类，进入全球云原生生态视野。',
+    descriptionEn:
+      'Astron Agent was listed in the AI Native — Workflow Orchestration category of the CNCF Landscape, expanding its visibility across the global cloud-native ecosystem.',
+    link: { href: '/blog/astron-agent-joins-cncf-landscape', zh: '了解更多', en: 'Learn more' },
+  },
+];
+
+type GanttItem = {
+  sourceIndex: number;
+  kind: 'range' | 'point';
+  start: number;
+  end?: number;
+  titleZh: string;
+  titleEn: string;
+  dateZh: string;
+  dateEn: string;
+  barZh: string;
+  barEn: string;
+};
+
+const months = [
+  { zh: '2025.09', en: 'Sep 2025' },
+  { zh: '2025.10', en: 'Oct 2025' },
+  { zh: '2025.11', en: 'Nov 2025' },
+  { zh: '2025.12', en: 'Dec 2025' },
+  { zh: '2026.01', en: 'Jan 2026' },
+  { zh: '2026.02', en: 'Feb 2026' },
+  { zh: '2026.03', en: 'Mar 2026' },
+  { zh: '2026.04', en: 'Apr 2026' },
+  { zh: '2026.05', en: 'May 2026' },
+  { zh: '2026.06', en: 'Jun 2026' },
+  { zh: '2026.07', en: 'Jul 2026' },
+  { zh: '2026.08', en: 'Aug 2026' },
+];
+
+const agentGanttItems: GanttItem[] = [
+  {
+    sourceIndex: 0,
+    kind: 'range',
+    start: 1,
+    end: 5,
+    titleZh: 'OpenLeaderboard 活跃度 · 中国 Agent 第一',
+    titleEn: 'OpenLeaderboard activity · No. 1 Chinese agent project',
+    dateZh: '2025.09—2026.01',
+    dateEn: 'Sep 2025—Jan 2026',
+    barZh: '中国 Agent #1',
+    barEn: 'China Agent #1',
+  },
+  {
+    sourceIndex: 0,
+    kind: 'range',
+    start: 1,
+    end: 12,
+    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+    titleEn: 'OSS Insight global Java trending TOP 5',
+    dateZh: '2025.09—2026.08',
+    dateEn: 'Sep 2025—Aug 2026',
+    barZh: '全球 Java TOP 5',
+    barEn: 'Global Java TOP 5',
+  },
+  {
+    sourceIndex: 3,
+    kind: 'point',
+    start: 6,
+    titleZh: 'OpenRank 值 · 中国 Agent 第一',
+    titleEn: 'OpenRank · No. 1 Chinese agent project',
+    dateZh: '2026.02',
+    dateEn: 'Feb 2026',
+    barZh: '#1 · 02月',
+    barEn: '#1 · Feb',
+  },
+  {
+    sourceIndex: 6,
+    kind: 'point',
+    start: 8,
+    titleZh: 'GitHub Trending #1',
+    titleEn: 'GitHub Trending #1',
+    dateZh: '2026.04.03',
+    dateEn: 'Apr 3, 2026',
+    barZh: '#1 · 04.03',
+    barEn: '#1 · Apr 3',
+  },
+  {
+    sourceIndex: 8,
+    kind: 'point',
+    start: 9,
+    titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
+    titleEn: 'QbitAI 2026 China AIGC recognition',
+    dateZh: '2026.05.20',
+    dateEn: 'May 20, 2026',
+    barZh: '荣誉 · 05.20',
+    barEn: 'Award · May 20',
+  },
+  {
+    sourceIndex: 11,
+    kind: 'point',
+    start: 11,
+    titleZh: '进入 CNCF 云原生全景图',
+    titleEn: 'Added to the CNCF Landscape',
+    dateZh: '2026.07.16',
+    dateEn: 'Jul 16, 2026',
+    barZh: 'CNCF · 07.16',
+    barEn: 'CNCF · Jul 16',
+  },
+];
+
+const rpaGanttItems: GanttItem[] = [
+  {
+    sourceIndex: 2,
+    kind: 'range',
+    start: 5,
+    end: 6,
+    titleZh: 'OpenLeaderboard · 中国 RPA 第一',
+    titleEn: 'OpenLeaderboard · No. 1 Chinese RPA project',
+    dateZh: '2026.01—2026.02',
+    dateEn: 'Jan—Feb 2026',
+    barZh: '中国 RPA #1',
+    barEn: 'China RPA #1',
+  },
+  {
+    sourceIndex: 2,
+    kind: 'range',
+    start: 5,
+    end: 10,
+    titleZh: 'OSS Insight 全球 Java 趋势 TOP 10',
+    titleEn: 'OSS Insight global Java trending TOP 10',
+    dateZh: '2026.01—2026.06',
+    dateEn: 'Jan—Jun 2026',
+    barZh: '全球 Java TOP 10',
+    barEn: 'Global Java TOP 10',
+  },
+  {
+    sourceIndex: 4,
+    kind: 'point',
+    start: 7,
+    titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
+    titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
+    dateZh: '2026.03.28',
+    dateEn: 'Mar 28, 2026',
+    barZh: '奖项 · 03.28',
+    barEn: 'Award · Mar 28',
+  },
+  {
+    sourceIndex: 7,
+    kind: 'point',
+    start: 8,
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    dateZh: '2026.04.04',
+    dateEn: 'Apr 4, 2026',
+    barZh: '#2 · 04.04',
+    barEn: '#2 · Apr 4',
+  },
+];
+
+const skillhubGanttItems: GanttItem[] = [
+  {
+    sourceIndex: 5,
+    kind: 'range',
+    start: 7,
+    end: 12,
+    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+    titleEn: 'OSS Insight global Java trending TOP 5',
+    dateZh: '2026.03—2026.08',
+    dateEn: 'Mar—Aug 2026',
+    barZh: '全球 Java TOP 5',
+    barEn: 'Global Java TOP 5',
+  },
+  {
+    sourceIndex: 9,
+    kind: 'point',
+    start: 9,
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    dateZh: '2026.05.30',
+    dateEn: 'May 30, 2026',
+    barZh: '#2 · 05.30',
+    barEn: '#2 · May 30',
+  },
+  {
+    sourceIndex: 10,
+    kind: 'point',
+    start: 11,
+    titleZh: '加入 AAIF，成为 Associate Member',
+    titleEn: 'Joined AAIF as an Associate Member',
+    dateZh: '2026.07.14',
+    dateEn: 'Jul 14, 2026',
+    barZh: 'AAIF · 07.14',
+    barEn: 'AAIF · Jul 14',
+  },
+];
+
+const ecosystemGanttItems: GanttItem[] = [
+  {
+    sourceIndex: 1,
+    kind: 'point',
+    start: 5,
+    titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
+    titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
+    dateZh: '2026.01.29',
+    dateEn: 'Jan 29, 2026',
+    barZh: 'Gitee · 01.29',
+    barEn: 'Gitee · Jan 29',
+  },
+];
+
+const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
+  { project: 'agent', items: agentGanttItems },
+  { project: 'rpa', items: rpaGanttItems },
+  { project: 'skillhub', items: skillhubGanttItems },
+  { project: 'ecosystem', items: ecosystemGanttItems },
+];
+
+const stats = [
+  {
+    value: '2',
+    icon: 'tabler:world',
+    labelZh: '项目加入国际基金会生态',
+    labelEn: 'Projects joined international foundation ecosystems',
+  },
+  {
+    value: '3',
+    icon: 'tabler:rocket',
+    labelZh: '核心项目登上 GitHub Trending',
+    labelEn: 'Core projects reached GitHub Trending',
+  },
+  {
+    value: '#1',
+    icon: 'tabler:brand-github',
+    labelZh: 'GitHub Trending 最高排名',
+    labelEn: 'Highest GitHub Trending rank',
+  },
+  {
+    value: 'TOP 5',
+    icon: 'tabler:world',
+    labelZh: 'OSS Insight 全球 Java 长期排名',
+    labelEn: 'Sustained global Java ranking on OSS Insight',
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <!-- Page Header -->
+  <section
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
+  >
+    <div class="absolute inset-0 opacity-30" aria-hidden="true">
+      <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]"></div>
+      <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]"></div>
+    </div>
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div
+          class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-4 py-2 text-sm font-semibold text-primary-700 shadow-sm backdrop-blur dark:border-primary-800 dark:bg-gray-900/60 dark:text-primary-300"
+        >
+          <Icon name="tabler:sparkles" class="h-4 w-4" />
+          <span data-lang-zh="Astron 开源生态" data-lang-en="Astron Open Source Ecosystem">Astron 开源生态</span>
+        </div>
+        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          <span
+            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
+            data-lang-zh="开源里程碑"
+            data-lang-en="Milestone"
+          >
+            开源里程碑
+          </span>
+        </h1>
+        <p
+          class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-gray-600 dark:text-gray-400"
+          data-lang-zh="记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻"
+          data-lang-en="Key moments in the Astron open source ecosystem, from technical breakthroughs and community momentum to global recognition"
+        >
+          记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻
+        </p>
+      </div>
+      <div class="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          stats.map((stat) => (
+            <div class="group rounded-2xl border border-white/80 bg-white/70 p-5 text-center shadow-lg shadow-primary-900/5 backdrop-blur transition-all hover:-translate-y-1 hover:shadow-xl dark:border-gray-700/70 dark:bg-gray-900/70">
+              <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-600 transition-transform group-hover:scale-110 dark:bg-primary-950 dark:text-primary-300">
+                <Icon name={stat.icon} class="h-5 w-5" />
+              </div>
+              <div class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">{stat.value}</div>
+              <div
+                class="mt-1 text-sm leading-snug text-gray-500 dark:text-gray-400"
+                data-lang-zh={stat.labelZh}
+                data-lang-en={stat.labelEn}
+              >
+                {stat.labelZh}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="relative overflow-hidden py-14 md:py-20">
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-50 dark:opacity-20" aria-hidden="true">
+      <div
+        class="absolute left-1/2 top-1/3 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-primary-100 blur-[120px] dark:bg-primary-950"
+      >
+      </div>
+    </div>
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-12 text-center md:mb-16">
+        <p
+          class="text-sm font-bold uppercase tracking-[0.24em] text-primary-600 dark:text-primary-400"
+          data-lang-zh="2025.09 — 2026.08"
+          data-lang-en="SEP 2025 — AUG 2026"
+        >
+          2025.09 — 2026.08
+        </p>
+        <h2
+          class="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl"
+          data-lang-zh="横向成就时间轴"
+          data-lang-en="Achievement timeline"
+        >
+          横向成就时间轴
+        </h2>
+      </div>
+
+      <div
+        class="mb-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-gray-600 dark:text-gray-400"
+      >
+        <span class="flex items-center gap-2">
+          <span class="h-3 w-10 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600"></span>
+          <span data-lang-zh="持续时间段" data-lang-en="Sustained period">持续时间段</span>
+        </span>
+        <span class="flex items-center gap-2">
+          <span class="h-3 w-3 rotate-45 rounded-[3px] bg-primary-500"></span>
+          <span data-lang-zh="单点里程碑" data-lang-en="Point milestone">单点里程碑</span>
+        </span>
+      </div>
+      <p class="mb-3 text-sm font-medium text-gray-500 md:hidden dark:text-gray-400">
+        <span class="i18n-zh">左右滑动查看完整时间轴</span>
+        <span class="i18n-en">Swipe horizontally to view the full timeline</span>
+        <Icon name="tabler:arrows-horizontal" class="ml-1 inline h-4 w-4" />
+      </p>
+
+      <div
+        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl shadow-gray-900/5 dark:border-gray-800 dark:bg-gray-900"
+      >
+        <div class="overflow-x-auto [scrollbar-color:theme(colors.primary.300)_transparent]">
+          <div class="min-w-[1240px]" role="table" aria-label="Astron open source milestone timeline">
+            <div
+              class="grid grid-cols-[280px_960px] border-b border-gray-200 bg-gray-50/90 dark:border-gray-700 dark:bg-gray-950/70"
+              role="row"
+            >
+              <div class="flex items-center px-5 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <span class="i18n-zh">项目 / 成就</span>
+                <span class="i18n-en">Project / Achievement</span>
+              </div>
+              <div class="grid grid-cols-12">
+                {
+                  months.map((month, index) => (
+                    <div
+                      class:list={[
+                        'border-l border-gray-200 px-1 py-3 text-center font-mono text-[11px] font-bold text-gray-500 dark:border-gray-700 dark:text-gray-400',
+                        index === 4 && 'bg-primary-50/60 dark:bg-primary-950/30',
+                      ]}
+                      role="columnheader"
+                    >
+                      <span class="i18n-zh">{month.zh}</span>
+                      <span class="i18n-en">{month.en}</span>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+
+            {
+              ganttGroups.map((group) => {
+                const theme = projectThemes[group.project];
+
+                return (
+                  <div role="rowgroup">
+                    <div
+                      class:list={[
+                        'grid grid-cols-[280px_960px] border-b border-gray-200 dark:border-gray-800',
+                        theme.soft,
+                      ]}
+                      role="row"
+                    >
+                      <div class="flex items-center gap-3 px-5 py-3">
+                        <span class:list={['h-2.5 w-2.5 rounded-full shadow-md', theme.dot]} />
+                        <span class="text-sm font-extrabold text-gray-900 dark:text-white">{theme.label}</span>
+                        <span class="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-bold text-gray-500 dark:bg-gray-900/70 dark:text-gray-400">
+                          {group.items.length}
+                        </span>
+                      </div>
+                      <div class="relative">
+                        <div class="absolute inset-0 grid grid-cols-12" aria-hidden="true">
+                          {months.map(() => (
+                            <span class="border-l border-gray-200/80 dark:border-gray-800" />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {group.items.map((item) => {
+                      const source = milestones[item.sourceIndex];
+                      const gridEnd = (item.end ?? item.start) + 1;
+
+                      return (
+                        <div
+                          class="grid min-h-[68px] grid-cols-[280px_960px] border-b border-gray-100 last:border-b-0 dark:border-gray-800/80"
+                          role="row"
+                        >
+                          <div class="flex min-w-0 items-center gap-3 px-5 py-3" role="rowheader">
+                            <div
+                              class:list={[
+                                'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-md',
+                                theme.icon,
+                              ]}
+                            >
+                              <Icon name={source.icon} class="h-4 w-4" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                              <div class="truncate text-[13px] font-bold text-gray-800 dark:text-gray-100">
+                                <span class="i18n-zh">{item.titleZh}</span>
+                                <span class="i18n-en">{item.titleEn}</span>
+                              </div>
+                              <div class="mt-1 flex items-center gap-2 font-mono text-[11px] font-semibold text-gray-400">
+                                <span class="i18n-zh">{item.dateZh}</span>
+                                <span class="i18n-en">{item.dateEn}</span>
+                                {source.link && (
+                                  <a
+                                    href={source.link.href}
+                                    target={source.link.href.startsWith('http') ? '_blank' : undefined}
+                                    rel={source.link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                    class="text-primary-500 transition-colors hover:text-primary-700"
+                                    aria-label={source.link.zh}
+                                  >
+                                    <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="relative grid grid-cols-12 items-center" role="cell" title={source.descriptionZh}>
+                            <div class="pointer-events-none absolute inset-0 grid grid-cols-12" aria-hidden="true">
+                              {months.map(() => (
+                                <span class="border-l border-gray-100 dark:border-gray-800/80" />
+                              ))}
+                            </div>
+                            {item.kind === 'range' ? (
+                              <div
+                                class:list={[
+                                  'relative z-10 mx-1.5 flex h-9 items-center overflow-hidden rounded-lg bg-gradient-to-r px-3 text-xs font-extrabold text-white shadow-lg',
+                                  theme.bar,
+                                ]}
+                                style={`grid-column: ${item.start} / ${gridEnd}`}
+                              >
+                                <span class="truncate i18n-zh">{item.barZh}</span>
+                                <span class="truncate i18n-en">{item.barEn}</span>
+                              </div>
+                            ) : (
+                              <div
+                                class="relative z-10 flex h-full items-center justify-center"
+                                style={`grid-column: ${item.start}`}
+                              >
+                                <div class="relative flex items-center">
+                                  <span
+                                    class:list={[
+                                      'absolute left-0 h-4 w-4 -translate-x-1/2 rotate-45 rounded-[4px] border-4 shadow-lg',
+                                      theme.point,
+                                    ]}
+                                  />
+                                  <span
+                                    class:list={[
+                                      'ml-2.5 w-max min-w-[84px] rounded-full border bg-white px-2.5 py-1.5 text-[11px] font-extrabold shadow-md dark:bg-gray-900',
+                                      theme.badge,
+                                    ]}
+                                  >
+                                    <span class="i18n-zh">{item.barZh}</span>
+                                    <span class="i18n-en">{item.barEn}</span>
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing statement -->
+  <section class="pb-16 md:pb-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div
+        class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-primary-600 to-sky-500 px-6 py-10 text-center text-white shadow-2xl shadow-primary-900/20 md:px-12 md:py-14"
+      >
+        <div class="absolute inset-0 opacity-20" aria-hidden="true">
+          <div class="absolute -left-8 -top-16 h-48 w-48 rounded-full border border-white/60"></div>
+          <div class="absolute -bottom-24 -right-12 h-64 w-64 rounded-full border border-white/60"></div>
+        </div>
+        <div class="relative mx-auto max-w-3xl">
+          <Icon name="tabler:world" class="mx-auto h-9 w-9 text-white/90" />
+          <h2
+            class="mt-4 text-2xl font-bold md:text-3xl"
+            data-lang-zh="持续生长的全球开源影响力"
+            data-lang-en="Growing global open-source impact"
+          >
+            持续生长的全球开源影响力
+          </h2>
+          <p
+            class="mt-4 text-base leading-7 text-white/85 md:text-lg"
+            data-lang-zh="Astron Agent、Astron RPA 与 SkillHub 在两个月内接力登上 GitHub Trending，从单点突破走向持续性的全球开发者社区影响。"
+            data-lang-en="Astron Agent, Astron RPA, and SkillHub reached GitHub Trending in succession within two months, turning individual breakthroughs into sustained influence across the global developer community."
+          >
+            Astron Agent、Astron RPA 与 SkillHub 在两个月内接力登上 GitHub
+            Trending，从单点突破走向持续性的全球开发者社区影响。
+          </p>
+          <a
+            href="/landscape"
+            class="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-primary-700 shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-50 hover:shadow-xl"
+          >
+            <span data-lang-zh="探索 Astron 开源全景图" data-lang-en="Explore the Astron Landscape">
+              探索 Astron 开源全景图
+            </span>
+            <Icon name="tabler:arrow-right" class="h-4 w-4" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
