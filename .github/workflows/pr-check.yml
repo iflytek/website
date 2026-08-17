@@ -64,8 +64,11 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --verbose --no-progress 'dist/**/*.html'
-        continue-on-error: true
+          # The Vercel adapter writes static HTML under dist/client/.
+          # --root-dir tells lychee how to resolve root-relative links
+          # (/_astro/..., /sitemap-index.xml, /blog, etc.) in those files.
+          # .lychee.toml holds exclude / retry / accept configuration.
+          args: --verbose --no-progress --config .lychee.toml --root-dir dist/client 'dist/client/**/*.html'
 
   # ============ License Check ============
   license-check:

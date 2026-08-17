@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - **Astron Ecosystem Milestone**: Added a bilingual, responsive `/milestone` Gantt-style timeline alongside Projects and Landscape, covering Astron Agent, Astron RPA, and SkillHub rankings through August 2026, GitHub Trending peaks, foundation membership, ecosystem recognition, and industry awards
 
+### Fixed
+
+- **CI Lychee Root-Relative Link Errors**: The `link-check` job emitted 20+ lychee errors (`Cannot resolve root-relative link '/sitemap-index.xml'`, `/_astro/...`, etc.) because the workflow scanned `dist/**/*.html` while the Vercel adapter writes static HTML under `dist/client/`. Pointed the lychee glob at `dist/client/**/*.html`, passed `--root-dir dist/client`, and added `.lychee.toml` (exclude rate-limit-prone hosts, skip SSR-only routes `/projects` & `/contribute`, retry flaky requests, accept 429/999). Verified locally: 6333 links, 0 failures ([#90](https://github.com/iflytek/website/pull/90))
+
 ## [0.5.0] - 2026-08-11
 
 ### Added
