@@ -9,6 +9,7 @@ This product includes software developed at:
 - Inter Font (https://github.com/rsms/inter), licensed under SIL Open Font License 1.1 (OFL-1.1)
 - Lightning CSS (https://lightningcss.dev), licensed under Mozilla Public License 2.0 (MPL-2.0)
 - Sharp (https://sharp.pixelplumbing.com), libvips binaries licensed under GNU LGPL-3.0-or-later
+- Fuse.js (https://www.fusejs.io), licensed under Apache-2.0 License
 - argparse (https://github.com/nodeca/argparse), licensed under Python-2.0 License
 
 Third-party licenses are listed in the THIRD_PARTY_LICENSES file.
