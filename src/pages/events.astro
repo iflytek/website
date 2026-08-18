@@ -166,10 +166,10 @@ const newsPosts = posts
                 </h3>
                 <p
                   class="mt-1 text-sm text-gray-500 dark:text-gray-500"
-                  data-lang-zh={event.titleZh}
-                  data-lang-en={event.title}
+                  data-lang-zh={event.subtitle || event.titleZh}
+                  data-lang-en={event.subtitleEn || event.title}
                 >
-                  {event.title}
+                  {event.subtitle || event.titleZh}
                 </p>
                 <p
                   class="mt-3 text-sm text-gray-600 dark:text-gray-400"

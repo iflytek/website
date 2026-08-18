@@ -5,6 +5,8 @@
 export interface Event {
   title: string;
   titleZh: string;
+  subtitle?: string;
+  subtitleEn?: string;
   date: string;
   type: 'conference' | 'meetup' | 'hackathon' | 'workshop' | 'webinar';
   status?: 'upcoming' | 'ongoing' | 'past';
@@ -15,6 +17,20 @@ export interface Event {
 }
 
 export const events: Event[] = [
+  {
+    title: 'How One Person Can Sustainably Maintain an Enterprise-Grade Open-Source Agent Project',
+    titleZh: '一个人，如何持续维护一个企业级 Agent 开源项目',
+    subtitle: '从 Astron Agent 的工程复杂度，到 Loop Engineering 的自驱动闭环',
+    subtitleEn: "From Astron Agent's Engineering Complexity to a Self-Driving Loop with Loop Engineering",
+    date: '2026-09-04',
+    type: 'conference',
+    description:
+      '如何通过 Loop Engineering，将 AI Coding 引入真实研发流程，自动化解决需求拆解、代码开发、测试验证、CI 检测、部署上线等环节中的效率与质量问题，形成从需求到交付的自动化闭环。通过这一实践，Astron Agent 项目的研发流程正在从传统人工驱动，逐步演进为 AI 原生、自动化、可验证的工程体系，为复杂 AI 应用平台的持续迭代和规模化交付提供了新的实践路径。',
+    descriptionEn:
+      "Learn how Loop Engineering brings AI Coding into real-world development workflows to automate requirements decomposition, code development, test validation, CI checks, and deployment, improving efficiency and quality while creating an automated loop from requirements to delivery. Through this practice, Astron Agent's development process is evolving from traditional human-driven workflows into an AI-native, automated, and verifiable engineering system, offering a new path for the continuous iteration and scalable delivery of complex AI application platforms.",
+    location: 'IBP International Conference Center, Shanghai, China',
+    link: 'https://a2m.msup.com.cn/course/19413?aid=4949&qd=dahui&city=shanghai&_a2m_nocache=1787040965742',
+  },
   {
     title: 'Driving Real Hardware with Astron Agent',
     titleZh: '用 Astron Agent 驱动真实硬件',
