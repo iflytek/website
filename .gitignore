@@ -75,6 +75,20 @@ ehthumbs_vista.db
 .claude/
 
 # ============================================
+# Project-local AI agent skills and hooks
+# ============================================
+.agents/
+.codex/
+
+# ============================================
+# Local design workbench (keep out of source control)
+# ============================================
+.impeccable/
+/DESIGN.md
+/PRODUCT.md
+public/images/release-current-grain.webp.json
+
+# ============================================
 # Temporary files
 # ============================================
 *.tmp
@@ -93,4 +107,3 @@ public/images/watermarked/
 # Build-generated community files
 # ============================================
 .github/ISSUE_TEMPLATE/repo-create.yml
-

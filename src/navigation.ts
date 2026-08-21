@@ -25,11 +25,6 @@ export const headerData = {
           href: getPermalink('/projects'),
         },
         {
-          text: '全景图',
-          textEn: 'Landscape',
-          href: getPermalink('/landscape'),
-        },
-        {
           text: '里程碑',
           textEn: 'Milestone',
           href: getPermalink('/milestone'),

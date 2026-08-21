@@ -15,7 +15,7 @@ lang: 'zh'
 
 **Her Code, Her Impact. 让更多女性开发者成为 AI 开源创新的参与者与建设者。**
 
-近年来，越来越多女性开发者参与开源生态建设，但在 AI Agent、智能体平台、MCP 等前沿技术领域，女性贡献者占比仍有较大提升空间。为此，讯飞 [Astron 开源生态](https://opensource.iflytek.com/landscape)（Astron Agent、Astron RPA、SkillHub 等）联合高校、开源社区及技术组织，共同发起「**HER Hack-Astron 女性开发者开源挑战计划**」，鼓励更多女性开发者通过 Issue、PR、文档、测试、案例等形式参与真实项目贡献，在开源协作中提升技术能力与社区影响力。
+近年来，越来越多女性开发者参与开源生态建设，但在 AI Agent、智能体平台、MCP 等前沿技术领域，女性贡献者占比仍有较大提升空间。为此，讯飞 [Astron 开源生态](https://opensource.iflytek.com/#project-landscape)（Astron Agent、Astron RPA、SkillHub 等）联合高校、开源社区及技术组织，共同发起「**HER Hack-Astron 女性开发者开源挑战计划**」，鼓励更多女性开发者通过 Issue、PR、文档、测试、案例等形式参与真实项目贡献，在开源协作中提升技术能力与社区影响力。
 
 活动每周一期，每期围绕一个真实开源需求发布赛题。开发者根据当期 Issue 指定的项目仓库、任务范围与验收标准，完成代码、文档、测试、案例或生态集成等实质性贡献，并通过 PR 提交。赛题覆盖 Astron 开源生态及带有 [`iflytek-astron`](https://github.com/topics/iflytek-astron) Topic 的参与项目，不局限于 Astron Agent，也不固定为 `examples/` 目录下的智能体应用。可参考首期《[HER Hack-Astron #1｜智能穿戴 x 心理陪伴智能体挑战赛](https://github.com/iflytek/astron-agent/issues/1482)》和第二期《[HER Hack-Astron #2｜Langfuse 可观测性集成挑战](https://github.com/iflytek/astron-agent/issues/1575)》。
 
@@ -117,7 +117,7 @@ lang: 'zh'
 
 - 正式赛题参考：[HER Hack-Astron #1](https://github.com/iflytek/astron-agent/issues/1482)、[HER Hack-Astron #2](https://github.com/iflytek/astron-agent/issues/1575)
 - Astron 开源生态 GitHub 话题页：[github.com/topics/iflytek-astron](https://github.com/topics/iflytek-astron)
-- Astron Landscape：[opensource.iflytek.com/landscape](https://opensource.iflytek.com/landscape)
+- Astron Landscape：[opensource.iflytek.com/#project-landscape](https://opensource.iflytek.com/#project-landscape)
 - 讯飞开源官网：[opensource.iflytek.com](https://opensource.iflytek.com)
 
 期待与更多公益、行业组织和开源社区携手，也期待更多开发者加入——用代码，让改变发生。

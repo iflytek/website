@@ -1,6 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { SITE } from 'astrowind:config';
+import Logo from '~/components/Logo.astro';
 import { getHomePermalink } from '~/utils/permalinks';
 
 interface Link {
@@ -26,198 +26,594 @@ export interface Props {
   theme?: string;
 }
 
-const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+const { socialLinks = [], secondaryLinks = [], links = [], footNote = '' } = Astro.props;
+const isWeChatLink = ({ text, textEn, ariaLabel }: Link) =>
+  [text, textEn, ariaLabel].some((value) => /wechat|微信/i.test(String(value || '')));
 ---
 
-<footer class:list={[{ dark: theme === 'dark' }, 'relative border-t border-gray-200 dark:border-slate-800 not-prose']}>
-  <div class="dark:bg-dark absolute inset-0 pointer-events-none" aria-hidden="true"></div>
-  <div
-    class="relative max-w-7xl mx-auto px-4 sm:px-6 dark:text-slate-300 intersect-once intersect-quarter intersect-no-queue motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
-  >
-    <div class="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 py-8 md:py-12">
-      <div class="col-span-12 lg:col-span-4">
-        <div class="mb-2">
-          <a class="inline-block font-bold text-xl" href={getHomePermalink()}
-            ><span data-lang-zh="讯飞开源" data-lang-en="OpenSource">{SITE?.name}</span></a
-          >
-        </div>
-        <div class="text-sm text-muted flex gap-1">
-          {
-            secondaryLinks.map(({ text, textEn, href }, index) => (
-              <>
-                {index !== 0 ? ' · ' : ''}
-                <a
-                  class="text-muted hover:text-gray-700 dark:text-gray-400 hover:underline transition duration-150 ease-in-out"
-                  href={href}
-                  data-lang-zh={text}
-                  data-lang-en={textEn || text}
-                >
-                  <Fragment set:html={text} />
-                </a>
-              </>
-            ))
-          }
-        </div>
-      </div>
-      {
-        links.map(({ title, titleEn, links }) => (
-          <div class="col-span-6 md:col-span-3 lg:col-span-2">
-            <div class="dark:text-gray-300 font-medium mb-2" data-lang-zh={title} data-lang-en={titleEn || title}>
-              {title}
-            </div>
-            {links && Array.isArray(links) && links.length > 0 && (
-              <ul class="text-sm">
-                {links.map(({ text, textEn, href, ariaLabel }) => (
-                  <li class="mb-2">
+<footer class="release-footer not-prose">
+  <div class="release-footer__inner">
+    <div class="release-footer__main">
+      <div class="release-footer__identity">
+        <a class="release-footer__brand" href={getHomePermalink()} aria-label="iFLYTEK Open Source home">
+          <Logo />
+        </a>
+
+        {
+          socialLinks.length ? (
+            <nav class="release-footer__social" aria-label="Social links and resources">
+              <ul>
+                {socialLinks.map((link) => (
+                  <li>
                     <a
-                      class="text-muted hover:text-gray-700 hover:underline dark:text-gray-400 transition duration-150 ease-in-out"
-                      href={href}
-                      aria-label={ariaLabel}
-                      data-lang-zh={text}
-                      data-lang-en={textEn || text}
-                      data-wechat={
-                        String(text).includes('微信') || String(text).includes('WeChat') ? 'true' : undefined
-                      }
+                      href={link.href}
+                      aria-label={link.ariaLabel}
+                      title={link.ariaLabel}
+                      data-wechat={isWeChatLink(link) ? 'true' : undefined}
                     >
-                      <Fragment set:html={text} />
+                      {link.iconHtml ? (
+                        <span class="release-footer__social-icon" set:html={link.iconHtml} />
+                      ) : (
+                        link.icon && <Icon name={link.icon} class="h-5 w-5" />
+                      )}
+                      {link.text ? (
+                        <span data-lang-zh={link.text} data-lang-en={link.textEn || link.text}>
+                          {link.text}
+                        </span>
+                      ) : null}
                     </a>
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
-        ))
-      }
-    </div>
-    <div class="md:flex md:items-center md:justify-between py-6 md:py-8">
-      {
-        socialLinks?.length ? (
-          <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4">
-            {socialLinks.map(({ ariaLabel, href, text, icon, iconHtml }) => (
-              <li>
-                <a
-                  class="text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
-                  aria-label={ariaLabel}
-                  href={href}
-                  data-wechat={ariaLabel === 'WeChat' ? 'true' : undefined}
-                >
-                  {iconHtml ? (
-                    <span class="w-5 h-5 inline-flex items-center justify-center" set:html={iconHtml} />
-                  ) : (
-                    icon && <Icon name={icon} class="w-5 h-5" />
-                  )}
-                  <Fragment set:html={text} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          ''
-        )
-      }
+            </nav>
+          ) : null
+        }
+      </div>
 
-      <div class="text-sm mr-4 dark:text-muted">
+      <nav class="release-footer__directory" aria-label="Footer navigation">
+        {
+          links.map(({ title, titleEn, links: groupLinks }, groupIndex) => (
+            <div class="release-footer__group" aria-labelledby={`footer-group-${groupIndex}`}>
+              <h2 id={`footer-group-${groupIndex}`} data-lang-zh={title} data-lang-en={titleEn || title}>
+                {title}
+              </h2>
+              {groupLinks?.length ? (
+                <ul>
+                  {groupLinks.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        aria-label={link.ariaLabel}
+                        data-lang-zh={link.text}
+                        data-lang-en={link.textEn || link.text}
+                        data-wechat={isWeChatLink(link) ? 'true' : undefined}
+                      >
+                        <Fragment set:html={link.text} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div class="release-footer__bottom">
+      <div class="release-footer__copyright">
         <Fragment set:html={footNote} />
       </div>
+
+      {
+        secondaryLinks.length ? (
+          <nav class="release-footer__secondary" aria-label="Policies and community information">
+            <ul>
+              {secondaryLinks.map(({ text, textEn, href, ariaLabel }) => (
+                <li>
+                  <a href={href} aria-label={ariaLabel} data-lang-zh={text} data-lang-en={textEn || text}>
+                    <Fragment set:html={text} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null
+      }
     </div>
   </div>
 </footer>
 
-<!-- WeChat QR Code Modal -->
 <div
   id="wechat-qr-modal"
-  class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+  class="wechat-modal"
   role="dialog"
   aria-modal="true"
-  aria-label="WeChat QR Code"
+  aria-labelledby="wechat-qr-title"
+  aria-describedby="wechat-qr-description"
+  aria-hidden="true"
+  hidden
 >
-  <div class="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 sm:max-w-md">
-    <button
-      id="wechat-qr-close"
-      class="absolute right-3 top-3 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-      aria-label="Close"
-    >
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
+  <div class="wechat-modal__panel" tabindex="-1">
+    <button type="button" class="wechat-modal__close" data-wechat-close>
+      <span class="sr-only" data-lang-zh="关闭" data-lang-en="Close">关闭</span>
+      <Icon name="tabler:x" class="h-5 w-5" aria-hidden="true" />
     </button>
-    <div class="text-center">
-      <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white" data-i18n="footer.wechatTitle">
-        微信扫码加入社区
-      </h3>
-      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400" data-i18n="footer.wechatDesc">
-        Scan the QR code to join our WeChat group
-      </p>
-      <div class="flex justify-center">
-        <img
-          src="https://raw.githubusercontent.com/iflytek/astron-agent/main/docs/imgs/WeCom_Group.png"
-          alt="WeChat QR Code"
-          class="h-auto max-h-[60vh] w-auto max-w-full rounded-lg"
-          loading="lazy"
-        />
-      </div>
+
+    <div class="wechat-modal__copy">
+      <h2 id="wechat-qr-title" data-i18n="footer.wechatTitle">微信扫码加入社区</h2>
+      <p id="wechat-qr-description" data-i18n="footer.wechatDesc">Scan the QR code to join our WeChat group</p>
+    </div>
+
+    <div class="wechat-modal__qr">
+      <img
+        src="https://raw.githubusercontent.com/iflytek/astron-agent/main/docs/imgs/WeCom_Group.png"
+        alt="微信社区群二维码 / WeChat community QR code"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   </div>
 </div>
 
+<style>
+  .release-footer {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--rc-rule, #1b1f26);
+    background: var(--rc-canvas, #010208);
+    color: var(--rc-text, #e9e9e9);
+  }
+
+  .release-footer__inner {
+    width: min(100%, 82rem);
+    margin: 0 auto;
+    padding: clamp(4.5rem, 7vw, 6.5rem) clamp(1.5rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem);
+  }
+
+  .release-footer__main {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1.1fr) minmax(0, 4fr);
+    gap: clamp(4rem, 7vw, 7rem);
+  }
+
+  .release-footer__identity {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .release-footer__brand {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--rc-text, #e9e9e9);
+  }
+
+  .release-footer__directory ul,
+  .release-footer__secondary ul,
+  .release-footer__social ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .release-footer__directory {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 4.5rem);
+  }
+
+  .release-footer__group {
+    min-width: 0;
+  }
+
+  .release-footer__group h2 {
+    margin: 0 0 1rem;
+    color: var(--rc-text-strong, #ededee);
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+  }
+
+  .release-footer__group a,
+  .release-footer__secondary a {
+    color: var(--rc-text-muted, #a09fa2);
+    text-underline-offset: 0.3em;
+    transition: color 150ms ease;
+  }
+
+  .release-footer__group a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .release-footer__group a:hover,
+  .release-footer__secondary a:hover {
+    color: var(--rc-text, #e9e9e9);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .release-footer__social {
+    margin-top: 2rem;
+  }
+
+  .release-footer__social ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .release-footer__social a {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rc-rule, #1b1f26);
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-muted, #a09fa2);
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .release-footer__social a:hover {
+    border-color: var(--rc-rule-strong, #383b45);
+    background: var(--rc-surface, #030912);
+    color: var(--rc-text, #e9e9e9);
+  }
+
+  .release-footer__social a:active {
+    transform: translateY(1px);
+  }
+
+  .release-footer__social-icon {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .release-footer__social-icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .release-footer__bottom {
+    display: flex;
+    min-height: 5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: clamp(4rem, 6vw, 5.5rem);
+    border-top: 1px solid var(--rc-rule, #1b1f26);
+  }
+
+  .release-footer__copyright {
+    color: var(--rc-text-faint, #85868e);
+    font-size: var(--rc-type-label, 0.8125rem);
+    line-height: 1.6;
+  }
+
+  .release-footer__secondary ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem 1.5rem;
+  }
+
+  .release-footer__secondary a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-size: var(--rc-type-label, 0.8125rem);
+    line-height: 1.4;
+  }
+
+  .release-footer a:focus-visible,
+  .wechat-modal button:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--rc-focus, #50befb);
+    outline-offset: 2px;
+  }
+
+  .wechat-modal {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    display: grid;
+    overflow-y: auto;
+    place-items: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--rc-canvas, #010208) 92%, transparent);
+  }
+
+  .wechat-modal[hidden] {
+    display: none;
+  }
+
+  .wechat-modal__panel {
+    position: relative;
+    width: min(100%, 28rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--rc-rule-strong, #383b45);
+    border-radius: var(--rc-radius-surface);
+    background: var(--rc-surface-raised, #080c14);
+    color: var(--rc-text, #e9e9e9);
+  }
+
+  .wechat-modal__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rc-rule, #1b1f26);
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-muted, #a09fa2);
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .wechat-modal__close:hover {
+    border-color: var(--rc-rule-strong, #383b45);
+    background: var(--rc-surface, #030912);
+    color: var(--rc-text, #e9e9e9);
+  }
+
+  .wechat-modal__close:active {
+    transform: translateY(1px);
+  }
+
+  .wechat-modal__copy {
+    padding-right: 3.5rem;
+  }
+
+  .wechat-modal__copy h2 {
+    margin: 0;
+    color: var(--rc-text-strong, #ededee);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 630;
+    letter-spacing: -0.025em;
+    line-height: 1.34;
+  }
+
+  .wechat-modal__copy p {
+    max-width: 32ch;
+    margin: 0.6rem 0 0;
+    color: var(--rc-text-muted, #a09fa2);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  .wechat-modal__qr {
+    display: grid;
+    margin-top: 1.5rem;
+    place-items: center;
+    padding: 0.75rem;
+    border-radius: 4px;
+    background: #ffffff;
+  }
+
+  .wechat-modal__qr img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 14rem);
+  }
+
+  @media (max-width: 1023px) {
+    .release-footer__main {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .release-footer__identity {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 2rem;
+    }
+
+    .release-footer__social {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .release-footer__inner {
+      padding: 4rem 1.5rem 2rem;
+    }
+
+    .release-footer__identity {
+      display: flex;
+    }
+
+    .release-footer__social {
+      margin-top: 1.75rem;
+    }
+
+    .release-footer__directory {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem 2rem;
+    }
+
+    .release-footer__bottom {
+      min-height: 0;
+      align-items: flex-start;
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+    }
+
+    .release-footer__secondary ul {
+      justify-content: flex-start;
+      gap: 0.25rem 1.25rem;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .release-footer__inner {
+      padding-inline: 1.25rem;
+    }
+
+    .release-footer__directory {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .wechat-modal {
+      align-items: end;
+      padding: 0.5rem;
+    }
+
+    .wechat-modal__panel {
+      max-height: calc(100dvh - 1rem);
+      padding: 1.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .release-footer a,
+    .wechat-modal button {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
 <script is:inline>
-  (function () {
-    function handleEscape(e) {
-      const modal = document.getElementById('wechat-qr-modal');
-      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-      }
+  (() => {
+    if (window.__iflyFooterBound) return;
+    window.__iflyFooterBound = true;
+
+    let returnFocus = null;
+    let previousOverflow = '';
+    let previousPaddingRight = '';
+
+    const modalRef = () => document.getElementById('wechat-qr-modal');
+    const focusable = (root) =>
+      Array.from(
+        root.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true');
+
+    function lockScroll() {
+      previousOverflow = document.body.style.overflow;
+      previousPaddingRight = document.body.style.paddingRight;
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
-    function initWeChatModal() {
-      const modal = document.getElementById('wechat-qr-modal');
-      const closeBtn = document.getElementById('wechat-qr-close');
-      if (!modal || !closeBtn) return;
-
-      function openModal(e) {
-        e.preventDefault();
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-      }
-
-      // Bind WeChat links (re-bind on every call to handle View Transitions)
-      document.querySelectorAll('[data-wechat="true"]').forEach(function (el) {
-        if (!el.dataset.wechatBound) {
-          el.addEventListener('click', openModal);
-          el.dataset.wechatBound = 'true';
-        }
-      });
-
-      // Close button
-      if (!closeBtn.dataset.wechatBound) {
-        closeBtn.addEventListener('click', closeModal);
-        closeBtn.dataset.wechatBound = 'true';
-      }
-
-      // Click backdrop to close
-      if (!modal.dataset.wechatBound) {
-        modal.addEventListener('click', function (e) {
-          if (e.target === modal) closeModal();
-        });
-        modal.dataset.wechatBound = 'true';
-      }
+    function unlockScroll() {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
     }
 
-    if (!document.body.dataset.wechatEscBound) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.dataset.wechatEscBound = 'true';
+    function openModal(trigger) {
+      const modal = modalRef();
+      if (!modal) return;
+      returnFocus = trigger instanceof HTMLElement ? trigger : document.activeElement;
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      lockScroll();
+      requestAnimationFrame(() => modal.querySelector('[data-wechat-close]')?.focus());
     }
 
-    document.addEventListener('DOMContentLoaded', initWeChatModal);
-    document.addEventListener('astro:after-swap', initWeChatModal);
+    function closeModal(restoreFocus = true) {
+      const modal = modalRef();
+      if (!modal || modal.hidden) return;
+      modal.hidden = true;
+      modal.setAttribute('aria-hidden', 'true');
+      unlockScroll();
+      if (restoreFocus && returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus();
+      returnFocus = null;
+    }
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const trigger = target.closest('[data-wechat="true"]');
+      if (trigger) {
+        event.preventDefault();
+        openModal(trigger);
+        return;
+      }
+
+      const modal = modalRef();
+      if (target.closest('[data-wechat-close]') || target === modal) {
+        event.preventDefault();
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      const modal = modalRef();
+      if (!modal || modal.hidden) return;
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeModal();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+      const items = focusable(modal);
+      if (!items.length) {
+        event.preventDefault();
+        modal.querySelector('.wechat-modal__panel')?.focus();
+        return;
+      }
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    document.addEventListener('focusin', (event) => {
+      const modal = modalRef();
+      if (!modal || modal.hidden || modal.contains(event.target)) return;
+      modal.querySelector('[data-wechat-close]')?.focus();
+    });
+
+    document.addEventListener('search:opening', () => closeModal(false));
+    document.addEventListener('astro:before-swap', () => closeModal(false));
+    document.addEventListener('astro:after-swap', () => {
+      const modal = modalRef();
+      if (modal) {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      returnFocus = null;
+    });
   })();
 </script>
