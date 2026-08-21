@@ -48,12 +48,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-i18n="projects.titleZh"
-          >
-            开源项目
-          </span>
+          <span class="text-gray-900 dark:text-white" data-i18n="projects.titleZh"> 开源项目 </span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="projects.subtitle">
           探索科大讯飞的开源项目生态，涵盖 AI Agent、开发工具等前沿领域
@@ -165,7 +160,7 @@ const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 
       <!-- View Landscape Link -->
       <div class="mt-16 text-center">
         <a
-          href="/landscape"
+          href="/#project-landscape"
           class="inline-flex items-center gap-2 rounded-xl border-2 border-primary-200 bg-primary-50 px-8 py-4 font-medium text-primary-700 transition-all hover:border-primary-300 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:hover:bg-primary-900"
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

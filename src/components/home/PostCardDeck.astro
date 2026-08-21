@@ -1,0 +1,775 @@
+---
+import type { Post } from '~/types';
+import Image from '~/components/common/Image.astro';
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+
+export interface Props {
+  posts: Post[];
+  locale: 'zh' | 'en';
+}
+
+const { posts, locale } = Astro.props;
+const deckPosts = posts.slice(0, 3);
+const dateFormatter = new Intl.DateTimeFormat(
+  locale === 'zh' ? 'zh-CN' : 'en-US',
+  locale === 'zh'
+    ? { year: 'numeric', month: '2-digit', day: '2-digit' }
+    : { year: 'numeric', month: 'short', day: 'numeric' }
+);
+const labels =
+  locale === 'zh'
+    ? {
+        region: '最新文章轮播',
+        previous: '上一篇文章',
+        next: '下一篇文章',
+        pause: '暂停自动轮换',
+        play: '继续自动轮换',
+        read: '阅读文章',
+        readChinese: '阅读中文原文',
+        chineseOnly: '仅中文原文',
+        fallback: '讯飞开源技术内容',
+      }
+    : {
+        region: 'Latest posts carousel',
+        previous: 'Previous post',
+        next: 'Next post',
+        pause: 'Pause automatic rotation',
+        play: 'Resume automatic rotation',
+        read: 'Read article',
+        readChinese: 'Read in Chinese',
+        chineseOnly: 'ZH ONLY',
+        fallback: 'iFLYTEK Open Source',
+      };
+---
+
+{
+  deckPosts.length > 0 && (
+    <post-card-deck
+      class="post-deck"
+      data-delay="6000"
+      data-locale={locale}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={labels.region}
+    >
+      <div class="post-deck__stage">
+        {deckPosts.map((post, index) => {
+          const link = getPermalink(post.permalink, 'post');
+          const date = dateFormatter.format(post.publishDate);
+          const category = post.category?.title?.toUpperCase() || (locale === 'zh' ? '文章' : 'POST');
+          const position = `${index + 1} / ${deckPosts.length}`;
+          const isChineseFallback = locale === 'en' && post.lang !== 'en';
+          const readLabel = isChineseFallback ? labels.readChinese : labels.read;
+
+          return (
+            <article
+              class="post-deck__card"
+              data-deck-card
+              data-slot={String(index)}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={position}
+            >
+              <span class="post-deck__edge-label" aria-hidden="true">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span>{category}</span>
+              </span>
+
+              <a class="post-deck__link" href={link} data-deck-link>
+                <span class="post-deck__body">
+                  <span class="post-deck__meta">
+                    <time datetime={post.publishDate.toISOString()}>{date}</time>
+                    <span aria-hidden="true">—</span>
+                    <span>{category}</span>
+                    {isChineseFallback && <span class="post-deck__availability">{labels.chineseOnly}</span>}
+                  </span>
+
+                  <h3 lang={isChineseFallback ? 'zh-CN' : undefined}>{post.title}</h3>
+                  {post.excerpt && <p lang={isChineseFallback ? 'zh-CN' : undefined}>{post.excerpt}</p>}
+
+                  <span class="post-deck__read">
+                    <span>{readLabel}</span>
+                    <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+                  </span>
+                </span>
+
+                {post.image ? (
+                  <span class="post-deck__media">
+                    <Image
+                      src={post.image}
+                      watermark
+                      class="post-deck__image"
+                      widths={[420, 640, 900]}
+                      width={1000}
+                      height={760}
+                      sizes="(max-width: 672px) 100vw, (max-width: 1024px) 70vw, 44vw"
+                      alt=""
+                      format="webp"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                ) : (
+                  <span class="post-deck__media post-deck__media--fallback" aria-hidden="true">
+                    <span class="post-deck__fallback-signature">{labels.fallback}</span>
+                    <span class="post-deck__fallback-category">{category}</span>
+                    <span class="post-deck__fallback-date">{date}</span>
+                  </span>
+                )}
+              </a>
+            </article>
+          );
+        })}
+      </div>
+
+      {deckPosts.length > 1 && (
+        <div class="post-deck__toolbar" data-deck-toolbar>
+          <span class="post-deck__count" aria-hidden="true">
+            <span data-deck-current>01</span>
+            <span>/</span>
+            <span>{String(deckPosts.length).padStart(2, '0')}</span>
+          </span>
+
+          <div class="post-deck__controls">
+            <button type="button" data-deck-previous aria-label={labels.previous}>
+              <Icon name="tabler:arrow-left" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              data-deck-toggle
+              data-label-pause={labels.pause}
+              data-label-play={labels.play}
+              aria-label={labels.pause}
+            >
+              <Icon name="tabler:player-pause" class="post-deck__pause-icon" aria-hidden="true" />
+              <Icon name="tabler:player-play" class="post-deck__play-icon" aria-hidden="true" />
+            </button>
+            <button type="button" data-deck-next aria-label={labels.next}>
+              <Icon name="tabler:arrow-right" aria-hidden="true" />
+            </button>
+          </div>
+
+          <span class="sr-only" aria-live="polite" aria-atomic="true" data-deck-live />
+        </div>
+      )}
+    </post-card-deck>
+  )
+}
+
+<style>
+  .post-deck {
+    display: block;
+    min-width: 0;
+  }
+
+  .post-deck__stage {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .post-deck__card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-surface);
+    background: #05070d;
+  }
+
+  .post-deck__edge-label {
+    display: none;
+  }
+
+  .post-deck__link {
+    display: grid;
+    min-height: 30rem;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .post-deck__link:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -4px;
+  }
+
+  .post-deck__body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+  }
+
+  .post-deck__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+  }
+
+  .post-deck__availability {
+    margin-left: auto;
+    color: var(--rc-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  h3 {
+    display: -webkit-box;
+    margin: clamp(1.4rem, 2.6vw, 2.25rem) 0 0;
+    overflow: hidden;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.18;
+    text-wrap: balance;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  p {
+    display: -webkit-box;
+    margin: 1.1rem 0 0;
+    overflow: hidden;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .post-deck__read {
+    display: flex;
+    min-height: 2.75rem;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--rc-rule);
+    color: var(--rc-text-muted);
+    font-size: var(--rc-type-label);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .post-deck__read :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 180ms ease;
+  }
+
+  .post-deck__media {
+    position: relative;
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    background: #0a0d14;
+  }
+
+  .post-deck__media::after {
+    position: absolute;
+    inset: 0;
+    border-left: 1px solid rgb(233 233 233 / 8%);
+    content: '';
+    pointer-events: none;
+  }
+
+  :global(.post-deck__image) {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    filter: saturate(0.76) brightness(0.68) contrast(1.04);
+    transition:
+      filter 320ms ease,
+      transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .post-deck__media--fallback {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: #090c13;
+  }
+
+  .post-deck__fallback-signature,
+  .post-deck__fallback-date {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .post-deck__fallback-category {
+    align-self: center;
+    color: rgb(233 233 233 / 16%);
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 720;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .post-deck__toolbar {
+    display: none;
+  }
+
+  .post-deck[data-ready] .post-deck__stage {
+    position: relative;
+    display: block;
+    height: clamp(33.5rem, 41vw, 36.5rem);
+    padding: 3.25rem 4.75rem 0 0;
+    perspective: 1100px;
+    transform-style: preserve-3d;
+  }
+
+  .post-deck[data-ready] .post-deck__card {
+    position: absolute;
+    top: 3.25rem;
+    right: 4.75rem;
+    bottom: 0;
+    left: 0;
+    backface-visibility: hidden;
+    transform-origin: top center;
+    transition:
+      transform 680ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 420ms ease,
+      border-color 220ms ease;
+  }
+
+  .post-deck[data-ready] .post-deck__card[data-slot='0'] {
+    z-index: 3;
+    border-color: var(--rc-header-rule);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateZ(0deg);
+  }
+
+  .post-deck[data-ready] .post-deck__card[data-slot='1'] {
+    z-index: 2;
+    border-color: var(--rc-header-rule);
+    background: var(--rc-band);
+    opacity: 0.94;
+    transform: translate3d(2rem, -1.3rem, -1.25rem) rotateZ(0.3deg);
+  }
+
+  .post-deck[data-ready] .post-deck__card[data-slot='2'] {
+    z-index: 1;
+    border-color: var(--rc-rule-strong);
+    background: var(--rc-surface-raised);
+    opacity: 0.84;
+    transform: translate3d(4rem, -2.6rem, -2.5rem) rotateZ(0.6deg);
+  }
+
+  .post-deck[data-ready] .post-deck__card:not([data-slot='0'])::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    height: 2.8rem;
+    border-bottom: 1px solid rgb(233 233 233 / 9%);
+    background: var(--rc-band);
+    content: '';
+    pointer-events: none;
+  }
+
+  .post-deck[data-ready] .post-deck__card[data-slot='2']::before {
+    background: var(--rc-surface-raised);
+  }
+
+  .post-deck[data-ready] .post-deck__card:not([data-slot='0']) .post-deck__edge-label {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.75rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--rc-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .post-deck[data-ready] .post-deck__edge-label > span + span {
+    color: var(--rc-text-muted);
+  }
+
+  .post-deck[data-ready] .post-deck__card:not([data-slot='0']) {
+    pointer-events: none;
+  }
+
+  .post-deck[data-ready] .post-deck__card.is-dropping {
+    z-index: 4;
+    opacity: 0;
+    transform: translate3d(-7%, 36%, 2rem) rotateZ(-2.4deg);
+    will-change: transform, opacity;
+  }
+
+  .post-deck[data-ready] .post-deck__toolbar {
+    display: flex;
+    min-height: 3rem;
+    margin-top: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .post-deck__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+  }
+
+  .post-deck__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .post-deck__controls button {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: #05070d;
+    color: var(--rc-text-muted);
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .post-deck__controls button:hover {
+    border-color: var(--rc-header-rule);
+    color: var(--rc-text-strong);
+  }
+
+  .post-deck__controls button:active {
+    transform: translateY(1px);
+  }
+
+  .post-deck__controls button:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 2px;
+  }
+
+  .post-deck__controls :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .post-deck__play-icon,
+  .post-deck[data-paused] .post-deck__pause-icon {
+    display: none;
+  }
+
+  .post-deck[data-paused] .post-deck__play-icon {
+    display: block;
+  }
+
+  .post-deck__link:hover :global(.post-deck__image) {
+    filter: saturate(0.92) brightness(0.82) contrast(1.02);
+    transform: scale(1.02);
+  }
+
+  .post-deck__link:hover .post-deck__read :global(svg) {
+    transform: translate(0.12rem, -0.12rem);
+  }
+
+  @media (max-width: 64rem) {
+    .post-deck[data-ready] .post-deck__stage {
+      height: clamp(33.5rem, 58vw, 36rem);
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .post-deck__link {
+      min-height: 31rem;
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(12rem, 42%) minmax(0, 1fr);
+    }
+
+    .post-deck__body {
+      order: 2;
+      padding: 1.35rem;
+    }
+
+    .post-deck__media {
+      order: 1;
+    }
+
+    .post-deck__media::after {
+      border-top: 0;
+      border-left: 0;
+      border-bottom: 1px solid rgb(233 233 233 / 8%);
+    }
+
+    h3 {
+      margin-top: 1rem;
+      -webkit-line-clamp: 3;
+    }
+
+    p {
+      margin-top: 0.75rem;
+      font-size: 1rem;
+      line-height: 1.55;
+      -webkit-line-clamp: 2;
+    }
+
+    .post-deck__read {
+      min-height: 2.4rem;
+      padding-top: 0.85rem;
+    }
+
+    .post-deck[data-ready] .post-deck__stage {
+      height: 34.25rem;
+      padding: 2.75rem 0 0;
+    }
+
+    .post-deck[data-ready] .post-deck__card {
+      top: 2.75rem;
+      right: 0;
+    }
+
+    .post-deck[data-ready] .post-deck__card[data-slot='1'] {
+      transform: translate3d(0, -1.25rem, -1rem) scale(0.994);
+    }
+
+    .post-deck[data-ready] .post-deck__card[data-slot='2'] {
+      transform: translate3d(0, -2.5rem, -2rem) scale(0.988);
+    }
+
+    .post-deck[data-ready] .post-deck__card.is-dropping {
+      transform: translate3d(-4%, 24%, 1rem) rotateZ(-1.5deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-deck__card,
+    :global(.post-deck__image),
+    .post-deck__read :global(svg),
+    .post-deck__controls button {
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+<script>
+  class PostCardDeckElement extends HTMLElement {
+    private cards: HTMLElement[] = [];
+    private order: number[] = [];
+    private timer: number | undefined;
+    private unlockTimer: number | undefined;
+    private dropTimer: number | undefined;
+    private observer: IntersectionObserver | undefined;
+    private abortController: AbortController | undefined;
+    private reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private isIntersecting = false;
+    private isHovered = false;
+    private hasFocus = false;
+    private isLocked = false;
+    private userPaused = false;
+
+    connectedCallback() {
+      if (this.hasAttribute('data-bound')) return;
+      this.setAttribute('data-bound', '');
+
+      this.cards = Array.from(this.querySelectorAll<HTMLElement>('[data-deck-card]'));
+      this.cards.forEach((card) => card.classList.remove('is-dropping'));
+      this.order = this.cards.map((_, index) => index);
+      if (!this.cards.length) return;
+
+      this.abortController = new AbortController();
+      const { signal } = this.abortController;
+
+      this.querySelector('[data-deck-previous]')?.addEventListener('click', () => this.rotate(-1, true), { signal });
+      this.querySelector('[data-deck-next]')?.addEventListener('click', () => this.rotate(1, true), { signal });
+      this.querySelector('[data-deck-toggle]')?.addEventListener('click', () => this.togglePlayback(), { signal });
+      this.addEventListener('pointerenter', () => this.pauseForHover(true), { signal });
+      this.addEventListener('pointerleave', () => this.pauseForHover(false), { signal });
+      this.addEventListener('focusin', () => this.pauseForFocus(true), { signal });
+      this.addEventListener(
+        'focusout',
+        () => requestAnimationFrame(() => this.pauseForFocus(this.contains(document.activeElement))),
+        { signal }
+      );
+      document.addEventListener('visibilitychange', () => this.refreshTimer(), { signal });
+      document.addEventListener('languagechange', () => requestAnimationFrame(() => this.refreshTimer()), { signal });
+      this.reduceMotion.addEventListener('change', () => this.applyMotionPreference(), { signal });
+
+      this.observer = new IntersectionObserver(
+        ([entry]) => {
+          this.isIntersecting = entry.isIntersecting && entry.intersectionRatio >= 0.25;
+          this.refreshTimer();
+        },
+        { threshold: [0, 0.25, 0.6] }
+      );
+      this.observer.observe(this);
+
+      this.applyMotionPreference();
+    }
+
+    disconnectedCallback() {
+      this.clearTimers();
+      this.observer?.disconnect();
+      this.abortController?.abort();
+      this.removeAttribute('data-bound');
+    }
+
+    private applyMotionPreference() {
+      this.clearTimers();
+      if (this.reduceMotion.matches) {
+        this.removeAttribute('data-ready');
+        this.toggleAttribute('data-paused', this.userPaused);
+        this.cards.forEach((card) => {
+          card.removeAttribute('aria-hidden');
+          card.removeAttribute('inert');
+          card.querySelector<HTMLElement>('[data-deck-link]')?.removeAttribute('tabindex');
+        });
+        return;
+      }
+
+      if (this.cards.length > 1) this.setAttribute('data-ready', '');
+      this.toggleAttribute('data-paused', this.userPaused);
+      this.syncCards(false);
+      this.refreshTimer();
+    }
+
+    private rotate(direction: 1 | -1, announce = false) {
+      if (this.cards.length < 2 || this.isLocked) return;
+      this.clearTimers();
+      this.isLocked = true;
+
+      const outgoing = this.cards[this.order[0]];
+      const dropDelay = direction === 1 && !this.reduceMotion.matches ? 250 : 0;
+      if (dropDelay) outgoing.classList.add('is-dropping');
+
+      this.dropTimer = window.setTimeout(() => {
+        if (direction === 1) {
+          const first = this.order.shift();
+          if (first !== undefined) this.order.push(first);
+        } else {
+          const last = this.order.pop();
+          if (last !== undefined) this.order.unshift(last);
+        }
+
+        this.syncCards(announce);
+        if (dropDelay) {
+          requestAnimationFrame(() => requestAnimationFrame(() => outgoing.classList.remove('is-dropping')));
+        }
+
+        this.unlockTimer = window.setTimeout(
+          () => {
+            this.isLocked = false;
+            this.refreshTimer();
+          },
+          this.reduceMotion.matches ? 0 : 720
+        );
+      }, dropDelay);
+    }
+
+    private syncCards(announce: boolean) {
+      this.order.forEach((cardIndex, slot) => {
+        const card = this.cards[cardIndex];
+        const isCurrent = slot === 0;
+        card.dataset.slot = String(slot);
+        card.toggleAttribute('aria-hidden', !isCurrent);
+        card.toggleAttribute('aria-current', isCurrent);
+        card.toggleAttribute('inert', !isCurrent);
+        const link = card.querySelector<HTMLElement>('[data-deck-link]');
+        if (link) link.tabIndex = isCurrent ? 0 : -1;
+      });
+
+      const currentPosition = this.order[0] + 1;
+      const current = String(currentPosition).padStart(2, '0');
+      const visualCount = this.querySelector<HTMLElement>('[data-deck-current]');
+      if (visualCount) visualCount.textContent = current;
+
+      if (announce) {
+        const live = this.querySelector<HTMLElement>('[data-deck-live]');
+        if (live) live.textContent = `${currentPosition} / ${this.cards.length}`;
+      }
+    }
+
+    private togglePlayback() {
+      this.userPaused = !this.userPaused;
+      this.toggleAttribute('data-paused', this.userPaused);
+      const toggle = this.querySelector<HTMLButtonElement>('[data-deck-toggle]');
+      if (toggle) {
+        toggle.setAttribute('aria-label', toggle.dataset[this.userPaused ? 'labelPlay' : 'labelPause'] || '');
+      }
+      this.refreshTimer();
+    }
+
+    private pauseForHover(paused: boolean) {
+      this.isHovered = paused;
+      this.refreshTimer();
+    }
+
+    private pauseForFocus(paused: boolean) {
+      this.hasFocus = paused;
+      this.refreshTimer();
+    }
+
+    private canAutoPlay() {
+      return (
+        this.cards.length > 1 &&
+        !this.reduceMotion.matches &&
+        !this.userPaused &&
+        !this.isHovered &&
+        !this.hasFocus &&
+        !this.isLocked &&
+        !document.hidden &&
+        this.isIntersecting &&
+        this.offsetParent !== null
+      );
+    }
+
+    private refreshTimer() {
+      if (this.timer !== undefined) window.clearTimeout(this.timer);
+      this.timer = undefined;
+      if (!this.canAutoPlay()) return;
+      const delay = Number(this.dataset.delay) || 6000;
+      this.timer = window.setTimeout(() => this.rotate(1), delay);
+    }
+
+    private clearTimers() {
+      if (this.timer !== undefined) window.clearTimeout(this.timer);
+      if (this.unlockTimer !== undefined) window.clearTimeout(this.unlockTimer);
+      if (this.dropTimer !== undefined) window.clearTimeout(this.dropTimer);
+      this.timer = undefined;
+      this.unlockTimer = undefined;
+      this.dropTimer = undefined;
+    }
+  }
+
+  if (!customElements.get('post-card-deck')) {
+    customElements.define('post-card-deck', PostCardDeckElement);
+  }
+</script>

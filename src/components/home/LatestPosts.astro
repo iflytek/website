@@ -1,0 +1,173 @@
+---
+import type { Post } from '~/types';
+import { Icon } from 'astro-icon/components';
+import PostCardDeck from './PostCardDeck.astro';
+
+export interface Props {
+  posts: Post[];
+  englishPosts: Post[];
+}
+
+const { posts, englishPosts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="latest-posts" aria-labelledby="latest-posts-title">
+      <div class="latest-posts__shell">
+        <div class="latest-posts__layout">
+          <header class="latest-posts__header">
+            <h2 id="latest-posts-title">
+              <span data-lang-zh="技术博客" data-lang-en="Tech Blog">
+                技术博客
+              </span>
+              <span data-lang-zh="与新闻" data-lang-en="& News">
+                与新闻
+              </span>
+            </h2>
+            <a href="/blog">
+              <span data-lang-zh="查看所有文章" data-lang-en="View All Posts">
+                查看所有文章
+              </span>
+              <Icon name="tabler:arrow-right" aria-hidden="true" />
+            </a>
+          </header>
+
+          <div class="latest-posts__decks">
+            <div class="i18n-zh">
+              <PostCardDeck posts={posts} locale="zh" />
+            </div>
+
+            <div class="i18n-en">
+              <PostCardDeck posts={englishPosts} locale="en" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .latest-posts {
+    background: transparent;
+    color: #e9e9e9;
+    padding: clamp(7rem, 10vw, 10.5rem) 0;
+  }
+
+  .latest-posts__shell {
+    position: relative;
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .latest-posts__layout {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.58fr) minmax(0, 1.42fr);
+    align-items: center;
+    gap: clamp(4rem, 8vw, 8rem);
+  }
+
+  .latest-posts__header {
+    min-width: 0;
+  }
+
+  h2 {
+    margin: 0;
+    color: #ededed;
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  h2 > span {
+    display: block;
+  }
+
+  .latest-posts__header > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    align-items: center;
+    gap: 0.65rem;
+    border-bottom: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-muted);
+    font-size: var(--rc-type-label);
+    text-decoration: none;
+    transition:
+      border-color 180ms ease,
+      color 180ms ease;
+  }
+
+  .latest-posts__header > a:hover {
+    border-color: var(--rc-header-rule);
+    color: var(--rc-text-strong);
+  }
+
+  .latest-posts__header > a:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 4px;
+  }
+
+  .latest-posts__header :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .latest-posts__decks {
+    min-width: 0;
+  }
+
+  @media (max-width: 64rem) {
+    .latest-posts__shell {
+      width: min(calc(100% - 2rem), 48rem);
+    }
+
+    .latest-posts__layout {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+
+    .latest-posts__header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .latest-posts__header > a {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .latest-posts {
+      padding-block: 6rem;
+    }
+
+    .latest-posts__shell {
+      width: min(calc(100% - 1.5rem), 36rem);
+    }
+
+    .latest-posts__header {
+      display: grid;
+      gap: 1.5rem;
+      justify-items: start;
+    }
+
+    .latest-posts__layout {
+      gap: 3rem;
+    }
+
+    .latest-posts__header > a {
+      margin-top: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .latest-posts__header > a {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,336 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  adopters: CollectionEntry<'adopter'>[];
+}
+
+const { adopters = [] } = Astro.props;
+---
+
+{
+  adopters.length > 0 && (
+    <section class="adopter-loop" aria-label="合作用户 / Adopter logos">
+      <div class="adopter-loop__shell">
+        <div class="adopter-loop__tracks">
+          <partner-logo-loop
+            class="adopter-loop__track-wrap"
+            data-direction="left"
+            data-speed="32"
+            aria-label="合作方 Logo 循环 / Adopter logo loop"
+          >
+            <div class="adopter-loop__track" data-loop-track>
+              {[0, 1].map((copyIndex) => (
+                <ul
+                  class="adopter-loop__sequence"
+                  data-loop-sequence={copyIndex === 0 ? '' : undefined}
+                  aria-hidden={copyIndex > 0 ? 'true' : undefined}
+                  inert={copyIndex > 0 ? true : undefined}
+                  role="list"
+                >
+                  {adopters.map((adopter) => {
+                    const { name, nameEn, logo } = adopter.data;
+                    return (
+                      <li class="adopter-loop__item" role="listitem">
+                        <button
+                          type="button"
+                          class="adopter-loop__button"
+                          data-adopter-id={adopter.id}
+                          tabindex={copyIndex > 0 ? -1 : undefined}
+                          aria-labelledby={`adopter-logo-label-${adopter.id}-${copyIndex}`}
+                          title={nameEn || name}
+                        >
+                          <span class="adopter-loop__logo-wrap">
+                            <img src={logo} alt="" loading="lazy" decoding="async" />
+                          </span>
+                          <span
+                            id={`adopter-logo-label-${adopter.id}-${copyIndex}`}
+                            class="sr-only"
+                            data-lang-zh={name}
+                            data-lang-en={nameEn || name}
+                          >
+                            {name}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ))}
+            </div>
+          </partner-logo-loop>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .adopter-loop {
+    padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .adopter-loop__shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .adopter-loop__tracks {
+    display: grid;
+  }
+
+  .adopter-loop__track-wrap {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      var(--rc-text-strong) 7%,
+      var(--rc-text-strong) 93%,
+      transparent
+    );
+  }
+
+  .adopter-loop__track {
+    display: flex;
+    width: max-content;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .adopter-loop__sequence {
+    display: flex;
+    flex: 0 0 auto;
+    gap: clamp(2.5rem, 6vw, 6rem);
+    margin: 0;
+    padding: 0 clamp(2.5rem, 6vw, 6rem) 0 0;
+    list-style: none;
+  }
+
+  .adopter-loop__item {
+    flex: 0 0 auto;
+  }
+
+  .adopter-loop__button {
+    display: inline-flex;
+    width: clamp(8.5rem, 12vw, 11.5rem);
+    min-height: 4rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--rc-text-muted);
+    cursor: pointer;
+    opacity: 0.9;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .adopter-loop__button:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  .adopter-loop__button:active {
+    transform: translateY(0);
+  }
+
+  .adopter-loop__button:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
+  }
+
+  .adopter-loop__logo-wrap {
+    display: grid;
+    width: 100%;
+    height: 3.5rem;
+    flex: 0 0 100%;
+    place-items: center;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .adopter-loop__logo-wrap img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 3rem;
+    object-fit: contain;
+  }
+
+  @media (max-width: 42rem) {
+    .adopter-loop {
+      padding-block: 5rem;
+    }
+
+    .adopter-loop__shell {
+      width: min(calc(100% - 1.5rem), 36rem);
+    }
+
+    .adopter-loop__track-wrap {
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        var(--rc-text-strong) 12%,
+        var(--rc-text-strong) 88%,
+        transparent
+      );
+    }
+
+    .adopter-loop__button {
+      width: 9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .adopter-loop__button {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  class PartnerLogoLoopElement extends HTMLElement {
+    private track: HTMLElement | null = null;
+    private sequence: HTMLElement | null = null;
+    private frame: number | undefined;
+    private resizeObserver: ResizeObserver | undefined;
+    private intersectionObserver: IntersectionObserver | undefined;
+    private lastTimestamp: number | undefined;
+    private offset = 0;
+    private distance = 0;
+    private hovered = false;
+    private focused = false;
+    private visible = false;
+    private reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private abortController: AbortController | undefined;
+
+    connectedCallback() {
+      if (this.hasAttribute('data-bound')) return;
+      this.setAttribute('data-bound', '');
+      this.track = this.querySelector<HTMLElement>('[data-loop-track]');
+      this.sequence = this.querySelector<HTMLElement>('[data-loop-sequence]');
+      if (!this.track || !this.sequence) return;
+
+      this.abortController = new AbortController();
+      const { signal } = this.abortController;
+      this.addEventListener('pointerenter', () => this.setHovered(true), { signal });
+      this.addEventListener('pointerleave', () => this.setHovered(false), { signal });
+      this.addEventListener('focusin', () => this.setFocused(true), { signal });
+      this.addEventListener(
+        'focusout',
+        () => requestAnimationFrame(() => this.setFocused(this.contains(document.activeElement))),
+        { signal }
+      );
+      document.addEventListener('visibilitychange', () => this.refreshAnimation(), { signal });
+      this.reduceMotion.addEventListener('change', () => this.refreshAnimation(), { signal });
+
+      this.resizeObserver = new ResizeObserver(() => this.measure());
+      this.resizeObserver.observe(this);
+      this.resizeObserver.observe(this.sequence);
+      this.measure();
+
+      this.intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          this.visible = entry.isIntersecting;
+          this.refreshAnimation();
+        },
+        { threshold: 0.05 }
+      );
+      this.intersectionObserver.observe(this);
+    }
+
+    disconnectedCallback() {
+      this.stopAnimation();
+      this.resizeObserver?.disconnect();
+      this.intersectionObserver?.disconnect();
+      this.abortController?.abort();
+      this.removeAttribute('data-bound');
+    }
+
+    private measure() {
+      if (!this.sequence || !this.track) return;
+      const sequenceWidth = this.sequence.getBoundingClientRect().width;
+      if (!sequenceWidth) return;
+      this.distance = sequenceWidth;
+      this.offset = ((this.offset % this.distance) + this.distance) % this.distance;
+      this.applyTransform();
+      this.refreshAnimation();
+    }
+
+    private setHovered(value: boolean) {
+      this.hovered = value;
+      this.refreshAnimation();
+    }
+
+    private setFocused(value: boolean) {
+      this.focused = value;
+      this.refreshAnimation();
+    }
+
+    private canAnimate() {
+      return Boolean(
+        this.track &&
+        this.distance > 0 &&
+        this.visible &&
+        !this.reduceMotion.matches &&
+        !this.hovered &&
+        !this.focused &&
+        !document.hidden
+      );
+    }
+
+    private refreshAnimation() {
+      if (this.canAnimate()) {
+        if (this.frame === undefined) {
+          this.lastTimestamp = undefined;
+          this.frame = requestAnimationFrame((timestamp) => this.tick(timestamp));
+        }
+      } else {
+        this.stopAnimation();
+      }
+    }
+
+    private stopAnimation() {
+      if (this.frame !== undefined) cancelAnimationFrame(this.frame);
+      this.frame = undefined;
+      this.lastTimestamp = undefined;
+      if (this.reduceMotion.matches) {
+        this.offset = 0;
+        this.applyTransform();
+      }
+    }
+
+    private tick(timestamp: number) {
+      if (!this.canAnimate()) {
+        this.stopAnimation();
+        return;
+      }
+
+      if (this.lastTimestamp === undefined) this.lastTimestamp = timestamp;
+      const delta = Math.min(64, Math.max(0, timestamp - this.lastTimestamp)) / 1000;
+      this.lastTimestamp = timestamp;
+      const speed = Number(this.dataset.speed) || 32;
+      const direction = this.dataset.direction === 'right' ? -1 : 1;
+      this.offset = (this.offset + direction * speed * delta + this.distance) % this.distance;
+      this.applyTransform();
+      this.frame = requestAnimationFrame((nextTimestamp) => this.tick(nextTimestamp));
+    }
+
+    private applyTransform() {
+      if (this.track) this.track.style.transform = `translate3d(${-this.offset}px, 0, 0)`;
+    }
+  }
+
+  if (!customElements.get('partner-logo-loop')) {
+    customElements.define('partner-logo-loop', PartnerLogoLoopElement);
+  }
+</script>

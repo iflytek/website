@@ -20,7 +20,7 @@ exclude = [
   # Lychee resolves root-relative links against --root-dir and tries to
   # open them as local files — exclude them to avoid spurious "File not
   # found" errors.
-  '/projects$',
+  '/projects(?:/.*)?$',
   '/contribute$',
   # npm registry returns 403 for private / renamed / non-existent scoped
   # packages, even to unauthenticated requests. Blog posts reference

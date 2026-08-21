@@ -34,13 +34,13 @@ CNCF 于 2016 年设立 Landscape 项目，旨在为开发者和企业提供一�
 
 [Astron Agent](https://github.com/iflytek/astron-agent) 是一个企业级、商业友好的 Agentic Workflow 平台，用于构建具备多智能体编排能力的下一代 SuperAgent。项目提供可视化工作流编排、MCP 工具集成、RPA 自动化和企业级高可用部署等核心能力，采用 Apache 2.0 许可证开源，目前 GitHub Stars 已超过 8,600。
 
-Astron Agent 也是讯飞开源 [Astron Landscape](https://opensource.iflytek.com/landscape) 的核心项目之一。Astron Landscape 是全球首个企业级智能体开源项目矩阵全景图，以 CNCF Landscape 的方式完整呈现讯飞 Astron 开源生态：涵盖智能体编排平台 astron-agent、RPA 自动化套件 astron-rpa、官方技能库 iFly-Skills 与技能注册中心 SkillHub 等开源项目，覆盖从逻辑编排、工具调用到技能治理的完整 Agentic Workflow 技术栈。
+Astron Agent 也是讯飞开源 [Astron Landscape](https://opensource.iflytek.com/#project-landscape) 的核心项目之一。Astron Landscape 是全球首个企业级智能体开源项目矩阵全景图，以 CNCF Landscape 的方式完整呈现讯飞 Astron 开源生态：涵盖智能体编排平台 astron-agent、RPA 自动化套件 astron-rpa、官方技能库 iFly-Skills 与技能注册中心 SkillHub 等开源项目，覆盖从逻辑编排、工具调用到技能治理的完整 Agentic Workflow 技术栈。
 
 ## 相关链接
 
 - CNCF Landscape 收录条目：[landscape.cncf.io](https://landscape.cncf.io/?view-mode=grid&item=ai-agent--workflow-orchestration--astron-agent)
 - Astron Agent GitHub 仓库：[github.com/iflytek/astron-agent](https://github.com/iflytek/astron-agent)
-- Astron Landscape：[opensource.iflytek.com/landscape](https://opensource.iflytek.com/landscape)
+- Astron Landscape：[opensource.iflytek.com/#project-landscape](https://opensource.iflytek.com/#project-landscape)
 - 讯飞开源官网：[opensource.iflytek.com](https://opensource.iflytek.com)
 
 欢迎大家关注并参与社区贡献！

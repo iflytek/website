@@ -34,13 +34,13 @@ This is another milestone for the iFLYTEK Astron open-source ecosystem in the in
 
 [Astron Agent](https://github.com/iflytek/astron-agent) is an enterprise-grade, commercial-friendly agentic workflow platform for building next-generation SuperAgents with multi-agent orchestration capabilities. The project provides visual workflow orchestration, MCP tool integration, RPA automation, and enterprise-grade high-availability deployment, is open-sourced under the Apache 2.0 license, and has earned more than 8,600 GitHub stars.
 
-Astron Agent is also a core project of the iFLYTEK [Astron Landscape](https://opensource.iflytek.com/landscape) — the world's first enterprise-grade open-source agent project landscape. Presented in the style of the CNCF Landscape, it maps the full iFLYTEK Astron open-source ecosystem, including the agent orchestration platform astron-agent, the RPA automation suite astron-rpa, the official skill library iFly-Skills, and the skill registry SkillHub, covering the complete agentic workflow stack from logic orchestration and tool invocation to skill governance.
+Astron Agent is also a core project of the iFLYTEK [Astron Landscape](https://opensource.iflytek.com/#project-landscape) — the world's first enterprise-grade open-source agent project landscape. Presented in the style of the CNCF Landscape, it maps the full iFLYTEK Astron open-source ecosystem, including the agent orchestration platform astron-agent, the RPA automation suite astron-rpa, the official skill library iFly-Skills, and the skill registry SkillHub, covering the complete agentic workflow stack from logic orchestration and tool invocation to skill governance.
 
 ## Links
 
 - CNCF Landscape entry: [landscape.cncf.io](https://landscape.cncf.io/?view-mode=grid&item=ai-agent--workflow-orchestration--astron-agent)
 - Astron Agent on GitHub: [github.com/iflytek/astron-agent](https://github.com/iflytek/astron-agent)
-- Astron Landscape: [opensource.iflytek.com/landscape](https://opensource.iflytek.com/landscape)
+- Astron Landscape: [opensource.iflytek.com/#project-landscape](https://opensource.iflytek.com/#project-landscape)
 - iFLYTEK Open Source: [opensource.iflytek.com](https://opensource.iflytek.com)
 
 We welcome you to follow the project and contribute to the community!
