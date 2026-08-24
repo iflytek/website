@@ -47,7 +47,7 @@ export const events: Event[] = [
     title: '2nd AI Innovation Exchange Conference · Tianjin',
     titleZh: '智汇津城·破界新生——第 2 届人工智能创新发展交流会',
     date: '2026-07-11',
-    type: 'meetup',
+    type: 'conference',
     description: '技术分享：企业级 Agentic AI 智能体应用架构与知识工程实践',
     descriptionEn: 'Tech sharing: enterprise Agentic AI agent architecture and knowledge engineering practices',
     location: 'Tianjin, China',
