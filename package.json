@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/mdx": "^7.0.7",
     "@astrojs/partytown": "^2.1.7",
     "@eslint/js": "^10.0.1",
     "@iconify-json/flat-color-icons": "^1.2.3",
