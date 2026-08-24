@@ -12,7 +12,7 @@ The official open source website for iFLYTEK (科大讯飞), showcasing our open
 
 ## 🚀 Tech Stack
 
-- **Framework**: [Astro](https://astro.build) 6.x
+- **Framework**: [Astro](https://astro.build) 7.x
 - **Styling**: [Tailwind CSS](https://tailwindcss.com) v4
 - **Content**: MDX (Markdown + JSX)
 - **Language**: TypeScript
@@ -24,7 +24,7 @@ The official open source website for iFLYTEK (科大讯飞), showcasing our open
 - 🌐 **i18n Support** — Chinese and English bilingual support
 - 📱 **Responsive Design** — Mobile, Tablet, and Desktop optimized
 - 📝 **Blog System** — Tech blog and news with MDX support
-- 🗺️ **Project Landscape** — CNCF-style interactive project map
+- 🗺️ **Project Landscape** — CNCF-style interactive project map on homepage
 - 👥 **Contributor Wall** — GitHub contributor avatars animation
 - 🔍 **SEO Optimized** — Meta tags, Open Graph, Sitemap
 - ⚡ **Fast Performance** — Hybrid rendering (SSG + SSR) with Astro
@@ -34,18 +34,26 @@ The official open source website for iFLYTEK (科大讯飞), showcasing our open
 ```
 website/
 ├── src/
-│   ├── components/    # UI components
-│   ├── data/          # Content (blog posts, project data)
-│   ├── layouts/       # Page layouts
-│   ├── navigation.ts  # Navigation config
-│   ├── config.yaml    # Site config
-│   ├── pages/         # Route pages
-│   └── utils/         # Utilities
-├── public/            # Static assets
-├── scripts/           # Build scripts (fetch contributors, project stats, community files)
-├── vendor/            # AstroWind integration
-├── .cache/            # Build-time data cache (contributors, project stats)
-└── .github/           # CI/CD workflows + Dependabot
+│   ├── assets/          # Static assets (favicons, images, styles)
+│   ├── components/      # UI components
+│   │   ├── blog/        # Blog-related components
+│   │   ├── common/      # Shared components (Image, SEO, etc.)
+│   │   ├── contribute/  # Contribution page components
+│   │   ├── home/        # Homepage components
+│   │   ├── projects/    # Project page components
+│   │   ├── ui/          # Reusable UI primitives
+│   │   └── widgets/     # Widget components
+│   ├── data/            # Content (blog posts, project data, adopters)
+│   ├── layouts/         # Page layouts
+│   ├── pages/           # Route pages
+│   ├── utils/           # Utilities and helpers
+│   ├── config.yaml      # Site configuration
+│   └── navigation.ts    # Navigation config
+├── public/              # Static assets (robots.txt, etc.)
+├── scripts/             # Build scripts (fetch contributors, project stats, community files, watermark images)
+├── vendor/              # AstroWind integration
+├── .cache/              # Build-time data cache (contributors, project stats)
+└── .github/             # CI/CD workflows + Dependabot
 ```
 
 ## 🛠️ Getting Started
@@ -103,10 +111,9 @@ npm run preview
 
 | Route             | Description                                     |
 | ----------------- | ----------------------------------------------- |
-| `/`               | Homepage                                        |
+| `/`               | Homepage with project landscape                 |
 | `/projects`       | Project list with category and language filters |
 | `/projects/:slug` | Individual project detail page                  |
-| `/landscape`      | CNCF-style project landscape                    |
 | `/milestone`      | Astron ecosystem milestone timeline             |
 | `/blog`           | Blog list (tech + news)                         |
 | `/events`         | Community events timeline                       |
