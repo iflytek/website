@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - **Astron Ecosystem Milestone**: Added a bilingual, responsive `/milestone` Gantt-style timeline alongside Projects and Landscape, covering Astron Agent, Astron RPA, and SkillHub rankings through August 2026, GitHub Trending peaks, foundation membership, ecosystem recognition, and industry awards
 - **New Event: Maintaining an Enterprise-Grade Agent Project Solo (2026-09-04)**: Added the A2M Shanghai conference session on using Loop Engineering to create an AI-native, automated, and verifiable delivery loop for Astron Agent, including bilingual title, subtitle, description, venue, and details link
+- **New Event: Focus on Efficiency, Not Compute (2026-09-06)**: Added the Shanghai meetup on building a heterogeneous AI acceleration infrastructure on Kubernetes with Volcano + HAMi-core — covering Volcano batch scheduling for large-scale AI training / inference workloads, HAMi-core's unified abstraction and slicing of GPU / NPU / other accelerators (MIG / vGPU / shared VRAM), and iFLYTEK's production experience on platforms like Astron Agent. Bilingual title, subtitle, description, venue, and WeChat registration link
 - **Event Subtitles**: Added optional bilingual subtitle fields to event cards while preserving the existing title fallback for older events
 
 ### Fixed

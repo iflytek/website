@@ -18,6 +18,20 @@ export interface Event {
 
 export const events: Event[] = [
   {
+    title: 'Focus on Efficiency, Not Compute',
+    titleZh: '不卷算力，卷效率',
+    subtitle: '基于 Volcano + HAMi-core 打造 K8s 异构 AI 加速算力底座',
+    subtitleEn: 'Building a Heterogeneous AI Acceleration Infrastructure on Kubernetes with Volcano + HAMi-core',
+    date: '2026-09-06',
+    type: 'meetup',
+    description:
+      '聚焦 Kubernetes 上的异构 AI 算力调度与虚拟化：介绍 Volcano 批任务调度器如何承接大规模 AI 训练 / 推理作业，HAMi-core（异构计算中间层）如何对 GPU / NPU / 各类加速卡进行统一抽象与切分（MIG / vGPU / 共享显存），并分享讯飞在 Astron Agent 等平台上的落地经验——如何让多种异构 AI 加速设备在一个 K8s 集群中以统一接口被调度、配额、监控，显著降低 AI 算力成本。',
+    descriptionEn:
+      'A deep dive into heterogeneous AI compute scheduling on Kubernetes: how the Volcano batch scheduler handles large-scale AI training and inference workloads, how HAMi-core (the Heterogeneous AI Computing Middleware) unifies GPU / NPU / other accelerators through abstraction and slicing (MIG / vGPU / shared VRAM), and how iFLYTEK deploys this stack on platforms like Astron Agent — letting heterogeneous AI devices be scheduled, quota-managed and monitored under a single K8s interface, materially cutting AI compute costs.',
+    location: 'Shanghai, China',
+    link: 'https://mp.weixin.qq.com/s/JQWwoF_pwsdv7Do-EUBt_g',
+  },
+  {
     title: 'How One Person Can Sustainably Maintain an Enterprise-Grade Open-Source Agent Project',
     titleZh: '一个人，如何持续维护一个企业级 Agent 开源项目',
     subtitle: '从 Astron Agent 的工程复杂度，到 Loop Engineering 的自驱动闭环',
