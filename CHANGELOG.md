@@ -2,18 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.6.0] - 2026-08-26
 
 ### Added
 
-- **Astron Ecosystem Milestone**: Added a bilingual, responsive `/milestone` Gantt-style timeline alongside Projects and Landscape, covering Astron Agent, Astron RPA, and SkillHub rankings through August 2026, GitHub Trending peaks, foundation membership, ecosystem recognition, and industry awards
-- **New Event: Maintaining an Enterprise-Grade Agent Project Solo (2026-09-04)**: Added the A2M Shanghai conference session on using Loop Engineering to create an AI-native, automated, and verifiable delivery loop for Astron Agent, including bilingual title, subtitle, description, venue, and details link
-- **New Event: Focus on Efficiency, Not Compute (2026-09-06)**: Added the Shanghai meetup on building a heterogeneous AI acceleration infrastructure on Kubernetes with Volcano + HAMi-core — covering Volcano batch scheduling for large-scale AI training / inference workloads, HAMi-core's unified abstraction and slicing of GPU / NPU / other accelerators (MIG / vGPU / shared VRAM), and iFLYTEK's production experience on platforms like Astron Agent. Bilingual title, subtitle, description, venue, and WeChat registration link
-- **Event Subtitles**: Added optional bilingual subtitle fields to event cards while preserving the existing title fallback for older events
+- **Astron Ecosystem Milestone Timeline**: Bilingual responsive `/milestone` page with Gantt-style timeline covering Astron Agent, Astron RPA, SkillHub, AgentBridge, GitHub Trending peaks, OSS Insight rankings, foundation ecosystem entries, and awards through August 2026
+- **New Event: Maintaining an Enterprise-Grade Agent Project Solo (2026-09-04)**: A2M Shanghai conference session on using Loop Engineering for AI-native automated delivery loop for Astron Agent
+- **New Event: Focus on Efficiency, Not Compute (2026-09-06)**: Shanghai meetup on heterogeneous AI acceleration infrastructure with Volcano + HAMi-core on Kubernetes
+- **Event Subtitles**: Optional bilingual subtitle fields for event cards with backward-compatible title fallback
+- **Homepage Redesign**: Dark tech-style visuals with unified design tokens, optimized Hero/project landscape/tech blog cards/partner LogoLoop, new background animations
+
+### Changed
+
+- **Homepage Architecture**: Refactored to dark tech-style design, removed deprecated theme toggle and standalone landscape page, unified branding
+- **README**: Updated Astro version 6.x → 7.x, improved project structure documentation, fixed Pages table
+- **Event Type**: Tianjin AI Innovation Exchange Conference changed from `meetup` to `conference`
 
 ### Fixed
 
-- **CI Lychee Root-Relative Link Errors**: The `link-check` job emitted 20+ lychee errors (`Cannot resolve root-relative link '/sitemap-index.xml'`, `/_astro/...`, etc.) because the workflow scanned `dist/**/*.html` while the Vercel adapter writes static HTML under `dist/client/`. Pointed the lychee glob at `dist/client/**/*.html`, passed `--root-dir dist/client`, and added `.lychee.toml` (exclude rate-limit-prone hosts, skip SSR-only routes `/projects` & `/contribute`, retry flaky requests, accept 429/999). Verified locally: 6333 links, 0 failures ([#90](https://github.com/iflytek/website/pull/90))
+- **Security: extract-zip Path Traversal (CVE-2026-56876)**: Overrode `@iconify/tools` to `^5.0.12` to remove vulnerable dependency
+- **CI Lychee Link Errors**: Fixed root-relative link resolution by pointing lychee at `dist/client/` with `.lychee.toml` configuration
+- **MoonBit Partner Logo**: Replaced with corrected horizontal transparent logo for proper sizing
+
+### Dependencies
+
+- **astro**: 7.2.0 → 7.2.2 (component styles, incremental builds, image optimization fixes)
+- **@astrojs/markdown-remark**: 7.2.2 → 7.2.4
+- **@astrojs/mdx**: 7.0.5 → 7.0.7 (Sätteri processor v0.10.3)
+- **astro-icon**: 1.1.5 → 1.2.0 (removes `extract-zip` vulnerability, requires Node ≥22.12)
+- **Dev Dependencies**: TypeScript-ESLint 8.66.0 → 8.67.0, astro-compress 2.4.2 → 2.4.3, ESLint 10.8.0 → 10.8.1, globals 17.9.0 → 17.11.0, tsx 4.23.9 → 4.23.12
+
+### Documentation
+
+- **HER Hack Partners**: Added MoonBit as partner
 
 ## [0.5.0] - 2026-08-11
 
