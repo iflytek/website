@@ -1,0 +1,274 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+const metadata = {
+  title: 'Brand Kit',
+  description: '下载讯飞开源官方图形标志、横版与竖版组合标志。',
+};
+
+const colorways = [
+  { slug: 'solid-blue', titleZh: '单色蓝', titleEn: 'Solid Blue', preview: 'light' },
+  { slug: 'white', titleZh: '反白', titleEn: 'White', preview: 'dark' },
+  {
+    slug: 'gradient-white',
+    titleZh: '渐变图形 + 白色字标',
+    titleEn: 'Gradient Mark + White Type',
+    preview: 'dark',
+  },
+  {
+    slug: 'gradient-blue',
+    titleZh: '渐变图形 + 蓝色字标',
+    titleEn: 'Gradient Mark + Blue Type',
+    preview: 'light',
+  },
+  {
+    slug: 'gradient-black',
+    titleZh: '渐变图形 + 黑色字标',
+    titleEn: 'Gradient Mark + Black Type',
+    preview: 'light',
+  },
+];
+
+const variants = [
+  { slug: 'primary', titleZh: '标准版', titleEn: 'Primary' },
+  { slug: 'alternate', titleZh: '备选版', titleEn: 'Alternate' },
+];
+
+const usageGuides = [
+  {
+    index: '01',
+    titleZh: '根据背景选择',
+    titleEn: 'Match the Background',
+    textZh: '浅色背景使用蓝色或黑色字标；深色背景使用反白或白色字标版本。',
+    textEn: 'Use blue or black type on light backgrounds, and white variants on dark backgrounds.',
+  },
+  {
+    index: '02',
+    titleZh: '保持原始比例',
+    titleEn: 'Preserve Proportions',
+    textZh: '等比缩放并保留完整画面，避免拉伸、挤压或裁切标志。',
+    textEn: 'Scale proportionally and keep the full artwork intact without stretching, squeezing, or cropping.',
+  },
+  {
+    index: '03',
+    titleZh: '透明 PNG',
+    titleEn: 'Transparent PNG',
+    textZh: '资源已保留透明背景；卡片底色仅用于网页预览，不属于图片文件。',
+    textEn: 'Assets retain transparent backgrounds; card colors are previews and are not part of the files.',
+  },
+];
+
+const logoGroups = [
+  {
+    id: 'mark',
+    titleZh: '图形标志',
+    titleEn: 'Brand Mark',
+    descriptionZh: '适用于头像、图标以及空间有限的场景。',
+    descriptionEn: 'For avatars, icons, and layouts with limited space.',
+    assets: [
+      {
+        titleZh: '单色蓝图形标志',
+        titleEn: 'Solid Blue Brand Mark',
+        path: '/brand/logos/mark/solid-blue.png',
+        width: 258,
+        height: 262,
+        preview: 'light',
+      },
+    ],
+  },
+  {
+    id: 'horizontal',
+    titleZh: '横版组合标志',
+    titleEn: 'Horizontal Lockups',
+    descriptionZh: '适用于网站页眉、横幅、文档页眉和联合品牌展示。标准版与备选版的图形、字标比例不同。',
+    descriptionEn:
+      'For website headers, banners, document headers, and co-branding. Primary and alternate versions use different mark-to-wordmark proportions.',
+    assets: colorways.flatMap((colorway) =>
+      variants.map((variant) => ({
+        titleZh: colorway.titleZh + ' · ' + variant.titleZh,
+        titleEn: colorway.titleEn + ' · ' + variant.titleEn,
+        path: '/brand/logos/horizontal/' + colorway.slug + '-' + variant.slug + '.png',
+        width: 834,
+        height: 262,
+        preview: colorway.preview,
+      }))
+    ),
+  },
+  {
+    id: 'stacked',
+    titleZh: '竖版组合标志',
+    titleEn: 'Stacked Lockups',
+    descriptionZh: '适用于方形画布、社交媒体图片、海报和居中排版。',
+    descriptionEn: 'For square canvases, social graphics, posters, and centered layouts.',
+    assets: colorways.map((colorway) => ({
+      titleZh: colorway.titleZh,
+      titleEn: colorway.titleEn,
+      path: '/brand/logos/stacked/' + colorway.slug + '.png',
+      width: 473,
+      height: 458,
+      preview: colorway.preview,
+    })),
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <section
+    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-24"
+  >
+    <div class="absolute inset-0 opacity-30" aria-hidden="true">
+      <div class="absolute left-1/4 top-1/4 h-56 w-56 rounded-full bg-primary-400 blur-[90px]"></div>
+      <div class="absolute bottom-1/4 right-1/4 h-56 w-56 rounded-full bg-accent-400 blur-[90px]"></div>
+    </div>
+    <div class="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+      <p
+        class="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-primary-700 dark:text-primary-300"
+        data-lang-zh="官方品牌资源"
+        data-lang-en="Official brand assets"
+      >
+        官方品牌资源
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-5xl md:text-6xl">
+        <span class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">
+          讯飞开源 Brand Kit
+        </span>
+      </h1>
+      <p
+        class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-300"
+        data-lang-zh="下载官方图形标志、横版和竖版组合标志。所有图片均为透明底 PNG，可直接用于数字媒体与文档。"
+        data-lang-en="Download the official brand mark, horizontal lockups, and stacked lockups. Every asset is a transparent PNG ready for digital media and documents."
+      >
+        下载官方图形标志、横版和竖版组合标志。所有图片均为透明底 PNG，可直接用于数字媒体与文档。
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/brand/iflytek-open-source-logo-kit.zip"
+          download
+          class="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-0.5 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-950"
+        >
+          <svg class="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0 5-5m-5 5-5-5M5 20h14"
+            ></path>
+          </svg>
+          <span data-lang-zh="下载完整 Brand Kit" data-lang-en="Download Complete Brand Kit">下载完整 Brand Kit</span>
+        </a>
+        <span
+          class="text-sm text-gray-500 dark:text-gray-400"
+          data-lang-zh="ZIP · 16 张 PNG · 已按版式分类"
+          data-lang-en="ZIP · 16 PNG files · Organized by layout"
+        >
+          ZIP · 16 张 PNG · 已按版式分类
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-gray-200 bg-gray-50 py-10 dark:border-gray-800 dark:bg-gray-900/50">
+    <div class="mx-auto grid max-w-6xl gap-5 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
+      {
+        usageGuides.map((item) => (
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+            <span class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400">{item.index}</span>
+            <h2
+              class="mt-3 text-lg font-semibold text-gray-950 dark:text-white"
+              data-lang-zh={item.titleZh}
+              data-lang-en={item.titleEn}
+            >
+              {item.titleZh}
+            </h2>
+            <p
+              class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400"
+              data-lang-zh={item.textZh}
+              data-lang-en={item.textEn}
+            >
+              {item.textZh}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+  <div class="mx-auto max-w-7xl space-y-16 px-4 py-16 sm:px-6 md:py-20 lg:px-8">
+    {
+      logoGroups.map((group) => (
+        <section id={group.id} aria-labelledby={group.id + '-title'} class="scroll-mt-24">
+          <div class="mb-8 max-w-3xl">
+            <h2
+              id={group.id + '-title'}
+              class="text-2xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-3xl"
+              data-lang-zh={group.titleZh}
+              data-lang-en={group.titleEn}
+            >
+              {group.titleZh}
+            </h2>
+            <p
+              class="mt-3 leading-relaxed text-gray-600 dark:text-gray-400"
+              data-lang-zh={group.descriptionZh}
+              data-lang-en={group.descriptionEn}
+            >
+              {group.descriptionZh}
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            {group.assets.map((asset) => (
+              <article class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900">
+                <div
+                  class:list={[
+                    'flex min-h-64 items-center justify-center p-8 sm:p-10',
+                    asset.preview === 'dark'
+                      ? 'bg-[radial-gradient(circle_at_top_left,#24324a,#08111f_70%)]'
+                      : 'bg-[linear-gradient(135deg,#ffffff,#f4f7fb)]',
+                  ]}
+                >
+                  <img
+                    src={asset.path}
+                    alt={asset.titleZh}
+                    width={asset.width}
+                    height={asset.height}
+                    loading="lazy"
+                    class:list={[
+                      'h-auto w-auto object-contain',
+                      group.id === 'horizontal' ? 'max-h-36 max-w-full' : 'max-h-56 max-w-full',
+                    ]}
+                  />
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 p-5 dark:border-gray-700">
+                  <div>
+                    <h3
+                      class="font-semibold text-gray-950 dark:text-white"
+                      data-lang-zh={asset.titleZh}
+                      data-lang-en={asset.titleEn}
+                    >
+                      {asset.titleZh}
+                    </h3>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      PNG · {asset.width} × {asset.height} px
+                    </p>
+                  </div>
+                  <a
+                    href={asset.path}
+                    download
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3.5 py-2 text-sm font-medium text-gray-700 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:text-gray-300 dark:hover:border-primary-700 dark:hover:bg-primary-950/40 dark:hover:text-primary-300"
+                  >
+                    <svg class="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"
+                      />
+                    </svg>
+                    <span data-lang-zh="下载 PNG" data-lang-en="Download PNG">
+                      下载 PNG
+                    </span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Layout>

@@ -84,6 +84,7 @@ export const footerData = {
         { text: '活动', textEn: 'Events', href: getPermalink('/events') },
         { text: '贡献', textEn: 'Contribute', href: getPermalink('/contribute') },
         { text: '用户', textEn: 'Adopters', href: getPermalink('/adopters') },
+        { text: '品牌资源', textEn: 'Brand Kit', href: getPermalink('/brand') },
       ],
     },
     {

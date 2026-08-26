@@ -9,6 +9,9 @@
 # or to exclude routes that are intentionally SSR-only (prerender=false)
 # and therefore have no static HTML in dist/client.
 exclude = [
+  # The new Brand Kit canonical URL is not live until this PR merges.
+  # Its root-relative route and assets are checked against dist/client.
+  '^https://opensource\.iflytek\.com/brand$',
   # Twitter / X requires auth for most content.
   '^https?://(www\.)?(twitter|x)\.com/',
   # LinkedIn rate-limits aggressively.
