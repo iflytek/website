@@ -4,28 +4,74 @@ import type { Post } from '~/types';
 
 export interface Props {
   posts: Array<Post>;
+  showCategory?: boolean;
 }
 
-const { posts } = Astro.props;
+const { posts, showCategory = true } = Astro.props;
 ---
 
-<ul>
-  {
-    posts.map((post) => (
-      <li class="mb-12 md:mb-20">
-        {post.translation ? (
-          <>
-            <div class="i18n-zh">
-              <Item post={post} />
-            </div>
-            <div class="i18n-en">
-              <Item post={post.translation} />
-            </div>
-          </>
-        ) : (
-          <Item post={post} />
-        )}
-      </li>
-    ))
+{
+  posts.length > 0 ? (
+    <ul class="blog-list" role="list">
+      {posts.map((post) => (
+        <li>
+          {post.translation ? (
+            <>
+              <div class="i18n-zh">
+                <Item post={post} showCategory={showCategory} hasTranslation />
+              </div>
+              <div class="i18n-en">
+                <Item post={post.translation} showCategory={showCategory} hasTranslation />
+              </div>
+            </>
+          ) : (
+            <Item post={post} showCategory={showCategory} />
+          )}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <div class="blog-list__empty" role="status">
+      <strong data-lang-zh="暂时没有文章" data-lang-en="No articles yet">
+        暂时没有文章
+      </strong>
+      <span data-lang-zh="请稍后回来查看最新内容。" data-lang-en="Check back later for new updates.">
+        请稍后回来查看最新内容。
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .blog-list {
+    margin: 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+    list-style: none;
   }
-</ul>
+
+  .blog-list > li + li {
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .blog-list__empty {
+    display: grid;
+    min-height: 14rem;
+    place-content: center;
+    gap: 0.75rem;
+    border-block: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-muted);
+    text-align: center;
+  }
+
+  .blog-list__empty strong {
+    color: var(--rc-text-strong);
+    font-size: 1rem;
+    font-weight: 650;
+  }
+
+  .blog-list__empty span {
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+</style>

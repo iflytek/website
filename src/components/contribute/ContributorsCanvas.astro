@@ -1,524 +1,635 @@
 ---
-/**
- * ContributorsCanvas — 贡献者头像拼字动画
- *
- * Renders contributor avatars in the shape of "iFLYTEK" text
- * with fly-in animation and breathing micro-animation.
- */
+interface Contributor {
+  username: string;
+  avatar_url: string;
+  contributions: number;
+  profile_url: string;
+}
+
 interface Props {
-  contributors: Array<{
+  contributors: Contributor[];
+}
+
+const { contributors } = Astro.props;
+const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c');
+---
+
+<div class="contributors-field" data-contributors-canvas>
+  <script is:inline type="application/json" data-contributors-payload set:html={contributorsJSON} />
+
+  <div class="contributors-field__header" aria-hidden="true">
+    <span>IFLYTEK / COMMUNITY FIELD</span>
+    <span
+      data-lang-zh={contributors.length + ' 位代码贡献者'}
+      data-lang-en={contributors.length + ' code contributors'}
+    >
+      {contributors.length} 位代码贡献者
+    </span>
+  </div>
+
+  <div class="contributors-field__stage" data-contributors-stage>
+    <canvas data-contributors-surface width="1200" height="420" aria-hidden="true"></canvas>
+
+    <div class="contributors-field__fallback">
+      <strong aria-hidden="true">iFLYTEK</strong>
+      <span
+        data-lang-zh="动态头像墙需要 JavaScript；你仍可通过下方名单访问贡献者主页。"
+        data-lang-en="The animated portrait field requires JavaScript. Contributor profiles remain available in the list below."
+      >
+        动态头像墙需要 JavaScript；你仍可通过下方名单访问贡献者主页。
+      </span>
+    </div>
+
+    <div class="contributors-field__loading" data-contributors-loading aria-hidden="true">
+      <span class="contributors-field__signal"></span>
+      <span data-lang-zh="正在构建贡献者头像墙…" data-lang-en="Building the contributor portrait field…">
+        正在构建贡献者头像墙…
+      </span>
+    </div>
+  </div>
+
+  <p
+    class="contributors-field__caption"
+    data-lang-zh="头像墙作为社区集体视觉呈现；使用下方语义化名单访问贡献者 GitHub 主页。"
+    data-lang-en="The portrait field is a collective community visual. Use the semantic list below to open contributor GitHub profiles."
+  >
+    头像墙作为社区集体视觉呈现；使用下方语义化名单访问贡献者 GitHub 主页。
+  </p>
+</div>
+
+<script>
+  interface ContributorRecord {
     username: string;
     avatar_url: string;
     contributions: number;
     profile_url: string;
-  }>;
-}
+  }
 
-const { contributors } = Astro.props;
-const contributorsJSON = JSON.stringify(contributors);
----
+  interface Position {
+    x: number;
+    y: number;
+  }
 
-<div
-  id="contributors-canvas-wrapper"
-  class="relative mx-auto w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
-  style="min-height: 320px;"
->
-  <canvas
-    id="contributors-canvas"
-    class="block h-full w-full cursor-pointer"
-    aria-label="iFLYTEK contributor avatars forming the text iFLYTEK"
-    role="img"></canvas>
+  interface Particle extends Position {
+    targetX: number;
+    targetY: number;
+    startX: number;
+    startY: number;
+    size: number;
+    image: CanvasImageSource;
+    contributor: ContributorRecord;
+    phase: number;
+    progress: number;
+  }
 
-  <!-- Tooltip -->
-  <div
-    id="contributor-tooltip"
-    class="pointer-events-none absolute z-50 hidden rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-lg dark:border-gray-700 dark:bg-gray-900"
-  >
-    <div class="flex items-center gap-2.5">
-      <img id="tooltip-avatar" class="h-8 w-8 rounded-full" src="" alt="" />
-      <div>
-        <div id="tooltip-name" class="font-semibold text-gray-900 dark:text-white"></div>
-        <div id="tooltip-stats" class="text-xs text-gray-500 dark:text-gray-400"></div>
-      </div>
-    </div>
-  </div>
+  interface CanvasRuntime {
+    mountAll: () => void;
+    destroyAll: () => void;
+  }
 
-  <!-- Loading overlay -->
-  <div id="canvas-loading" class="absolute inset-0 flex items-center justify-center">
-    <div class="flex items-center gap-3 text-gray-400">
-      <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-      </svg>
-      <span>Loading contributors...</span>
-    </div>
-  </div>
-</div>
+  declare global {
+    interface Window {
+      __iflytekContributorsCanvasRuntime?: CanvasRuntime;
+    }
+  }
 
-<script is:inline define:vars={{ contributorsData: contributorsJSON }}>
-  (function () {
-    const contributors = JSON.parse(contributorsData);
+  function createContributorsController(root: HTMLElement) {
+    const stage = root.querySelector<HTMLElement>('[data-contributors-stage]');
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-contributors-surface]');
+    const payload = root.querySelector<HTMLScriptElement>('[data-contributors-payload]');
+    if (!stage || !canvas || !payload) return () => {};
 
-    // Config
-    const TEXT = 'iFLYTEK';
-    const FONT_FAMILY = 'Arial, Helvetica, sans-serif';
-    const AVATAR_SIZE = { desktop: 36, tablet: 28, mobile: 20 };
-    const SAMPLE_STEP = { desktop: 5, tablet: 6, mobile: 8 };
-    const MAX_AVATARS = { desktop: 300, tablet: 160, mobile: 80 };
-    const FLY_DURATION = 1800;
-    const BREATHING_AMPLITUDE = 2;
-    const BREATHING_SPEED = 0.002;
+    const context = canvas.getContext('2d');
+    if (!context) return () => {};
+    const stageElement: HTMLElement = stage;
+    const canvasElement: HTMLCanvasElement = canvas;
+    const renderingContext: CanvasRenderingContext2D = context;
 
-    // State
-    let canvas, ctx;
-    let particles = [];
-    let animFrame;
-    let hasEntered = false;
-    let hoveredParticle = null;
-    let canvasWidth, canvasHeight;
-    let dpr;
-
-    function getDeviceType() {
-      if (canvasWidth < 640) return 'mobile';
-      if (canvasWidth < 1024) return 'tablet';
-      return 'desktop';
+    let contributors: ContributorRecord[] = [];
+    try {
+      contributors = JSON.parse(payload.textContent || '[]') as ContributorRecord[];
+    } catch {
+      root.dataset.state = 'failed';
+      return () => {};
     }
 
-    function getAvatarSize() {
-      return AVATAR_SIZE[getDeviceType()];
+    if (contributors.length === 0) {
+      root.dataset.state = 'failed';
+      return () => {};
     }
 
-    function getSampleStep() {
-      return SAMPLE_STEP[getDeviceType()];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const networkInformation = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const staticMode = reducedMotion || Boolean(networkInformation?.saveData);
+    const imageCache = new Map<string, CanvasImageSource>();
+    const pendingImages = new Set<HTMLImageElement>();
+
+    let width = 0;
+    let height = 0;
+    let particles: Particle[] = [];
+    let animationFrame = 0;
+    let animationStartedAt = 0;
+    let animationPausedAt = 0;
+    let animationComplete = staticMode;
+    let resizeTimer = 0;
+    let generation = 0;
+    let destroyed = false;
+    let ready = false;
+    let inViewport = false;
+
+    root.dataset.enhanced = 'true';
+    root.dataset.state = 'loading';
+
+    function avatarWithSize(url: string) {
+      return url + (url.includes('?') ? '&' : '?') + 's=80';
     }
 
-    function getMaxAvatars() {
-      return MAX_AVATARS[getDeviceType()];
-    }
+    function fallbackAvatar(username: string) {
+      const fallback = document.createElement('canvas');
+      fallback.width = 80;
+      fallback.height = 80;
+      const fallbackContext = fallback.getContext('2d');
+      if (!fallbackContext) return fallback;
 
-    // Sample text pixels
-    function sampleTextPixels() {
-      const offscreen = document.createElement('canvas');
-      const octx = offscreen.getContext('2d');
-      offscreen.width = canvasWidth;
-      offscreen.height = canvasHeight;
-
-      const fontSize = Math.min(canvasWidth / 4.5, canvasHeight * 0.55, 240);
-      octx.font = `900 ${fontSize}px ${FONT_FAMILY}`;
-      octx.textAlign = 'center';
-      octx.textBaseline = 'middle';
-      octx.fillStyle = '#000';
-      octx.fillText(TEXT, canvasWidth / 2, canvasHeight / 2);
-
-      const imageData = octx.getImageData(0, 0, canvasWidth, canvasHeight);
-      const pixels = imageData.data;
-      const step = getSampleStep();
-      const positions = [];
-
-      for (let y = 0; y < canvasHeight; y += step) {
-        for (let x = 0; x < canvasWidth; x += step) {
-          const i = (y * canvasWidth + x) * 4;
-          if (pixels[i + 3] > 128) {
-            positions.push({ x, y });
-          }
-        }
+      let hash = 0;
+      for (let index = 0; index < username.length; index += 1) {
+        hash = (hash * 31 + username.charCodeAt(index)) >>> 0;
       }
 
-      // Limit to max avatars, evenly sample
-      const max = getMaxAvatars();
-      if (positions.length > max) {
-        const sampled = [];
-        const interval = positions.length / max;
-        for (let i = 0; i < max; i++) {
-          sampled.push(positions[Math.floor(i * interval)]);
-        }
-        return sampled;
-      }
-      return positions;
+      const shades = ['#111827', '#162033', '#1b2538', '#202b40'];
+      fallbackContext.fillStyle = shades[hash % shades.length];
+      fallbackContext.fillRect(0, 0, 80, 80);
+      fallbackContext.strokeStyle = '#383b45';
+      fallbackContext.lineWidth = 2;
+      fallbackContext.strokeRect(1, 1, 78, 78);
+      fallbackContext.fillStyle = '#e9e9e9';
+      fallbackContext.font = '600 30px Inter, Arial, sans-serif';
+      fallbackContext.textAlign = 'center';
+      fallbackContext.textBaseline = 'middle';
+      fallbackContext.fillText((username[0] || '?').toUpperCase(), 40, 41);
+      return fallback;
     }
 
-    // Load avatar image
-    function loadAvatar(url) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => resolve(img);
-        img.onerror = () => {
-          // Create fallback avatar
-          const fallback = document.createElement('canvas');
-          fallback.width = 80;
-          fallback.height = 80;
-          const fctx = fallback.getContext('2d');
-          const hue = Math.random() * 360;
-          fctx.fillStyle = `hsl(${hue}, 60%, 50%)`;
-          fctx.fillRect(0, 0, 80, 80);
-          fctx.fillStyle = '#fff';
-          fctx.font = 'bold 36px Arial';
-          fctx.textAlign = 'center';
-          fctx.textBaseline = 'middle';
-          fctx.fillText('?', 40, 40);
+    function loadAvatar(contributor: ContributorRecord) {
+      const cached = imageCache.get(contributor.avatar_url);
+      if (cached) return Promise.resolve(cached);
+
+      return new Promise<CanvasImageSource>((resolve) => {
+        const image = new Image();
+        pendingImages.add(image);
+        image.decoding = 'async';
+        image.onload = () => {
+          pendingImages.delete(image);
+          imageCache.set(contributor.avatar_url, image);
+          resolve(image);
+        };
+        image.onerror = () => {
+          pendingImages.delete(image);
+          const fallback = fallbackAvatar(contributor.username);
+          imageCache.set(contributor.avatar_url, fallback);
           resolve(fallback);
         };
-        img.src = url;
+        image.src = avatarWithSize(contributor.avatar_url);
       });
     }
 
-    // Initialize
-    async function init() {
-      canvas = document.getElementById('contributors-canvas');
-      if (!canvas) return;
-      ctx = canvas.getContext('2d');
+    function deviceSettings() {
+      if (width < 480) return { avatarSize: 19, sampleStep: 8, maxParticles: 72 };
+      if (width < 900) return { avatarSize: 27, sampleStep: 6, maxParticles: 150 };
+      return { avatarSize: 34, sampleStep: 5, maxParticles: 220 };
+    }
 
-      resize();
+    function resizeCanvas() {
+      const rectangle = stageElement.getBoundingClientRect();
+      width = Math.max(1, Math.round(rectangle.width));
+      height = Math.max(1, Math.round(rectangle.height));
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
 
-      // Load avatars
-      const avatarSize = getAvatarSize();
-      const positions = sampleTextPixels();
-      const contributorPool = [];
+      canvasElement.width = Math.round(width * pixelRatio);
+      canvasElement.height = Math.round(height * pixelRatio);
+      canvasElement.style.width = width + 'px';
+      canvasElement.style.height = height + 'px';
+      renderingContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
 
-      // Repeat contributors to fill positions
-      while (contributorPool.length < positions.length) {
-        for (const c of contributors) {
-          if (contributorPool.length >= positions.length) break;
-          contributorPool.push(c);
+    function sampleTextPositions() {
+      const offscreen = document.createElement('canvas');
+      offscreen.width = width;
+      offscreen.height = height;
+      const offscreenContext = offscreen.getContext('2d', { willReadFrequently: true });
+      if (!offscreenContext) return [] as Position[];
+
+      const settings = deviceSettings();
+      const fontSize = Math.min(width / 4.7, height * 0.5, 210);
+      offscreenContext.font = '800 ' + fontSize + 'px Inter, Arial, sans-serif';
+      offscreenContext.textAlign = 'center';
+      offscreenContext.textBaseline = 'middle';
+      offscreenContext.fillStyle = '#ffffff';
+      offscreenContext.fillText('iFLYTEK', width / 2, height / 2);
+
+      const pixels = offscreenContext.getImageData(0, 0, width, height).data;
+      const positions: Position[] = [];
+      for (let y = 0; y < height; y += settings.sampleStep) {
+        for (let x = 0; x < width; x += settings.sampleStep) {
+          if (pixels[(y * width + x) * 4 + 3] > 128) positions.push({ x, y });
         }
       }
 
-      // Load unique avatar images
-      const uniqueUrls = [...new Set(contributors.map((c) => c.avatar_url))];
-      const loadedImages = await Promise.all(uniqueUrls.map(loadAvatar));
-      const imageMap = {};
-      uniqueUrls.forEach((url, i) => (imageMap[url] = loadedImages[i]));
+      if (positions.length <= settings.maxParticles) return positions;
 
-      // Create particles
-      particles = positions.map((pos, i) => {
-        const c = contributorPool[i];
-        const startX = Math.random() * canvasWidth;
-        const startY = Math.random() * canvasHeight;
+      const sampled: Position[] = [];
+      const interval = positions.length / settings.maxParticles;
+      for (let index = 0; index < settings.maxParticles; index += 1) {
+        sampled.push(positions[Math.floor((index + 0.5) * interval)]);
+      }
+      return sampled;
+    }
+
+    async function prepareParticles(animateEntrance: boolean) {
+      const currentGeneration = ++generation;
+      resizeCanvas();
+      const positions = sampleTextPositions();
+      const contributorPool = positions.map((_, index) => contributors[index % contributors.length]);
+      const requiredContributors = Array.from(
+        new Map(contributorPool.map((contributor) => [contributor.avatar_url, contributor])).values()
+      );
+      const localImages = new Map(
+        requiredContributors.map((contributor) => [
+          contributor.avatar_url,
+          imageCache.get(contributor.avatar_url) || fallbackAvatar(contributor.username),
+        ])
+      );
+      const settings = deviceSettings();
+      const outerRadius = Math.max(width, height) * 0.64;
+
+      particles = positions.map((position, index) => {
+        const contributor = contributorPool[index];
+        const angle = index * 2.399963229728653;
+        const startX = width / 2 + Math.cos(angle) * outerRadius;
+        const startY = height / 2 + Math.sin(angle) * outerRadius;
+        const isStatic = staticMode || !animateEntrance;
+
         return {
-          x: startX,
-          y: startY,
-          targetX: pos.x,
-          targetY: pos.y,
+          x: isStatic ? position.x : startX,
+          y: isStatic ? position.y : startY,
+          targetX: position.x,
+          targetY: position.y,
           startX,
           startY,
-          size: avatarSize,
-          img: imageMap[c.avatar_url],
-          contributor: c,
-          progress: 0,
-          phase: Math.random() * Math.PI * 2,
-          arrived: false,
+          size: settings.avatarSize,
+          image: localImages.get(contributor.avatar_url) || fallbackAvatar(contributor.username),
+          contributor,
+          phase: (index % 17) / 17,
+          progress: isStatic ? 1 : 0,
         };
       });
 
-      // Hide loading
-      const loading = document.getElementById('canvas-loading');
-      if (loading) loading.style.display = 'none';
+      ready = true;
+      root.dataset.state = 'ready';
+      animationComplete = staticMode || !animateEntrance;
+      render();
 
-      // Start animation
-      startFlyIn();
-    }
-
-    // Fly-in animation with easing
-    function startFlyIn() {
-      const startTime = performance.now();
-
-      function animateFly(time) {
-        const elapsed = time - startTime;
-        let allArrived = true;
-
-        particles.forEach((p, i) => {
-          const delay = (i / particles.length) * 600; // stagger
-          const t = Math.max(0, Math.min(1, (elapsed - delay) / FLY_DURATION));
-          p.progress = t;
-
-          // Ease out cubic
-          const ease = 1 - Math.pow(1 - t, 3);
-          p.x = p.startX + (p.targetX - p.startX) * ease;
-          p.y = p.startY + (p.targetY - p.startY) * ease;
-
-          if (t < 1) allArrived = false;
-          else p.arrived = true;
-        });
-
-        render();
-
-        if (!allArrived) {
-          animFrame = requestAnimationFrame(animateFly);
-        } else {
-          // Switch to breathing animation
-          startBreathing();
-        }
+      if (!animationComplete && inViewport && !document.hidden) {
+        animationStartedAt = performance.now();
+        animationPausedAt = 0;
+        requestAnimation();
       }
 
-      animFrame = requestAnimationFrame(animateFly);
+      const images = await Promise.all(requiredContributors.map((contributor) => loadAvatar(contributor)));
+      if (destroyed || currentGeneration !== generation) return;
+
+      const loadedImages = new Map(
+        requiredContributors.map((contributor, index) => [contributor.avatar_url, images[index]])
+      );
+      particles.forEach((particle) => {
+        particle.image = loadedImages.get(particle.contributor.avatar_url) || particle.image;
+      });
+      render();
     }
 
-    // Breathing micro-animation
-    function startBreathing() {
-      function breathe(time) {
-        particles.forEach((p) => {
-          p.x = p.targetX + Math.sin(time * BREATHING_SPEED + p.phase) * BREATHING_AMPLITUDE;
-          p.y = p.targetY + Math.cos(time * BREATHING_SPEED * 0.8 + p.phase) * BREATHING_AMPLITUDE * 0.6;
-        });
-        render();
-        animFrame = requestAnimationFrame(breathe);
-      }
-      animFrame = requestAnimationFrame(breathe);
-    }
-
-    // Render frame
     function render() {
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      renderingContext.clearRect(0, 0, width, height);
 
-      particles.forEach((p) => {
-        const opacity = Math.min(1, p.progress * 2);
-        ctx.globalAlpha = opacity;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.save();
-        ctx.clip();
-        if (p.img) {
-          ctx.drawImage(p.img, p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-        }
-        ctx.restore();
+      for (const particle of particles) {
+        renderingContext.globalAlpha = Math.min(1, particle.progress * 1.8);
+        renderingContext.save();
+        renderingContext.beginPath();
+        renderingContext.arc(particle.x, particle.y, particle.size / 2, 0, Math.PI * 2);
+        renderingContext.clip();
+        renderingContext.drawImage(
+          particle.image,
+          particle.x - particle.size / 2,
+          particle.y - particle.size / 2,
+          particle.size,
+          particle.size
+        );
+        renderingContext.restore();
 
-        // Highlight hovered
-        if (hoveredParticle === p) {
-          ctx.strokeStyle = '#0066FF';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size / 2 + 2, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      });
-
-      ctx.globalAlpha = 1;
-    }
-
-    // Handle resize
-    function resize() {
-      const wrapper = document.getElementById('contributors-canvas-wrapper');
-      if (!wrapper || !canvas) return;
-
-      dpr = window.devicePixelRatio || 1;
-      canvasWidth = wrapper.clientWidth;
-      canvasHeight = Math.max(320, Math.min(520, canvasWidth * 0.45));
-
-      canvas.width = canvasWidth * dpr;
-      canvas.height = canvasHeight * dpr;
-      canvas.style.width = canvasWidth + 'px';
-      canvas.style.height = canvasHeight + 'px';
-      ctx.scale(dpr, dpr);
-    }
-
-    // Mouse / Touch interaction
-    function getParticleAt(x, y) {
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        const dx = x - p.x;
-        const dy = y - p.y;
-        if (dx * dx + dy * dy < (p.size / 2 + 4) * (p.size / 2 + 4)) {
-          return p;
-        }
+        renderingContext.globalAlpha = 1;
+        renderingContext.strokeStyle = 'rgba(1, 2, 8, 0.82)';
+        renderingContext.lineWidth = 1;
+        renderingContext.beginPath();
+        renderingContext.arc(particle.x, particle.y, particle.size / 2, 0, Math.PI * 2);
+        renderingContext.stroke();
       }
-      return null;
+
+      renderingContext.globalAlpha = 1;
     }
 
-    function showTooltip(particle, clientX, clientY) {
-      const tooltip = document.getElementById('contributor-tooltip');
-      if (!tooltip || !particle) return;
+    function animate(timestamp: number) {
+      animationFrame = 0;
+      if (destroyed || !inViewport || document.hidden || animationComplete) return;
 
-      document.getElementById('tooltip-avatar').src = particle.contributor.avatar_url;
-      document.getElementById('tooltip-name').textContent = particle.contributor.username;
-      document.getElementById('tooltip-stats').textContent = particle.contributor.contributions + ' contributions';
+      const elapsed = timestamp - animationStartedAt;
+      let complete = true;
 
-      const wrapper = document.getElementById('contributors-canvas-wrapper');
-      const rect = wrapper.getBoundingClientRect();
-      let tx = clientX - rect.left + 15;
-      let ty = clientY - rect.top - 20;
-
-      // Keep in bounds
-      if (tx + 180 > rect.width) tx = clientX - rect.left - 190;
-      if (ty < 0) ty = 10;
-
-      tooltip.style.left = tx + 'px';
-      tooltip.style.top = ty + 'px';
-      tooltip.classList.remove('hidden');
-    }
-
-    function hideTooltip() {
-      const tooltip = document.getElementById('contributor-tooltip');
-      if (tooltip) tooltip.classList.add('hidden');
-    }
-
-    // Event listeners
-    function setupEvents() {
-      if (!canvas) return;
-
-      canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const p = getParticleAt(x, y);
-        hoveredParticle = p;
-        canvas.style.cursor = p ? 'pointer' : 'default';
-        if (p) showTooltip(p, e.clientX, e.clientY);
-        else hideTooltip();
+      particles.forEach((particle, index) => {
+        const delay = (index / Math.max(1, particles.length)) * 420;
+        const progress = Math.max(0, Math.min(1, (elapsed - delay) / 1350));
+        const eased = 1 - Math.pow(1 - progress, 3);
+        particle.progress = progress;
+        particle.x = particle.startX + (particle.targetX - particle.startX) * eased;
+        particle.y = particle.startY + (particle.targetY - particle.startY) * eased;
+        if (progress < 1) complete = false;
       });
 
-      canvas.addEventListener('mouseleave', () => {
-        hoveredParticle = null;
-        hideTooltip();
-      });
-
-      canvas.addEventListener('click', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const p = getParticleAt(x, y);
-        if (p && p.contributor.profile_url) {
-          window.open(p.contributor.profile_url, '_blank', 'noopener');
-        }
-      });
-
-      // Touch support
-      canvas.addEventListener(
-        'touchstart',
-        (e) => {
-          const touch = e.touches[0];
-          const rect = canvas.getBoundingClientRect();
-          const x = touch.clientX - rect.left;
-          const y = touch.clientY - rect.top;
-          const p = getParticleAt(x, y);
-          if (p) {
-            showTooltip(p, touch.clientX, touch.clientY);
-            setTimeout(() => {
-              hideTooltip();
-              if (p.contributor.profile_url) {
-                window.open(p.contributor.profile_url, '_blank', 'noopener');
-              }
-            }, 1500);
-          }
-        },
-        { passive: true }
-      );
-
-      // Resize
-      let resizeTimer;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          cancelAnimationFrame(animFrame);
-          resize();
-          const positions = sampleTextPixels();
-          // Remap particles to new positions
-          const contributorPool = [];
-          while (contributorPool.length < positions.length) {
-            for (const c of contributors) {
-              if (contributorPool.length >= positions.length) break;
-              contributorPool.push(c);
-            }
-          }
-          const imageMap = {};
-          particles.forEach((p) => {
-            if (p.img) imageMap[p.contributor.avatar_url] = p.img;
-          });
-
-          particles = positions.map((pos, i) => {
-            const c = contributorPool[i];
-            return {
-              x: pos.x,
-              y: pos.y,
-              targetX: pos.x,
-              targetY: pos.y,
-              startX: pos.x,
-              startY: pos.y,
-              size: getAvatarSize(),
-              img: imageMap[c.avatar_url],
-              contributor: c,
-              progress: 1,
-              phase: Math.random() * Math.PI * 2,
-              arrived: true,
-            };
-          });
-          startBreathing();
-        }, 250);
-      });
+      render();
+      animationComplete = complete;
+      if (!complete) requestAnimation();
     }
 
-    // IntersectionObserver — only animate when visible
-    function setupVisibility() {
-      const wrapper = document.getElementById('contributors-canvas-wrapper');
-      if (!wrapper) return;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !hasEntered) {
-              hasEntered = true;
-              init();
-              setupEvents();
-              observer.disconnect();
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
-
-      observer.observe(wrapper);
+    function requestAnimation() {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(animate);
     }
 
-    // Respect prefers-reduced-motion
-    function boot() {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        // Skip animation, show static layout
-        canvas = document.getElementById('contributors-canvas');
-        if (!canvas) return;
-        ctx = canvas.getContext('2d');
-        resize();
-        const positions = sampleTextPixels();
-        const contributorPool = [];
-        while (contributorPool.length < positions.length) {
-          for (const c of contributors) {
-            if (contributorPool.length >= positions.length) break;
-            contributorPool.push(c);
-          }
-        }
-        const uniqueUrls = [...new Set(contributors.map((c) => c.avatar_url))];
-        Promise.all(uniqueUrls.map(loadAvatar)).then((images) => {
-          const imageMap = {};
-          uniqueUrls.forEach((url, i) => (imageMap[url] = images[i]));
-          particles = positions.map((pos, i) => ({
-            x: pos.x,
-            y: pos.y,
-            targetX: pos.x,
-            targetY: pos.y,
-            startX: pos.x,
-            startY: pos.y,
-            size: getAvatarSize(),
-            img: imageMap[contributorPool[i].avatar_url],
-            contributor: contributorPool[i],
-            progress: 1,
-            phase: 0,
-            arrived: true,
-          }));
-          const loading = document.getElementById('canvas-loading');
-          if (loading) loading.style.display = 'none';
-          render();
-          setupEvents();
-        });
+    function cancelAnimation() {
+      if (!animationFrame) return;
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    }
+
+    function pauseAnimation() {
+      if (!animationComplete && animationStartedAt > 0 && animationPausedAt === 0) {
+        animationPausedAt = performance.now();
+      }
+      cancelAnimation();
+    }
+
+    function resumeAnimation() {
+      if (animationComplete || !ready || !inViewport || document.hidden) return;
+      const resumedAt = performance.now();
+      if (animationStartedAt === 0) {
+        animationStartedAt = resumedAt;
+      } else if (animationPausedAt > 0) {
+        animationStartedAt += resumedAt - animationPausedAt;
+        animationPausedAt = 0;
+      }
+      requestAnimation();
+    }
+
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        pauseAnimation();
       } else {
-        setupVisibility();
+        resumeAnimation();
       }
     }
 
-    // Run when DOM is ready (handles both initial load and view transitions)
-    if (document.readyState !== 'loading') {
-      requestAnimationFrame(boot);
-    } else {
-      document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(boot));
-    }
-  })();
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        inViewport = entries.some((entry) => entry.isIntersecting);
+        if (!inViewport) {
+          pauseAnimation();
+          return;
+        }
+
+        if (!ready) {
+          void prepareParticles(true);
+        } else {
+          resumeAnimation();
+        }
+      },
+      { rootMargin: '120px 0px', threshold: 0.05 }
+    );
+
+    const resizeObserver = new ResizeObserver(() => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (destroyed || !ready) return;
+        cancelAnimation();
+        void prepareParticles(false);
+      }, 160);
+    });
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    intersectionObserver.observe(stageElement);
+    resizeObserver.observe(stageElement);
+    resizeCanvas();
+
+    return () => {
+      destroyed = true;
+      generation += 1;
+      pauseAnimation();
+      pendingImages.forEach((image) => {
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute('src');
+      });
+      pendingImages.clear();
+      window.clearTimeout(resizeTimer);
+      intersectionObserver.disconnect();
+      resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }
+
+  if (!window.__iflytekContributorsCanvasRuntime) {
+    const controllers = new Map<HTMLElement, () => void>();
+    const runtime: CanvasRuntime = {
+      mountAll() {
+        document.querySelectorAll<HTMLElement>('[data-contributors-canvas]').forEach((root) => {
+          if (!controllers.has(root)) controllers.set(root, createContributorsController(root));
+        });
+      },
+      destroyAll() {
+        controllers.forEach((destroy) => destroy());
+        controllers.clear();
+      },
+    };
+
+    window.__iflytekContributorsCanvasRuntime = runtime;
+    document.addEventListener('astro:page-load', runtime.mountAll);
+    document.addEventListener('astro:before-swap', runtime.destroyAll);
+  }
+
+  window.__iflytekContributorsCanvasRuntime.mountAll();
 </script>
+
+<style>
+  .contributors-field {
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-surface);
+    background: #05070d;
+  }
+
+  .contributors-field__header,
+  .contributors-field__caption {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.055em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .contributors-field__header {
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .contributors-field__stage {
+    position: relative;
+    height: clamp(20rem, 38vw, 31rem);
+    overflow: hidden;
+    background-color: #05070d;
+    background-image:
+      linear-gradient(var(--rc-rule) 1px, transparent 1px), linear-gradient(90deg, var(--rc-rule) 1px, transparent 1px);
+    background-position: center;
+    background-size: 4rem 4rem;
+    isolation: isolate;
+  }
+
+  .contributors-field__stage::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 2%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .contributors-field canvas {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    touch-action: pan-y;
+    transition: opacity 240ms ease;
+  }
+
+  .contributors-field[data-state='ready'] canvas {
+    opacity: 1;
+  }
+
+  .contributors-field__fallback,
+  .contributors-field__loading {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .contributors-field__fallback strong {
+    color: var(--rc-text-strong);
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    font-weight: 720;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .contributors-field__fallback span,
+  .contributors-field__loading {
+    max-width: 34rem;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .contributors-field__loading {
+    display: none;
+  }
+
+  .contributors-field[data-enhanced='true'] .contributors-field__fallback {
+    display: none;
+  }
+
+  .contributors-field[data-enhanced='true'][data-state='loading'] .contributors-field__loading {
+    display: grid;
+  }
+
+  .contributors-field[data-state='failed'] .contributors-field__fallback {
+    display: grid;
+  }
+
+  .contributors-field__signal {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 1rem rgb(60 143 247 / 55%);
+    animation: contributor-signal 1.2s ease-in-out infinite;
+  }
+
+  .contributors-field__caption {
+    justify-content: flex-start;
+    margin: 0;
+    border-top: 1px solid var(--rc-rule);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  @keyframes contributor-signal {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: scale(0.8);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .contributors-field__header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .contributors-field__stage {
+      height: 19rem;
+      background-size: 3rem 3rem;
+    }
+
+    .contributors-field__caption {
+      min-height: 3.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contributors-field canvas {
+      transition: none;
+    }
+
+    .contributors-field__signal {
+      animation: none;
+    }
+  }
+</style>

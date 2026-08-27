@@ -1,4 +1,5 @@
 import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { blogSections } from './data/blog-sections';
 
 // Inline SVG icons for brands not available in tabler icon set
 const HUGGINGFACE_ICON =
@@ -40,23 +41,11 @@ export const headerData = {
       text: '博客',
       textEn: 'Blog',
       href: getBlogPermalink(),
-      links: [
-        {
-          text: '全部文章',
-          textEn: 'All Posts',
-          href: getBlogPermalink(),
-        },
-        {
-          text: '技术博客',
-          textEn: 'Tech Blog',
-          href: getPermalink('/category/tech'),
-        },
-        {
-          text: '最新新闻',
-          textEn: 'Latest News',
-          href: getPermalink('/category/news'),
-        },
-      ],
+      links: blogSections.map((section) => ({
+        text: section.titleZh,
+        textEn: section.titleEn,
+        href: section.key === 'all' ? getBlogPermalink() : getPermalink(section.href),
+      })),
     },
     {
       text: '贡献',

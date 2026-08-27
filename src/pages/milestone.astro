@@ -3,54 +3,21 @@ import { Icon } from 'astro-icon/components';
 import Layout from '~/layouts/PageLayout.astro';
 
 const metadata = {
-  title: 'Milestone',
+  title: '开源里程碑',
   description:
     'Milestones of the iFLYTEK Astron open source ecosystem across community rankings, global trends, ecosystem recognition, and industry awards.',
 };
 
 type ProjectKey = 'agent' | 'rpa' | 'skillhub' | 'ecosystem';
 
-const projectThemes: Record<
-  ProjectKey,
-  { label: string; badge: string; icon: string; dot: string; bar: string; point: string; soft: string }
-> = {
-  agent: {
-    label: 'Astron Agent',
-    badge: 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/70 dark:bg-sky-950/60 dark:text-sky-300',
-    icon: 'bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-sky-500/25',
-    dot: 'border-sky-200 bg-sky-500 shadow-sky-500/30 dark:border-sky-800',
-    bar: 'from-sky-500 to-indigo-600 shadow-sky-500/20',
-    point: 'border-sky-200 bg-sky-500 shadow-sky-500/30 dark:border-sky-800',
-    soft: 'bg-sky-50/80 dark:bg-sky-950/30',
-  },
-  rpa: {
-    label: 'Astron RPA',
-    badge: 'border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800/70 dark:bg-teal-950/60 dark:text-teal-300',
-    icon: 'bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-teal-500/25',
-    dot: 'border-teal-200 bg-teal-500 shadow-teal-500/30 dark:border-teal-800',
-    bar: 'from-teal-500 to-emerald-600 shadow-teal-500/20',
-    point: 'border-teal-200 bg-teal-500 shadow-teal-500/30 dark:border-teal-800',
-    soft: 'bg-teal-50/80 dark:bg-teal-950/30',
-  },
-  skillhub: {
-    label: 'SkillHub',
-    badge:
-      'border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 dark:border-fuchsia-800/70 dark:bg-fuchsia-950/60 dark:text-fuchsia-300',
-    icon: 'bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-fuchsia-500/25',
-    dot: 'border-fuchsia-200 bg-fuchsia-500 shadow-fuchsia-500/30 dark:border-fuchsia-800',
-    bar: 'from-fuchsia-500 to-violet-600 shadow-fuchsia-500/20',
-    point: 'border-fuchsia-200 bg-fuchsia-500 shadow-fuchsia-500/30 dark:border-fuchsia-800',
-    soft: 'bg-fuchsia-50/80 dark:bg-fuchsia-950/30',
-  },
+const projectMeta: Record<ProjectKey, { labelZh: string; labelEn: string; accent: string }> = {
+  agent: { labelZh: 'Astron Agent', labelEn: 'Astron Agent', accent: 'var(--rc-blue)' },
+  rpa: { labelZh: 'Astron RPA', labelEn: 'Astron RPA', accent: 'var(--rc-cyan)' },
+  skillhub: { labelZh: 'SkillHub', labelEn: 'SkillHub', accent: 'var(--rc-violet)' },
   ecosystem: {
-    label: 'Astron Agent & RPA & AgentBridge',
-    badge:
-      'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800/70 dark:bg-amber-950/60 dark:text-amber-300',
-    icon: 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-amber-500/25',
-    dot: 'border-amber-200 bg-amber-500 shadow-amber-500/30 dark:border-amber-800',
-    bar: 'from-amber-500 to-orange-600 shadow-amber-500/20',
-    point: 'border-amber-200 bg-amber-500 shadow-amber-500/30 dark:border-amber-800',
-    soft: 'bg-amber-50/80 dark:bg-amber-950/30',
+    labelZh: 'Astron 生态',
+    labelEn: 'Astron ecosystem',
+    accent: 'var(--rc-amber)',
   },
 };
 
@@ -275,506 +242,1313 @@ const months = [
   { zh: '2026.08', en: 'Aug 2026' },
 ];
 
-const agentGanttItems: GanttItem[] = [
-  {
-    sourceIndex: 0,
-    kind: 'range',
-    start: 1,
-    end: 5,
-    titleZh: 'OpenLeaderboard 活跃度 · 中国 Agent 第一',
-    titleEn: 'OpenLeaderboard activity · No. 1 Chinese agent project',
-    dateZh: '2025.09—2026.01',
-    dateEn: 'Sep 2025—Jan 2026',
-    barZh: '中国 Agent #1',
-    barEn: 'China Agent #1',
-  },
-  {
-    sourceIndex: 0,
-    kind: 'range',
-    start: 1,
-    end: 12,
-    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
-    titleEn: 'OSS Insight global Java trending TOP 5',
-    dateZh: '2025.09—2026.08',
-    dateEn: 'Sep 2025—Aug 2026',
-    barZh: '全球 Java TOP 5',
-    barEn: 'Global Java TOP 5',
-  },
-  {
-    sourceIndex: 3,
-    kind: 'point',
-    start: 6,
-    titleZh: 'OpenRank 值 · 中国 Agent 第一',
-    titleEn: 'OpenRank · No. 1 Chinese agent project',
-    dateZh: '2026.02',
-    dateEn: 'Feb 2026',
-    barZh: '#1 · 02月',
-    barEn: '#1 · Feb',
-  },
-  {
-    sourceIndex: 6,
-    kind: 'point',
-    start: 8,
-    titleZh: 'GitHub Trending #1',
-    titleEn: 'GitHub Trending #1',
-    dateZh: '2026.04.03',
-    dateEn: 'Apr 3, 2026',
-    barZh: '#1 · 04.03',
-    barEn: '#1 · Apr 3',
-  },
-  {
-    sourceIndex: 8,
-    kind: 'point',
-    start: 9,
-    titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
-    titleEn: 'QbitAI 2026 China AIGC recognition',
-    dateZh: '2026.05.20',
-    dateEn: 'May 20, 2026',
-    barZh: '荣誉 · 05.20',
-    barEn: 'Award · May 20',
-  },
-  {
-    sourceIndex: 11,
-    kind: 'point',
-    start: 11,
-    titleZh: '进入 CNCF 云原生全景图',
-    titleEn: 'Added to the CNCF Landscape',
-    dateZh: '2026.07.16',
-    dateEn: 'Jul 16, 2026',
-    barZh: 'CNCF · 07.16',
-    barEn: 'CNCF · Jul 16',
-  },
-];
-
-const rpaGanttItems: GanttItem[] = [
-  {
-    sourceIndex: 2,
-    kind: 'range',
-    start: 5,
-    end: 6,
-    titleZh: 'OpenLeaderboard · 中国 RPA 第一',
-    titleEn: 'OpenLeaderboard · No. 1 Chinese RPA project',
-    dateZh: '2026.01—2026.02',
-    dateEn: 'Jan—Feb 2026',
-    barZh: '中国 RPA #1',
-    barEn: 'China RPA #1',
-  },
-  {
-    sourceIndex: 2,
-    kind: 'range',
-    start: 5,
-    end: 10,
-    titleZh: 'OSS Insight 全球 Java 趋势 TOP 10',
-    titleEn: 'OSS Insight global Java trending TOP 10',
-    dateZh: '2026.01—2026.06',
-    dateEn: 'Jan—Jun 2026',
-    barZh: '全球 Java TOP 10',
-    barEn: 'Global Java TOP 10',
-  },
-  {
-    sourceIndex: 4,
-    kind: 'point',
-    start: 7,
-    titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
-    titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
-    dateZh: '2026.03.28',
-    dateEn: 'Mar 28, 2026',
-    barZh: '奖项 · 03.28',
-    barEn: 'Award · Mar 28',
-  },
-  {
-    sourceIndex: 7,
-    kind: 'point',
-    start: 8,
-    titleZh: 'GitHub Trending #2',
-    titleEn: 'GitHub Trending #2',
-    dateZh: '2026.04.04',
-    dateEn: 'Apr 4, 2026',
-    barZh: '#2 · 04.04',
-    barEn: '#2 · Apr 4',
-  },
-];
-
-const skillhubGanttItems: GanttItem[] = [
-  {
-    sourceIndex: 5,
-    kind: 'range',
-    start: 7,
-    end: 12,
-    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
-    titleEn: 'OSS Insight global Java trending TOP 5',
-    dateZh: '2026.03—2026.08',
-    dateEn: 'Mar—Aug 2026',
-    barZh: '全球 Java TOP 5',
-    barEn: 'Global Java TOP 5',
-  },
-  {
-    sourceIndex: 9,
-    kind: 'point',
-    start: 9,
-    titleZh: 'GitHub Trending #2',
-    titleEn: 'GitHub Trending #2',
-    dateZh: '2026.05.30',
-    dateEn: 'May 30, 2026',
-    barZh: '#2 · 05.30',
-    barEn: '#2 · May 30',
-  },
-  {
-    sourceIndex: 10,
-    kind: 'point',
-    start: 11,
-    titleZh: '加入 AAIF，成为 Associate Member',
-    titleEn: 'Joined AAIF as an Associate Member',
-    dateZh: '2026.07.14',
-    dateEn: 'Jul 14, 2026',
-    barZh: 'AAIF · 07.14',
-    barEn: 'AAIF · Jul 14',
-  },
-];
-
-const ecosystemGanttItems: GanttItem[] = [
-  {
-    sourceIndex: 1,
-    kind: 'point',
-    start: 5,
-    titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
-    titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
-    dateZh: '2026.01.29',
-    dateEn: 'Jan 29, 2026',
-    barZh: 'Gitee · 01.29',
-    barEn: 'Gitee · Jan 29',
-  },
-];
-
+// A compact presentation model keeps the original horizontal map while the
+// milestone records above remain the single source of truth for descriptions
+// and official destinations.
 const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
-  { project: 'agent', items: agentGanttItems },
-  { project: 'rpa', items: rpaGanttItems },
-  { project: 'skillhub', items: skillhubGanttItems },
-  { project: 'ecosystem', items: ecosystemGanttItems },
+  {
+    project: 'agent',
+    items: [
+      {
+        sourceIndex: 0,
+        kind: 'range',
+        start: 1,
+        end: 5,
+        titleZh: 'OpenLeaderboard 活跃度 · 中国 Agent 第一',
+        titleEn: 'OpenLeaderboard activity · No. 1 Chinese agent project',
+        dateZh: '2025.09—2026.01',
+        dateEn: 'Sep 2025—Jan 2026',
+        barZh: '中国 Agent #1',
+        barEn: 'China Agent #1',
+      },
+      {
+        sourceIndex: 0,
+        kind: 'range',
+        start: 1,
+        end: 12,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+        titleEn: 'OSS Insight global Java trending TOP 5',
+        dateZh: '2025.09—2026.08',
+        dateEn: 'Sep 2025—Aug 2026',
+        barZh: '全球 Java TOP 5',
+        barEn: 'Global Java TOP 5',
+      },
+      {
+        sourceIndex: 3,
+        kind: 'point',
+        start: 6,
+        titleZh: 'OpenRank 值 · 中国 Agent 第一',
+        titleEn: 'OpenRank · No. 1 Chinese agent project',
+        dateZh: '2026.02',
+        dateEn: 'Feb 2026',
+        barZh: '#1 · 02月',
+        barEn: '#1 · Feb',
+      },
+      {
+        sourceIndex: 6,
+        kind: 'point',
+        start: 8,
+        titleZh: 'GitHub Trending #1',
+        titleEn: 'GitHub Trending #1',
+        dateZh: '2026.04.03',
+        dateEn: 'Apr 3, 2026',
+        barZh: '#1 · 04.03',
+        barEn: '#1 · Apr 3',
+      },
+      {
+        sourceIndex: 8,
+        kind: 'point',
+        start: 9,
+        titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
+        titleEn: 'QbitAI 2026 China AIGC recognition',
+        dateZh: '2026.05.20',
+        dateEn: 'May 20, 2026',
+        barZh: '荣誉 · 05.20',
+        barEn: 'Award · May 20',
+      },
+      {
+        sourceIndex: 11,
+        kind: 'point',
+        start: 11,
+        titleZh: '进入 CNCF 云原生全景图',
+        titleEn: 'Added to the CNCF Landscape',
+        dateZh: '2026.07.16',
+        dateEn: 'Jul 16, 2026',
+        barZh: 'CNCF · 07.16',
+        barEn: 'CNCF · Jul 16',
+      },
+    ],
+  },
+  {
+    project: 'rpa',
+    items: [
+      {
+        sourceIndex: 2,
+        kind: 'range',
+        start: 5,
+        end: 6,
+        titleZh: 'OpenLeaderboard · 中国 RPA 第一',
+        titleEn: 'OpenLeaderboard · No. 1 Chinese RPA project',
+        dateZh: '2026.01—2026.02',
+        dateEn: 'Jan—Feb 2026',
+        barZh: '中国 RPA #1',
+        barEn: 'China RPA #1',
+      },
+      {
+        sourceIndex: 2,
+        kind: 'range',
+        start: 5,
+        end: 10,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 10',
+        titleEn: 'OSS Insight global Java trending TOP 10',
+        dateZh: '2026.01—2026.06',
+        dateEn: 'Jan—Jun 2026',
+        barZh: '全球 Java TOP 10',
+        barEn: 'Global Java TOP 10',
+      },
+      {
+        sourceIndex: 4,
+        kind: 'point',
+        start: 7,
+        titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
+        titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
+        dateZh: '2026.03.28',
+        dateEn: 'Mar 28, 2026',
+        barZh: '奖项 · 03.28',
+        barEn: 'Award · Mar 28',
+      },
+      {
+        sourceIndex: 7,
+        kind: 'point',
+        start: 8,
+        titleZh: 'GitHub Trending #2',
+        titleEn: 'GitHub Trending #2',
+        dateZh: '2026.04.04',
+        dateEn: 'Apr 4, 2026',
+        barZh: '#2 · 04.04',
+        barEn: '#2 · Apr 4',
+      },
+    ],
+  },
+  {
+    project: 'skillhub',
+    items: [
+      {
+        sourceIndex: 5,
+        kind: 'range',
+        start: 7,
+        end: 12,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+        titleEn: 'OSS Insight global Java trending TOP 5',
+        dateZh: '2026.03—2026.08',
+        dateEn: 'Mar—Aug 2026',
+        barZh: '全球 Java TOP 5',
+        barEn: 'Global Java TOP 5',
+      },
+      {
+        sourceIndex: 9,
+        kind: 'point',
+        start: 9,
+        titleZh: 'GitHub Trending #2',
+        titleEn: 'GitHub Trending #2',
+        dateZh: '2026.05.30',
+        dateEn: 'May 30, 2026',
+        barZh: '#2 · 05.30',
+        barEn: '#2 · May 30',
+      },
+      {
+        sourceIndex: 10,
+        kind: 'point',
+        start: 11,
+        titleZh: '加入 AAIF，成为 Associate Member',
+        titleEn: 'Joined AAIF as an Associate Member',
+        dateZh: '2026.07.14',
+        dateEn: 'Jul 14, 2026',
+        barZh: 'AAIF · 07.14',
+        barEn: 'AAIF · Jul 14',
+      },
+    ],
+  },
+  {
+    project: 'ecosystem',
+    items: [
+      {
+        sourceIndex: 1,
+        kind: 'point',
+        start: 5,
+        titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
+        titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
+        dateZh: '2026.01.29',
+        dateEn: 'Jan 29, 2026',
+        barZh: 'Gitee · 01.29',
+        barEn: 'Gitee · Jan 29',
+      },
+    ],
+  },
 ];
+
+const ganttSignalCount = ganttGroups.reduce((total, group) => total + group.items.length, 0);
 
 const stats = [
   {
     value: '2',
-    icon: 'tabler:world',
     labelZh: '项目加入国际基金会生态',
     labelEn: 'Projects joined international foundation ecosystems',
   },
   {
     value: '3',
-    icon: 'tabler:rocket',
     labelZh: '核心项目登上 GitHub Trending',
     labelEn: 'Core projects reached GitHub Trending',
   },
   {
     value: '#1',
-    icon: 'tabler:brand-github',
     labelZh: 'GitHub Trending 最高排名',
     labelEn: 'Highest GitHub Trending rank',
   },
   {
     value: 'TOP 5',
-    icon: 'tabler:world',
     labelZh: 'OSS Insight 全球 Java 长期排名',
     labelEn: 'Sustained global Java ranking on OSS Insight',
   },
 ];
+
+const periodZh = '2025.09 — 2026.08';
+const periodEn = 'Sep 2025 — Aug 2026';
 ---
 
 <Layout metadata={metadata}>
-  <!-- Page Header -->
-  <section
-    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
-  >
-    <div class="absolute inset-0 opacity-30" aria-hidden="true">
-      <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]"></div>
-      <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]"></div>
-    </div>
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <div
-          class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-4 py-2 text-sm font-semibold text-primary-700 shadow-sm backdrop-blur dark:border-primary-800 dark:bg-gray-900/60 dark:text-primary-300"
-        >
-          <Icon name="tabler:sparkles" class="h-4 w-4" />
-          <span data-lang-zh="Astron 开源生态" data-lang-en="Astron Open Source Ecosystem">Astron 开源生态</span>
-        </div>
-        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-lang-zh="开源里程碑"
-            data-lang-en="Milestone"
+  <div class="milestone-page">
+    <header class="milestone-hero">
+      <div class="milestone-shell milestone-hero__inner">
+        <div class="milestone-hero__copy">
+          <h1 data-lang-zh="开源里程碑" data-lang-en="Open-source milestones">开源里程碑</h1>
+          <p
+            data-lang-zh="记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻。"
+            data-lang-en="A dated record of Astron's technical breakthroughs, community momentum, and growing recognition across the open-source ecosystem."
           >
-            开源里程碑
+            记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻。
+          </p>
+        </div>
+
+        <div class="milestone-hero__index" aria-labelledby="milestone-index-label">
+          <span
+            id="milestone-index-label"
+            class="milestone-index__label"
+            data-lang-zh="里程碑索引"
+            data-lang-en="Milestone index"
+          >
+            里程碑索引
           </span>
-        </h1>
-        <p
-          class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-gray-600 dark:text-gray-400"
-          data-lang-zh="记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻"
-          data-lang-en="Key moments in the Astron open source ecosystem, from technical breakthroughs and community momentum to global recognition"
-        >
-          记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻
-        </p>
-      </div>
-      <div class="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          stats.map((stat) => (
-            <div class="group rounded-2xl border border-white/80 bg-white/70 p-5 text-center shadow-lg shadow-primary-900/5 backdrop-blur transition-all hover:-translate-y-1 hover:shadow-xl dark:border-gray-700/70 dark:bg-gray-900/70">
-              <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-600 transition-transform group-hover:scale-110 dark:bg-primary-950 dark:text-primary-300">
-                <Icon name={stat.icon} class="h-5 w-5" />
-              </div>
-              <div class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">{stat.value}</div>
-              <div
-                class="mt-1 text-sm leading-snug text-gray-500 dark:text-gray-400"
-                data-lang-zh={stat.labelZh}
-                data-lang-en={stat.labelEn}
-              >
-                {stat.labelZh}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- Timeline -->
-  <section class="relative overflow-hidden py-14 md:py-20">
-    <div class="pointer-events-none absolute inset-0 -z-10 opacity-50 dark:opacity-20" aria-hidden="true">
-      <div
-        class="absolute left-1/2 top-1/3 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-primary-100 blur-[120px] dark:bg-primary-950"
-      >
-      </div>
-    </div>
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-12 text-center md:mb-16">
-        <p
-          class="text-sm font-bold uppercase tracking-[0.24em] text-primary-600 dark:text-primary-400"
-          data-lang-zh="2025.09 — 2026.08"
-          data-lang-en="SEP 2025 — AUG 2026"
-        >
-          2025.09 — 2026.08
-        </p>
-        <h2
-          class="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl"
-          data-lang-zh="横向成就时间轴"
-          data-lang-en="Achievement timeline"
-        >
-          横向成就时间轴
-        </h2>
+          <strong>
+            <span data-lang-zh={periodZh} data-lang-en={periodEn}>{periodZh}</span>
+          </strong>
+          <span
+            class="milestone-index__count"
+            data-lang-zh={milestones.length + ' 条记录'}
+            data-lang-en={milestones.length + ' records'}
+          >
+            {milestones.length} 条记录
+          </span>
+        </div>
       </div>
 
-      <div
-        class="mb-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-gray-600 dark:text-gray-400"
-      >
-        <span class="flex items-center gap-2">
-          <span class="h-3 w-10 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600"></span>
-          <span data-lang-zh="持续时间段" data-lang-en="Sustained period">持续时间段</span>
+      <div class="milestone-shell">
+        <span id="milestone-proof-label" class="sr-only" data-lang-zh="里程碑证据" data-lang-en="Milestone evidence">
+          里程碑证据
         </span>
-        <span class="flex items-center gap-2">
-          <span class="h-3 w-3 rotate-45 rounded-[3px] bg-primary-500"></span>
-          <span data-lang-zh="单点里程碑" data-lang-en="Point milestone">单点里程碑</span>
-        </span>
+        <dl class="milestone-proof" aria-labelledby="milestone-proof-label">
+          {
+            stats.map((stat) => (
+              <div class="milestone-proof__cell">
+                <dt data-lang-zh={stat.labelZh} data-lang-en={stat.labelEn}>
+                  {stat.labelZh}
+                </dt>
+                <dd>{stat.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
-      <p class="mb-3 text-sm font-medium text-gray-500 md:hidden dark:text-gray-400">
-        <span class="i18n-zh">左右滑动查看完整时间轴</span>
-        <span class="i18n-en">Swipe horizontally to view the full timeline</span>
-        <Icon name="tabler:arrows-horizontal" class="ml-1 inline h-4 w-4" />
-      </p>
+    </header>
 
-      <div
-        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl shadow-gray-900/5 dark:border-gray-800 dark:bg-gray-900"
-      >
-        <div class="overflow-x-auto [scrollbar-color:theme(colors.primary.300)_transparent]">
-          <div class="min-w-[1240px]" role="table" aria-label="Astron open source milestone timeline">
-            <div
-              class="grid grid-cols-[280px_960px] border-b border-gray-200 bg-gray-50/90 dark:border-gray-700 dark:bg-gray-950/70"
-              role="row"
+    <section class="milestone-section milestone-timeline" aria-labelledby="milestone-timeline-title">
+      <div class="milestone-shell">
+        <header class="milestone-section__heading">
+          <div>
+            <h2 id="milestone-timeline-title" data-lang-zh="横向成就时间轴" data-lang-en="Achievement timeline">
+              横向成就时间轴
+            </h2>
+            <p
+              data-lang-zh="沿统一月份刻度查看 Astron 各项目的持续表现与单点成就。"
+              data-lang-en="Compare Astron projects across one shared month scale, from sustained signals to point achievements."
             >
-              <div class="flex items-center px-5 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
-                <span class="i18n-zh">项目 / 成就</span>
-                <span class="i18n-en">Project / Achievement</span>
-              </div>
-              <div class="grid grid-cols-12">
-                {
-                  months.map((month, index) => (
-                    <div
-                      class:list={[
-                        'border-l border-gray-200 px-1 py-3 text-center font-mono text-[11px] font-bold text-gray-500 dark:border-gray-700 dark:text-gray-400',
-                        index === 4 && 'bg-primary-50/60 dark:bg-primary-950/30',
-                      ]}
-                      role="columnheader"
-                    >
-                      <span class="i18n-zh">{month.zh}</span>
-                      <span class="i18n-en">{month.en}</span>
-                    </div>
-                  ))
-                }
-              </div>
-            </div>
+              沿统一月份刻度查看 Astron 各项目的持续表现与单点成就。
+            </p>
+          </div>
+          <span
+            class="milestone-section__count"
+            data-lang-zh={ganttSignalCount + ' 个信号'}
+            data-lang-en={ganttSignalCount + ' signals'}
+          >
+            {ganttSignalCount} 个信号
+          </span>
+        </header>
 
-            {
-              ganttGroups.map((group) => {
-                const theme = projectThemes[group.project];
+        <div class="milestone-timeline__legend" aria-label="图例 / Legend">
+          <span>
+            <span class="milestone-legend__range" aria-hidden="true"></span>
+            <span data-lang-zh="持续时间段" data-lang-en="Sustained period">持续时间段</span>
+          </span>
+          <span>
+            <span class="milestone-legend__point" aria-hidden="true"></span>
+            <span data-lang-zh="单点里程碑" data-lang-en="Point milestone">单点里程碑</span>
+          </span>
+        </div>
 
-                return (
-                  <div role="rowgroup">
-                    <div
-                      class:list={[
-                        'grid grid-cols-[280px_960px] border-b border-gray-200 dark:border-gray-800',
-                        theme.soft,
-                      ]}
-                      role="row"
-                    >
-                      <div class="flex items-center gap-3 px-5 py-3">
-                        <span class:list={['h-2.5 w-2.5 rounded-full shadow-md', theme.dot]} />
-                        <span class="text-sm font-extrabold text-gray-900 dark:text-white">{theme.label}</span>
-                        <span class="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-bold text-gray-500 dark:bg-gray-900/70 dark:text-gray-400">
-                          {group.items.length}
+        <p id="milestone-scroll-note" class="milestone-timeline__scroll-note">
+          <span data-lang-zh="横向滑动查看完整时间轴" data-lang-en="Swipe horizontally to view the full timeline">
+            横向滑动查看完整时间轴
+          </span>
+          <Icon name="tabler:arrows-horizontal" aria-hidden="true" />
+        </p>
+
+        <div class="milestone-gantt-frame">
+          <div
+            class="milestone-gantt-scroll"
+            tabindex="0"
+            role="region"
+            aria-labelledby="milestone-timeline-title"
+            aria-describedby="milestone-scroll-note milestone-gantt-description"
+          >
+            <div
+              class="milestone-gantt"
+              role="table"
+              aria-label="Astron open source milestone timeline"
+              aria-describedby="milestone-gantt-description"
+            >
+              <span
+                id="milestone-gantt-description"
+                class="sr-only"
+                data-lang-zh="时间轴按月份排列，左侧显示项目与成就，右侧显示持续时间段或单点标记；部分记录会拆分为多个信号。"
+                data-lang-en="The timeline is arranged by month. Projects and achievements are listed on the left, with sustained periods or point markers on the right; some records expand into multiple signals."
+              >
+                时间轴按月份排列，左侧显示项目与成就，右侧显示持续时间段或单点标记；部分记录会拆分为多个信号。
+              </span>
+
+              <div class="milestone-gantt__row milestone-gantt__header" role="row">
+                <div class="milestone-gantt__label milestone-gantt__label--header" role="columnheader">
+                  <span data-lang-zh="项目 / 成就" data-lang-en="Project / Achievement">项目 / 成就</span>
+                </div>
+                <div class="milestone-gantt__track milestone-gantt__track--months">
+                  {
+                    months.map((month, index) => (
+                      <div class:list={['milestone-gantt__month', index === 4 && 'is-current']} role="columnheader">
+                        <span data-lang-zh={month.zh} data-lang-en={month.en}>
+                          {month.zh}
                         </span>
                       </div>
-                      <div class="relative">
-                        <div class="absolute inset-0 grid grid-cols-12" aria-hidden="true">
-                          {months.map(() => (
-                            <span class="border-l border-gray-200/80 dark:border-gray-800" />
-                          ))}
+                    ))
+                  }
+                </div>
+              </div>
+
+              {
+                ganttGroups.map((group) => {
+                  const project = projectMeta[group.project];
+                  const groupId = `milestone-gantt-${group.project}`;
+
+                  return (
+                    <div class="milestone-gantt__group" role="rowgroup">
+                      <div
+                        class="milestone-gantt__row milestone-gantt__group-row"
+                        role="row"
+                        style={'--milestone-accent:' + project.accent}
+                      >
+                        <div class="milestone-gantt__label milestone-gantt__group-label" role="rowheader">
+                          <span
+                            class="milestone-gantt__project-dot"
+                            style={'--milestone-accent:' + project.accent}
+                            aria-hidden="true"
+                          />
+                          <span id={groupId} data-lang-zh={project.labelZh} data-lang-en={project.labelEn}>
+                            {project.labelZh}
+                          </span>
+                          <span
+                            class="milestone-gantt__group-count"
+                            data-lang-zh={`${group.items.length} 项`}
+                            data-lang-en={`${group.items.length} signals`}
+                          >
+                            {group.items.length} 项
+                          </span>
+                        </div>
+                        <div class="milestone-gantt__track milestone-gantt__track--group" aria-hidden="true">
+                          <div class="milestone-gantt__grid">
+                            {months.map((_, index) => (
+                              <span class:list={['milestone-gantt__grid-line', index === 4 && 'is-current']} />
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {group.items.map((item) => {
-                      const source = milestones[item.sourceIndex];
-                      const gridEnd = (item.end ?? item.start) + 1;
+                      {group.items.map((item, itemIndex) => {
+                        const source = milestones[item.sourceIndex];
+                        const gridEnd = (item.end ?? item.start) + 1;
+                        const titleId = `milestone-gantt-title-${group.project}-${itemIndex}`;
+                        const descriptionId = `milestone-gantt-description-${group.project}-${itemIndex}`;
+                        const hasExternalLink = source.link?.href.startsWith('http') ?? false;
 
-                      return (
-                        <div
-                          class="grid min-h-[68px] grid-cols-[280px_960px] border-b border-gray-100 last:border-b-0 dark:border-gray-800/80"
-                          role="row"
-                        >
-                          <div class="flex min-w-0 items-center gap-3 px-5 py-3" role="rowheader">
+                        return (
+                          <div class="milestone-gantt__row milestone-gantt__item" role="row">
+                            <div class="milestone-gantt__label milestone-gantt__item-label" role="rowheader">
+                              <span
+                                class="milestone-gantt__icon"
+                                style={'--milestone-accent:' + project.accent}
+                                aria-hidden="true"
+                              >
+                                <Icon name={source.icon} />
+                              </span>
+                              <div class="milestone-gantt__item-copy">
+                                <span
+                                  id={titleId}
+                                  class="milestone-gantt__item-title"
+                                  data-lang-title-zh={item.titleZh}
+                                  data-lang-title-en={item.titleEn}
+                                  title={item.titleZh}
+                                >
+                                  <span data-lang-zh={item.titleZh} data-lang-en={item.titleEn}>
+                                    {item.titleZh}
+                                  </span>
+                                </span>
+                                <span class="milestone-gantt__item-meta">
+                                  <time datetime={source.datetime}>
+                                    <span data-lang-zh={item.dateZh} data-lang-en={item.dateEn}>
+                                      {item.dateZh}
+                                    </span>
+                                  </time>
+                                  {source.link ? (
+                                    <a
+                                      class="milestone-gantt__source-link"
+                                      href={source.link.href}
+                                      target={hasExternalLink ? '_blank' : undefined}
+                                      rel={hasExternalLink ? 'noopener noreferrer' : undefined}
+                                    >
+                                      <Icon name="tabler:external-link" aria-hidden="true" />
+                                      <span
+                                        class="sr-only"
+                                        data-lang-zh={`打开${item.titleZh}：${source.link.zh}${hasExternalLink ? '（新标签页）' : ''}`}
+                                        data-lang-en={`Open ${item.titleEn}: ${source.link.en}${hasExternalLink ? ' (new tab)' : ''}`}
+                                      >
+                                        打开{item.titleZh}：{source.link.zh}
+                                        {hasExternalLink ? '（新标签页）' : ''}
+                                      </span>
+                                    </a>
+                                  ) : null}
+                                </span>
+                              </div>
+                            </div>
+
                             <div
-                              class:list={[
-                                'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-md',
-                                theme.icon,
-                              ]}
+                              class="milestone-gantt__track milestone-gantt__track--item"
+                              role="cell"
+                              aria-labelledby={titleId}
+                              aria-describedby={descriptionId}
+                              data-lang-title-zh={source.descriptionZh}
+                              data-lang-title-en={source.descriptionEn}
+                              title={source.descriptionZh}
                             >
-                              <Icon name={source.icon} class="h-4 w-4" />
-                            </div>
-                            <div class="min-w-0 flex-1">
-                              <div class="truncate text-[13px] font-bold text-gray-800 dark:text-gray-100">
-                                <span class="i18n-zh">{item.titleZh}</span>
-                                <span class="i18n-en">{item.titleEn}</span>
+                              <div class="milestone-gantt__grid" aria-hidden="true">
+                                {months.map((_, index) => (
+                                  <span class:list={['milestone-gantt__grid-line', index === 4 && 'is-current']} />
+                                ))}
                               </div>
-                              <div class="mt-1 flex items-center gap-2 font-mono text-[11px] font-semibold text-gray-400">
-                                <span class="i18n-zh">{item.dateZh}</span>
-                                <span class="i18n-en">{item.dateEn}</span>
-                                {source.link && (
-                                  <a
-                                    href={source.link.href}
-                                    target={source.link.href.startsWith('http') ? '_blank' : undefined}
-                                    rel={source.link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                    class="text-primary-500 transition-colors hover:text-primary-700"
-                                    aria-label={source.link.zh}
-                                  >
-                                    <Icon name="tabler:external-link" class="h-3.5 w-3.5" />
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="relative grid grid-cols-12 items-center" role="cell" title={source.descriptionZh}>
-                            <div class="pointer-events-none absolute inset-0 grid grid-cols-12" aria-hidden="true">
-                              {months.map(() => (
-                                <span class="border-l border-gray-100 dark:border-gray-800/80" />
-                              ))}
-                            </div>
-                            {item.kind === 'range' ? (
-                              <div
-                                class:list={[
-                                  'relative z-10 mx-1.5 flex h-9 items-center overflow-hidden rounded-lg bg-gradient-to-r px-3 text-xs font-extrabold text-white shadow-lg',
-                                  theme.bar,
-                                ]}
-                                style={`grid-column: ${item.start} / ${gridEnd}`}
-                              >
-                                <span class="truncate i18n-zh">{item.barZh}</span>
-                                <span class="truncate i18n-en">{item.barEn}</span>
-                              </div>
-                            ) : (
-                              <div
-                                class="relative z-10 flex h-full items-center justify-center"
-                                style={`grid-column: ${item.start}`}
-                              >
-                                <div class="relative flex items-center">
-                                  <span
-                                    class:list={[
-                                      'absolute left-0 h-4 w-4 -translate-x-1/2 rotate-45 rounded-[4px] border-4 shadow-lg',
-                                      theme.point,
-                                    ]}
-                                  />
-                                  <span
-                                    class:list={[
-                                      'ml-2.5 w-max min-w-[84px] rounded-full border bg-white px-2.5 py-1.5 text-[11px] font-extrabold shadow-md dark:bg-gray-900',
-                                      theme.badge,
-                                    ]}
-                                  >
-                                    <span class="i18n-zh">{item.barZh}</span>
-                                    <span class="i18n-en">{item.barEn}</span>
+                              {item.kind === 'range' ? (
+                                <div
+                                  class="milestone-gantt__range"
+                                  style={`--milestone-accent:${project.accent};grid-column:${item.start} / ${gridEnd}`}
+                                >
+                                  <span data-lang-zh={item.barZh} data-lang-en={item.barEn}>
+                                    {item.barZh}
                                   </span>
                                 </div>
-                              </div>
-                            )}
+                              ) : (
+                                <div class="milestone-gantt__point-wrap" style={`grid-column:${item.start}`}>
+                                  <span
+                                    class="milestone-gantt__point"
+                                    style={'--milestone-accent:' + project.accent}
+                                    aria-hidden="true"
+                                  />
+                                  <span class="milestone-gantt__point-label">
+                                    <span data-lang-zh={item.barZh} data-lang-en={item.barEn}>
+                                      {item.barZh}
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                              <span
+                                id={descriptionId}
+                                class="sr-only"
+                                data-lang-zh={source.descriptionZh}
+                                data-lang-en={source.descriptionEn}
+                              >
+                                {source.descriptionZh}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })
-            }
+                        );
+                      })}
+                    </div>
+                  );
+                })
+              }
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Closing statement -->
-  <section class="pb-16 md:pb-24">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <div
-        class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-primary-600 to-sky-500 px-6 py-10 text-center text-white shadow-2xl shadow-primary-900/20 md:px-12 md:py-14"
-      >
-        <div class="absolute inset-0 opacity-20" aria-hidden="true">
-          <div class="absolute -left-8 -top-16 h-48 w-48 rounded-full border border-white/60"></div>
-          <div class="absolute -bottom-24 -right-12 h-64 w-64 rounded-full border border-white/60"></div>
-        </div>
-        <div class="relative mx-auto max-w-3xl">
-          <Icon name="tabler:world" class="mx-auto h-9 w-9 text-white/90" />
-          <h2
-            class="mt-4 text-2xl font-bold md:text-3xl"
-            data-lang-zh="持续生长的全球开源影响力"
-            data-lang-en="Growing global open-source impact"
-          >
-            持续生长的全球开源影响力
+    <section class="milestone-next" aria-labelledby="milestone-next-title">
+      <div class="milestone-shell milestone-next__inner">
+        <div>
+          <h2 id="milestone-next-title" data-lang-zh="继续探索 Astron" data-lang-en="Keep exploring Astron">
+            继续探索 Astron
           </h2>
           <p
-            class="mt-4 text-base leading-7 text-white/85 md:text-lg"
-            data-lang-zh="Astron Agent、Astron RPA 与 SkillHub 在两个月内接力登上 GitHub Trending，从单点突破走向持续性的全球开发者社区影响。"
-            data-lang-en="Astron Agent, Astron RPA, and SkillHub reached GitHub Trending in succession within two months, turning individual breakthroughs into sustained influence across the global developer community."
+            data-lang-zh="从项目全景图与最新动态继续了解 Astron 开源生态。"
+            data-lang-en="Continue with the project landscape and the latest Astron updates."
           >
-            Astron Agent、Astron RPA 与 SkillHub 在两个月内接力登上 GitHub
-            Trending，从单点突破走向持续性的全球开发者社区影响。
+            从项目全景图与最新动态继续了解 Astron 开源生态。
           </p>
-          <a
-            href="/#project-landscape"
-            class="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-primary-700 shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-50 hover:shadow-xl"
-          >
-            <span data-lang-zh="探索 Astron 开源全景图" data-lang-en="Explore the Astron Landscape">
-              探索 Astron 开源全景图
-            </span>
-            <Icon name="tabler:arrow-right" class="h-4 w-4" />
-          </a>
         </div>
+        <nav class="milestone-next__nav" aria-label="继续探索 / Continue exploring">
+          <a href="/#project-landscape">
+            <span data-lang-zh="探索项目全景" data-lang-en="Explore project landscape">探索项目全景</span>
+            <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+          </a>
+          <a href="/blog">
+            <span data-lang-zh="阅读最新动态" data-lang-en="Read latest updates">阅读最新动态</span>
+            <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+          </a>
+        </nav>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </Layout>
+
+<script>
+  (() => {
+    const syncMilestoneTitles = () => {
+      const language = document.documentElement.lang === 'en' ? 'en' : 'zh';
+      document.querySelectorAll('[data-lang-title-zh]').forEach((element) => {
+        const title = element.getAttribute(`data-lang-title-${language}`);
+        if (title) element.setAttribute('title', title);
+      });
+    };
+
+    const initMilestoneGanttKeyboard = () => {
+      document.querySelectorAll('.milestone-gantt-scroll').forEach((node) => {
+        if (!(node instanceof HTMLElement) || node.dataset.keyboardScroll === 'true') return;
+        node.dataset.keyboardScroll = 'true';
+        node.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+          event.preventDefault();
+          const distance = Math.max(160, node.clientWidth * 0.72);
+          const left =
+            event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? node.scrollWidth - node.clientWidth
+                : node.scrollLeft + (event.key === 'ArrowRight' ? distance : -distance);
+
+          node.scrollTo({
+            left,
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          });
+        });
+      });
+    };
+
+    syncMilestoneTitles();
+    initMilestoneGanttKeyboard();
+    document.addEventListener('languagechange', syncMilestoneTitles);
+    document.addEventListener('astro:after-swap', () => {
+      syncMilestoneTitles();
+      initMilestoneGanttKeyboard();
+      window.requestAnimationFrame(syncMilestoneTitles);
+    });
+  })();
+</script>
+
+<style>
+  .milestone-page {
+    min-height: 70vh;
+    overflow: clip;
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .milestone-shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .milestone-hero {
+    padding: clamp(3.25rem, 5vw, 5rem) 0 0;
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .milestone-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(15rem, 0.7fr);
+    gap: clamp(2.5rem, 7vw, 8rem);
+    align-items: end;
+  }
+
+  .milestone-hero__copy {
+    max-width: 56rem;
+  }
+
+  .milestone-hero h1 {
+    max-width: 52rem;
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .milestone-hero__copy > p {
+    max-width: 44rem;
+    margin: 1.5rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.72;
+    text-wrap: pretty;
+  }
+
+  .milestone-hero__index {
+    display: grid;
+    gap: 0.65rem;
+    align-content: end;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-index__label,
+  .milestone-index__count {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .milestone-hero__index strong {
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 550;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .milestone-index__count {
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .milestone-proof {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: clamp(2.5rem, 4vw, 4rem) 0 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-proof__cell {
+    display: flex;
+    min-width: 0;
+    min-height: 8.5rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1.5rem clamp(1rem, 2vw, 2rem);
+  }
+
+  .milestone-proof__cell + .milestone-proof__cell {
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .milestone-proof dt {
+    max-width: 19ch;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .milestone-proof dd {
+    order: -1;
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(1.72rem, 2.65vw, 2.35rem);
+    font-variant-numeric: tabular-nums;
+    font-weight: 550;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+
+  .milestone-section {
+    padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  }
+
+  .milestone-section__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 6rem);
+    align-items: end;
+  }
+
+  .milestone-section__heading h2,
+  .milestone-next h2 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .milestone-section__heading p {
+    max-width: 40rem;
+    margin: 0.15rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+    text-wrap: pretty;
+  }
+
+  .milestone-section__count {
+    justify-self: end;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .milestone-timeline__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    align-items: center;
+    margin-top: clamp(2rem, 3vw, 2.75rem);
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .milestone-timeline__legend > span {
+    display: inline-flex;
+    gap: 0.65rem;
+    align-items: center;
+  }
+
+  .milestone-legend__range {
+    width: 2.5rem;
+    height: 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--rc-blue) 62%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--rc-blue) 20%, var(--rc-surface-raised));
+  }
+
+  .milestone-legend__point {
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: rotate(45deg);
+    border: 2px solid var(--rc-cyan);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+  }
+
+  .milestone-timeline__scroll-note {
+    display: none;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0.9rem 0 0;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+
+  .milestone-timeline__scroll-note svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--rc-blue);
+  }
+
+  .milestone-gantt-frame {
+    margin-top: 0.85rem;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: 11px;
+    background: var(--rc-band);
+    box-shadow: 0 2rem 4rem -2.5rem rgb(31 39 57 / 44%);
+  }
+
+  .milestone-gantt-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-color: var(--rc-rule-strong) var(--rc-surface);
+    scrollbar-width: thin;
+  }
+
+  .milestone-gantt-scroll:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -3px;
+  }
+
+  .milestone-gantt {
+    --gantt-label-width: clamp(16rem, 20vw, 18rem);
+    --gantt-track-width: minmax(60rem, 1fr);
+    --milestone-bar-size: var(--rc-type-label);
+    --milestone-micro-size: 0.6875rem;
+    min-width: 76rem;
+    color: var(--rc-text);
+  }
+
+  .milestone-gantt__row {
+    display: grid;
+    grid-template-columns: var(--gantt-label-width) var(--gantt-track-width);
+  }
+
+  .milestone-gantt__header {
+    min-height: 4.25rem;
+    border-bottom: 1px solid var(--rc-rule-strong);
+    background: var(--rc-surface);
+  }
+
+  .milestone-gantt__label {
+    min-width: 0;
+    border-right: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-gantt__label--header {
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .milestone-gantt__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  .milestone-gantt__track--months {
+    min-height: 4.25rem;
+  }
+
+  .milestone-gantt__month {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.35rem;
+    border-left: 1px solid var(--rc-rule);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  .milestone-gantt__month.is-current {
+    background: color-mix(in srgb, var(--rc-blue) 7%, transparent);
+    color: var(--rc-text);
+  }
+
+  .milestone-gantt__group-row {
+    min-height: 3.35rem;
+    border-bottom: 1px solid var(--rc-rule);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 6%, var(--rc-band));
+  }
+
+  .milestone-gantt__group-label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0 1.25rem;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-label);
+    font-weight: 650;
+  }
+
+  .milestone-gantt__project-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--milestone-accent, var(--rc-blue));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 12%, transparent);
+  }
+
+  .milestone-gantt__group-label > span:nth-child(2) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .milestone-gantt__group-count {
+    margin-left: auto;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--milestone-micro-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__track--group,
+  .milestone-gantt__track--item {
+    position: relative;
+  }
+
+  .milestone-gantt__grid {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .milestone-gantt__grid-line {
+    border-left: 1px solid color-mix(in srgb, var(--rc-rule) 82%, transparent);
+  }
+
+  .milestone-gantt__grid-line.is-current {
+    background: color-mix(in srgb, var(--rc-blue) 4%, transparent);
+  }
+
+  .milestone-gantt__item {
+    min-height: 5.5rem;
+    border-bottom: 1px solid var(--rc-rule);
+    background: color-mix(in srgb, var(--rc-surface) 48%, transparent);
+  }
+
+  .milestone-gantt__item:last-child {
+    border-bottom: 0;
+  }
+
+  .milestone-gantt__item-label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .milestone-gantt__icon {
+    display: inline-flex;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 58%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    color: var(--milestone-accent, var(--rc-blue));
+  }
+
+  .milestone-gantt__icon svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .milestone-gantt__item-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  .milestone-gantt__item-title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--rc-text-strong);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__item-meta {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--milestone-micro-size);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+  }
+
+  .milestone-gantt__source-link {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    margin: -0.75rem -0.65rem -0.75rem -0.35rem;
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-blue);
+    text-decoration: none;
+  }
+
+  .milestone-gantt__source-link:hover {
+    background: var(--rc-surface-focus);
+    color: var(--rc-focus);
+  }
+
+  .milestone-gantt__source-link:focus-visible,
+  .milestone-next__nav a:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 2px;
+  }
+
+  .milestone-gantt__source-link svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .milestone-gantt__track--item {
+    align-items: center;
+  }
+
+  .milestone-gantt__range {
+    z-index: 1;
+    display: flex;
+    min-width: 0;
+    height: 2.25rem;
+    align-items: center;
+    margin: 0 0.45rem;
+    padding: 0 0.85rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 52%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 18%, var(--rc-surface-raised));
+    color: var(--rc-text-strong);
+    font-size: var(--milestone-bar-size);
+    font-weight: 650;
+    line-height: 1;
+  }
+
+  .milestone-gantt__range > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__point-wrap {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    height: 100%;
+  }
+
+  .milestone-gantt__point {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 3px solid var(--milestone-accent, var(--rc-blue));
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 10%, transparent);
+  }
+
+  .milestone-gantt__point-label {
+    position: absolute;
+    top: 50%;
+    left: 1.25rem;
+    display: inline-flex;
+    width: max-content;
+    min-width: 5rem;
+    min-height: 2rem;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 52%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 10%, var(--rc-surface-raised));
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__point-label > span {
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__track--item:focus-within .milestone-gantt__point,
+  .milestone-gantt__track--item:hover .milestone-gantt__point {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 18%, transparent);
+  }
+
+  .milestone-next__nav svg {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .milestone-next {
+    padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(5rem, 9vw, 8rem);
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .milestone-next__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .milestone-next h2 {
+    max-width: 44rem;
+  }
+
+  .milestone-next p {
+    max-width: 38rem;
+    margin: 1.15rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  .milestone-next__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: flex-end;
+  }
+
+  .milestone-next__nav a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-width: 12rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-strong);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .milestone-next__nav a:hover {
+    border-color: var(--rc-blue);
+    background: var(--rc-surface-focus);
+    color: var(--rc-focus);
+  }
+
+  @media (max-width: 56rem) {
+    .milestone-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+    }
+
+    .milestone-hero__index {
+      max-width: 26rem;
+    }
+
+    .milestone-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+    }
+
+    .milestone-next__inner {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .milestone-next__nav {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .milestone-shell {
+      width: min(calc(100% - 1.5rem), 42rem);
+    }
+
+    .milestone-hero {
+      padding-top: 3.5rem;
+    }
+
+    .milestone-hero__inner {
+      gap: 2.5rem;
+    }
+
+    .milestone-hero h1 {
+      font-size: var(--rc-type-section-heading);
+    }
+
+    .milestone-hero__copy > p {
+      margin-top: 1.15rem;
+      font-size: 0.9375rem;
+    }
+
+    .milestone-proof {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 3rem;
+    }
+
+    .milestone-proof__cell {
+      min-height: 7.5rem;
+      padding: 1.25rem 0.9rem;
+    }
+
+    .milestone-proof__cell:nth-child(odd) + .milestone-proof__cell {
+      border-left: 1px solid var(--rc-rule);
+    }
+
+    .milestone-proof__cell:nth-child(3) {
+      border-top: 1px solid var(--rc-rule);
+    }
+
+    .milestone-section {
+      padding: 4rem 0 5rem;
+    }
+
+    .milestone-timeline__scroll-note {
+      display: inline-flex;
+    }
+
+    .milestone-section__heading {
+      display: block;
+    }
+
+    .milestone-section__heading p {
+      margin-top: 1rem;
+    }
+
+    .milestone-section__count {
+      display: block;
+      margin-top: 1.25rem;
+    }
+
+    .milestone-next {
+      padding: 3.5rem 0 5rem;
+    }
+
+    .milestone-next__nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .milestone-next__nav a {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .milestone-proof {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .milestone-proof__cell + .milestone-proof__cell,
+    .milestone-proof__cell:nth-child(3) {
+      border-top: 1px solid var(--rc-rule);
+      border-left: 0;
+    }
+
+    .milestone-proof__cell:nth-child(odd) + .milestone-proof__cell {
+      border-left: 0;
+    }
+
+    .milestone-proof__cell {
+      min-height: 6.5rem;
+    }
+  }
+</style>

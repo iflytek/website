@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  adopter: CollectionEntry<'adopter'>;
+  row: 'left' | 'right';
+  copy: number;
+}
+
+const { adopter, row, copy } = Astro.props;
+const { name, nameEn, logo, subtitle, subtitleEn, tags = [], tagsEn = [], scenario, scenarioEn } = adopter.data;
+const idBase = `adopter-card-${row}-${copy}-${adopter.id}`;
+---
+
+<li class="adopters-marquee__item">
+  <a
+    class="adopters-card"
+    href={`#adopter-${adopter.id}`}
+    data-adopter-id={adopter.id}
+    aria-haspopup="dialog"
+    aria-controls="adopter-modal"
+    aria-labelledby={`${idBase}-name`}
+    aria-describedby={`${idBase}-scenario`}
+    tabindex={copy > 0 ? -1 : undefined}
+  >
+    <span class="adopters-card__identity">
+      <span class="adopters-card__logo" aria-hidden="true">
+        <img src={logo} alt="" width="64" height="64" loading="lazy" decoding="async" />
+      </span>
+      <span class="adopters-card__identity-copy">
+        <h2 id={`${idBase}-name`} data-lang-zh={name} data-lang-en={nameEn || name}>{name}</h2>
+        <span data-lang-zh={subtitle} data-lang-en={subtitleEn || subtitle}>{subtitle}</span>
+      </span>
+    </span>
+
+    {
+      tags.length > 0 && (
+        <ul class="adopters-card__tags" role="list">
+          {tags.map((tag, index) => (
+            <li data-lang-zh={tag} data-lang-en={tagsEn[index] || tag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <p
+      id={`${idBase}-scenario`}
+      class="adopters-card__scenario"
+      data-lang-zh={scenario}
+      data-lang-en={scenarioEn || scenario}
+    >
+      {scenario}
+    </p>
+  </a>
+</li>

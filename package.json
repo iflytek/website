@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run prebuild && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "prebuild": "tsx scripts/fetch-community-files.ts && tsx scripts/fetch-project-stats.ts && tsx scripts/watermark-images.ts",

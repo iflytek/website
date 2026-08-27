@@ -1,0 +1,265 @@
+---
+import type { Post } from '~/types';
+
+import BlogList from '~/components/blog/List.astro';
+import Pagination from '~/components/blog/Pagination.astro';
+import { blogSections, type BlogSectionKey } from '~/data/blog-sections';
+
+type ArchiveSection = BlogSectionKey | null;
+
+export interface Props {
+  posts: Post[];
+  titleZh: string;
+  titleEn: string;
+  activeSection: ArchiveSection;
+  total: number;
+  currentPage: number;
+  lastPage: number;
+  prevUrl?: string;
+  nextUrl?: string;
+  showCategory?: boolean;
+}
+
+const {
+  posts,
+  titleZh,
+  titleEn,
+  activeSection,
+  total,
+  currentPage,
+  lastPage,
+  prevUrl,
+  nextUrl,
+  showCategory = activeSection === 'all',
+} = Astro.props;
+
+const summaryZh = `${total} 篇文章 · 第 ${currentPage} / ${lastPage} 页`;
+const summaryEn = `${total} ${total === 1 ? 'article' : 'articles'} · Page ${currentPage} of ${lastPage}`;
+---
+
+<section class="blog-archive" aria-labelledby="blog-archive-title">
+  <header class="blog-archive__header">
+    <div class="blog-archive__shell">
+      <div class="blog-archive__identity">
+        <h1 id="blog-archive-title" data-lang-zh={titleZh} data-lang-en={titleEn}>{titleZh}</h1>
+        <p data-lang-zh={summaryZh} data-lang-en={summaryEn}>{summaryZh}</p>
+      </div>
+
+      <nav class="blog-archive__nav" aria-label="博客栏目 / Blog sections">
+        <ul role="list">
+          {
+            blogSections.map((section) => (
+              <li>
+                <a
+                  href={section.href}
+                  class:list={{ 'is-current': activeSection === section.key }}
+                  aria-current={activeSection === section.key ? 'page' : undefined}
+                >
+                  <span aria-hidden="true" class="blog-archive__signal" />
+                  <span data-lang-zh={section.titleZh} data-lang-en={section.titleEn}>
+                    {section.titleZh}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="blog-archive__shell blog-archive__content">
+    <BlogList posts={posts} showCategory={showCategory} />
+    <Pagination prevUrl={prevUrl} nextUrl={nextUrl} />
+  </div>
+</section>
+
+<style>
+  .blog-archive {
+    min-height: 70vh;
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .blog-archive__shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .blog-archive__header {
+    padding-top: clamp(3.75rem, 7vw, 6.5rem);
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .blog-archive__identity {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .blog-archive__identity p {
+    margin: 0 0 0.15rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .blog-archive__nav {
+    max-width: 100%;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    overflow-x: auto;
+    scrollbar-color: var(--rc-rule-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  .blog-archive__nav ul {
+    display: flex;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--rc-rule-strong);
+    border-bottom: 0;
+    border-radius: var(--rc-radius-control) var(--rc-radius-control) 0 0;
+    background: color-mix(in srgb, var(--rc-surface) 84%, transparent);
+    list-style: none;
+  }
+
+  .blog-archive__nav li {
+    flex: 0 0 auto;
+  }
+
+  .blog-archive__nav li + li {
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .blog-archive__nav a {
+    position: relative;
+    display: inline-flex;
+    min-width: 10rem;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0 1.25rem;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 560;
+    text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .blog-archive__nav a::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: transparent;
+    content: '';
+  }
+
+  .blog-archive__nav a:hover {
+    background: var(--rc-band);
+    color: var(--rc-text-strong);
+  }
+
+  .blog-archive__nav a.is-current {
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+  }
+
+  .blog-archive__nav a.is-current::after {
+    background: var(--rc-text-strong);
+  }
+
+  .blog-archive__nav a:focus-visible {
+    z-index: 1;
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -4px;
+  }
+
+  .blog-archive__signal {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--rc-rule-strong);
+  }
+
+  .blog-archive__nav a.is-current .blog-archive__signal {
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.65rem rgb(60 143 247 / 42%);
+  }
+
+  .blog-archive__content {
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(5rem, 9vw, 8rem);
+  }
+
+  @media (max-width: 64rem) {
+    .blog-archive__shell {
+      width: min(calc(100% - 2rem), 64rem);
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .blog-archive__shell {
+      width: calc(100% - 1.5rem);
+    }
+
+    .blog-archive__header {
+      padding-top: 2.75rem;
+    }
+
+    .blog-archive__identity {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .blog-archive__identity p {
+      margin: 0;
+      white-space: normal;
+    }
+
+    .blog-archive__nav {
+      margin-top: 2.5rem;
+    }
+
+    .blog-archive__nav ul {
+      min-width: max-content;
+    }
+
+    .blog-archive__nav a {
+      min-width: 7.5rem;
+      min-height: 3rem;
+      padding-inline: 1rem;
+    }
+
+    .blog-archive__content {
+      padding-top: 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-archive__nav a {
+      transition: none;
+    }
+  }
+</style>
