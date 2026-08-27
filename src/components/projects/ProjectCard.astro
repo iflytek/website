@@ -125,19 +125,19 @@ const resources = [
       }
       {
         typeof stars === 'number' && (
-          <a href={`https://github.com/${repo}/stargazers`} target="_blank" rel="noopener noreferrer">
+          <span>
             <svg viewBox="0 0 20 20" aria-hidden="true">
               <path d="m10 2.8 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7L10 2.8Z" />
             </svg>
             <span>{formatNumber(stars)}</span>
             <span
               class="sr-only"
-              data-lang-zh={`${name} 的 GitHub Stars（在新标签页打开）`}
-              data-lang-en={`${nameEn || name} GitHub Stars (opens in a new tab)`}
+              data-lang-zh={`${name} 的 GitHub Stars`}
+              data-lang-en={`${nameEn || name} GitHub Stars`}
             >
-              {name} 的 GitHub Stars（在新标签页打开）
+              {name} 的 GitHub Stars
             </span>
-          </a>
+          </span>
         )
       }
       {

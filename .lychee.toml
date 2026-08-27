@@ -3,14 +3,13 @@
 #
 # Root-relative links (e.g. /_astro/..., /sitemap-index.xml) in the
 # generated HTML are resolved against --root-dir, which the CI workflow
-# sets to the site's build output (dist/client).
+# sets to the generated site root (dist/ or dist/client/).
 
-# Skip links matching these regex patterns to avoid flaky rate-limits
-# or to exclude routes that are intentionally SSR-only (prerender=false)
-# and therefore have no static HTML in dist/client.
+# Skip links matching these regex patterns when the target is known to be
+# unreliable or unsuitable for anonymous automated requests.
 exclude = [
   # The new Brand Kit canonical URL is not live until this PR merges.
-  # Its root-relative route and assets are checked against dist/client.
+  # Its root-relative route and assets are checked against the build output.
   '^https://opensource\.iflytek\.com/brand$',
   # Twitter / X requires auth for most content.
   '^https?://(www\.)?(twitter|x)\.com/',
@@ -18,13 +17,6 @@ exclude = [
   '^https?://(www\.)?linkedin\.com/',
   # GitHub / GitLab pagination traps.
   'github\.com/.*/page/\d+',
-  # SSR-only routes (prerender=false): rendered by Vercel serverless in
-  # production, so they intentionally have no static HTML in dist/client.
-  # Lychee resolves root-relative links against --root-dir and tries to
-  # open them as local files — exclude them to avoid spurious "File not
-  # found" errors.
-  '/projects(?:/.*)?$',
-  '/contribute$',
   # npm registry returns 403 for private / renamed / non-existent scoped
   # packages, even to unauthenticated requests. Blog posts reference
   # internal packages that aren't publicly listed on npmjs.com.
