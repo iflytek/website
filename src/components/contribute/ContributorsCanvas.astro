@@ -30,6 +30,14 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
   <div class="contributors-field__stage" data-contributors-stage>
     <canvas data-contributors-surface width="1200" height="420" aria-hidden="true"></canvas>
 
+    <div class="contributors-field__tooltip" data-contributors-tooltip aria-hidden="true" hidden>
+      <img data-contributors-tooltip-avatar src="" alt="" width="36" height="36" />
+      <span>
+        <strong data-contributors-tooltip-name></strong>
+        <small data-contributors-tooltip-stats></small>
+      </span>
+    </div>
+
     <div class="contributors-field__fallback">
       <strong aria-hidden="true">iFLYTEK</strong>
       <span
@@ -50,10 +58,10 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
 
   <p
     class="contributors-field__caption"
-    data-lang-zh="头像墙作为社区集体视觉呈现；使用下方语义化名单访问贡献者 GitHub 主页。"
-    data-lang-en="The portrait field is a collective community visual. Use the semantic list below to open contributor GitHub profiles."
+    data-lang-zh="悬停可查看贡献者，点击或轻触头像可打开 GitHub 主页；完整主页目录见下方。"
+    data-lang-en="Hover to identify a contributor, or click or tap an avatar to open their GitHub profile. The complete profile directory follows below."
   >
-    头像墙作为社区集体视觉呈现；使用下方语义化名单访问贡献者 GitHub 主页。
+    悬停可查看贡献者，点击或轻触头像可打开 GitHub 主页；完整主页目录见下方。
   </p>
 </div>
 
@@ -97,13 +105,23 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
     const stage = root.querySelector<HTMLElement>('[data-contributors-stage]');
     const canvas = root.querySelector<HTMLCanvasElement>('[data-contributors-surface]');
     const payload = root.querySelector<HTMLScriptElement>('[data-contributors-payload]');
-    if (!stage || !canvas || !payload) return () => {};
+    const tooltip = root.querySelector<HTMLElement>('[data-contributors-tooltip]');
+    const tooltipAvatar = root.querySelector<HTMLImageElement>('[data-contributors-tooltip-avatar]');
+    const tooltipName = root.querySelector<HTMLElement>('[data-contributors-tooltip-name]');
+    const tooltipStats = root.querySelector<HTMLElement>('[data-contributors-tooltip-stats]');
+    if (!stage || !canvas || !payload || !tooltip || !tooltipAvatar || !tooltipName || !tooltipStats) {
+      return () => {};
+    }
 
     const context = canvas.getContext('2d');
     if (!context) return () => {};
     const stageElement: HTMLElement = stage;
     const canvasElement: HTMLCanvasElement = canvas;
     const renderingContext: CanvasRenderingContext2D = context;
+    const tooltipElement: HTMLElement = tooltip;
+    const tooltipAvatarElement: HTMLImageElement = tooltipAvatar;
+    const tooltipNameElement: HTMLElement = tooltipName;
+    const tooltipStatsElement: HTMLElement = tooltipStats;
 
     let contributors: ContributorRecord[] = [];
     try {
@@ -136,6 +154,15 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
     let destroyed = false;
     let ready = false;
     let inViewport = false;
+    let hoveredParticle: Particle | null = null;
+    let activePointer:
+      | {
+          id: number;
+          startX: number;
+          startY: number;
+          particle: Particle | null;
+        }
+      | undefined;
 
     root.dataset.enhanced = 'true';
     root.dataset.state = 'loading';
@@ -283,6 +310,8 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
           progress: isStatic ? 1 : 0,
         };
       });
+      hoveredParticle = null;
+      activePointer = undefined;
 
       ready = true;
       root.dataset.state = 'ready';
@@ -331,9 +360,154 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
         renderingContext.beginPath();
         renderingContext.arc(particle.x, particle.y, particle.size / 2, 0, Math.PI * 2);
         renderingContext.stroke();
+
+        if (particle === hoveredParticle) {
+          renderingContext.strokeStyle = '#4f9cff';
+          renderingContext.lineWidth = 2;
+          renderingContext.beginPath();
+          renderingContext.arc(particle.x, particle.y, particle.size / 2 + 3, 0, Math.PI * 2);
+          renderingContext.stroke();
+        }
       }
 
       renderingContext.globalAlpha = 1;
+    }
+
+    function canvasPoint(clientX: number, clientY: number) {
+      const rectangle = canvasElement.getBoundingClientRect();
+      return {
+        x: ((clientX - rectangle.left) / Math.max(1, rectangle.width)) * width,
+        y: ((clientY - rectangle.top) / Math.max(1, rectangle.height)) * height,
+      };
+    }
+
+    function particleAt(clientX: number, clientY: number, pointerType = 'mouse') {
+      if (!ready) return null;
+      const point = canvasPoint(clientX, clientY);
+      let nearest: Particle | null = null;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      for (const particle of particles) {
+        const distance = Math.hypot(point.x - particle.x, point.y - particle.y);
+        const hitRadius = Math.max(particle.size / 2 + 4, pointerType === 'mouse' ? 0 : 22);
+        if (distance <= hitRadius && distance < nearestDistance) {
+          nearest = particle;
+          nearestDistance = distance;
+        }
+      }
+
+      return nearest;
+    }
+
+    function contributorStats(contributor: ContributorRecord) {
+      const formatted = new Intl.NumberFormat(document.documentElement.lang === 'en' ? 'en' : 'zh-CN').format(
+        contributor.contributions
+      );
+      return document.documentElement.lang === 'en' ? formatted + ' code commits' : formatted + ' 次代码提交';
+    }
+
+    function showTooltip(particle: Particle, clientX: number, clientY: number, refreshContent = false) {
+      if (refreshContent || tooltipNameElement.textContent !== particle.contributor.username) {
+        tooltipAvatarElement.src = avatarWithSize(particle.contributor.avatar_url);
+        tooltipNameElement.textContent = particle.contributor.username;
+        tooltipStatsElement.textContent = contributorStats(particle.contributor);
+      }
+      tooltipElement.hidden = false;
+
+      const stageRectangle = stageElement.getBoundingClientRect();
+      const tooltipRectangle = tooltipElement.getBoundingClientRect();
+      const gap = 14;
+      const localX = clientX - stageRectangle.left;
+      const localY = clientY - stageRectangle.top;
+      const left = Math.min(
+        Math.max(gap, localX + gap),
+        Math.max(gap, stageRectangle.width - tooltipRectangle.width - gap)
+      );
+      const preferredTop = localY - tooltipRectangle.height - gap;
+      const top =
+        preferredTop >= gap
+          ? preferredTop
+          : Math.min(localY + gap, stageRectangle.height - tooltipRectangle.height - gap);
+
+      tooltipElement.style.transform = `translate(${Math.round(left)}px, ${Math.round(Math.max(gap, top))}px)`;
+    }
+
+    function hideTooltip() {
+      tooltipElement.hidden = true;
+      tooltipElement.style.removeProperty('transform');
+    }
+
+    function openContributor(particle: Particle | null) {
+      if (!particle?.contributor.profile_url) return;
+      window.open(particle.contributor.profile_url, '_blank', 'noopener,noreferrer');
+    }
+
+    function handlePointerMove(event: PointerEvent) {
+      if (activePointer?.id === event.pointerId) {
+        const movement = Math.hypot(event.clientX - activePointer.startX, event.clientY - activePointer.startY);
+        if (movement > 10) activePointer.particle = null;
+      }
+
+      if (event.pointerType === 'touch') return;
+      const nextParticle = particleAt(event.clientX, event.clientY, event.pointerType);
+      const changed = hoveredParticle !== nextParticle;
+      hoveredParticle = nextParticle;
+      canvasElement.style.cursor = nextParticle ? 'pointer' : 'default';
+      if (nextParticle) showTooltip(nextParticle, event.clientX, event.clientY);
+      else hideTooltip();
+      if (changed) render();
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      activePointer = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        particle: particleAt(event.clientX, event.clientY, event.pointerType),
+      };
+    }
+
+    function handlePointerUp(event: PointerEvent) {
+      if (!activePointer || activePointer.id !== event.pointerId) return;
+      const movement = Math.hypot(event.clientX - activePointer.startX, event.clientY - activePointer.startY);
+      const releasedParticle = particleAt(event.clientX, event.clientY, event.pointerType);
+      const selectedParticle = activePointer.particle;
+      activePointer = undefined;
+
+      if (
+        event.button === 0 &&
+        movement <= 10 &&
+        selectedParticle &&
+        releasedParticle?.contributor.profile_url === selectedParticle.contributor.profile_url
+      ) {
+        if (event.pointerType === 'touch') hideTooltip();
+        else showTooltip(selectedParticle, event.clientX, event.clientY);
+        openContributor(selectedParticle);
+      }
+    }
+
+    function handlePointerLeave(event: PointerEvent) {
+      if (event.pointerType === 'touch') return;
+      hoveredParticle = null;
+      canvasElement.style.cursor = 'default';
+      hideTooltip();
+      render();
+    }
+
+    function handlePointerCancel() {
+      activePointer = undefined;
+      if (!hoveredParticle) hideTooltip();
+    }
+
+    function handleLanguageChange() {
+      if (!hoveredParticle || tooltipElement.hidden) return;
+      const rectangle = canvasElement.getBoundingClientRect();
+      showTooltip(
+        hoveredParticle,
+        rectangle.left + (hoveredParticle.x / Math.max(1, width)) * rectangle.width,
+        rectangle.top + (hoveredParticle.y / Math.max(1, height)) * rectangle.height,
+        true
+      );
     }
 
     function animate(timestamp: number) {
@@ -413,6 +587,8 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
     );
 
     const resizeObserver = new ResizeObserver(() => {
+      const rectangle = stageElement.getBoundingClientRect();
+      if (Math.round(rectangle.width) === width && Math.round(rectangle.height) === height) return;
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         if (destroyed || !ready) return;
@@ -422,6 +598,12 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
     });
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('languagechange', handleLanguageChange);
+    canvasElement.addEventListener('pointermove', handlePointerMove);
+    canvasElement.addEventListener('pointerdown', handlePointerDown);
+    canvasElement.addEventListener('pointerup', handlePointerUp);
+    canvasElement.addEventListener('pointerleave', handlePointerLeave);
+    canvasElement.addEventListener('pointercancel', handlePointerCancel);
     intersectionObserver.observe(stageElement);
     resizeObserver.observe(stageElement);
     resizeCanvas();
@@ -440,6 +622,12 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
       intersectionObserver.disconnect();
       resizeObserver.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('languagechange', handleLanguageChange);
+      canvasElement.removeEventListener('pointermove', handlePointerMove);
+      canvasElement.removeEventListener('pointerdown', handlePointerDown);
+      canvasElement.removeEventListener('pointerup', handlePointerUp);
+      canvasElement.removeEventListener('pointerleave', handlePointerLeave);
+      canvasElement.removeEventListener('pointercancel', handlePointerCancel);
     };
   }
 
@@ -529,6 +717,62 @@ const contributorsJSON = JSON.stringify(contributors).replaceAll('<', '\\u003c')
 
   .contributors-field[data-state='ready'] canvas {
     opacity: 1;
+    pointer-events: auto;
+  }
+
+  .contributors-field__tooltip {
+    position: absolute;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: max-content;
+    max-width: min(15rem, calc(100% - 1.75rem));
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: rgb(5 7 13 / 96%);
+    box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 28%);
+    color: var(--rc-text-strong);
+    pointer-events: none;
+  }
+
+  .contributors-field__tooltip[hidden] {
+    display: none;
+  }
+
+  .contributors-field__tooltip img {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: 50%;
+    background: var(--rc-surface-raised);
+  }
+
+  .contributors-field__tooltip > span {
+    display: grid;
+    min-width: 0;
+    gap: 0.12rem;
+  }
+
+  .contributors-field__tooltip strong,
+  .contributors-field__tooltip small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .contributors-field__tooltip strong {
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .contributors-field__tooltip small {
+    color: var(--rc-text-muted);
+    font-size: 0.6875rem;
   }
 
   .contributors-field__fallback,
