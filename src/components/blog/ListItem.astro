@@ -1,117 +1,298 @@
 ---
 import { APP_BLOG } from 'astrowind:config';
 import { Icon } from 'astro-icon/components';
-import Image from '~/components/common/Image.astro';
-import PostTags from '~/components/blog/Tags.astro';
 
+import Image from '~/components/common/Image.astro';
 import { getPermalink } from '~/utils/permalinks';
-import { getFormattedDate } from '~/utils/utils';
 
 import type { Post } from '~/types';
 
 export interface Props {
   post: Post;
+  showCategory?: boolean;
+  hasTranslation?: boolean;
 }
 
-const { post } = Astro.props;
+const { post, showCategory = true, hasTranslation = false } = Astro.props;
 
 const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : '';
+const isoDate = post.publishDate.toISOString();
+const displayDate = isoDate.slice(0, 10).replaceAll('-', '.');
+const categorySlug = post.category?.slug || 'post';
+const categoryLabels: Record<string, { zh: string; en: string }> = {
+  tech: { zh: '技术博客', en: 'Tech Blog' },
+  news: { zh: '最新新闻', en: 'Latest News' },
+};
+const categoryLabel = categoryLabels[categorySlug] || {
+  zh: post.category?.title || '文章',
+  en: post.category?.title || 'Post',
+};
+const fallbackCode = categorySlug === 'news' ? 'N' : categorySlug === 'tech' ? 'T' : 'A';
+const isEnglish = post.lang === 'en';
 ---
 
-<article
-  class={`max-w-md mx-auto md:max-w-none grid gap-6 md:gap-8 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade ${post.image ? 'md:grid-cols-2' : ''}`}
->
-  {
-    post.image &&
-      (link ? (
-        <a class="relative block group" href={link ?? 'javascript:void(0)'}>
-          <div class="relative h-0 pb-[56.25%] md:pb-[75%] md:h-72 lg:pb-[56.25%] overflow-hidden bg-gray-400 dark:bg-slate-700 rounded shadow-lg">
-            <Image
-              src={post.image}
-              watermark
-              class="absolute inset-0 object-cover w-full h-full mb-6 rounded shadow-lg bg-gray-400 dark:bg-slate-700"
-              widths={[400, 900]}
-              width={900}
-              height={506}
-              sizes="(max-width: 900px) 400px, 900px"
-              alt={post.title}
-              format="webp"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </a>
-      ) : (
-        <div class="relative h-0 pb-[56.25%] md:pb-[75%] md:h-72 lg:pb-[56.25%] overflow-hidden bg-gray-400 dark:bg-slate-700 rounded shadow-lg">
-          <Image
-            src={post.image}
-            watermark
-            class="absolute inset-0 object-cover w-full h-full mb-6 rounded shadow-lg bg-gray-400 dark:bg-slate-700"
-            widths={[400, 900]}
-            width={900}
-            height={506}
-            sizes="(max-width: 900px) 400px, 900px"
-            alt={post.title}
-            format="webp"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-      ))
-  }
-  <div class="mt-2">
-    <header>
-      <div class="mb-1">
-        <span class="text-sm">
-          <Icon name="tabler:clock" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
-          <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
-          {
-            post.author && (
-              <>
-                {' '}
-                · <Icon name="tabler:user" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
-                <span>{post.author.replaceAll('-', ' ')}</span>
-              </>
-            )
-          }
-          {
-            post.category && (
-              <>
-                {' '}
-                ·{' '}
-                <a class="hover:underline" href={getPermalink(post.category.slug, 'category')}>
-                  {post.category.title}
-                </a>
-              </>
-            )
-          }
-        </span>
-      </div>
-      <h2 class="text-xl sm:text-2xl font-bold leading-tight mb-2 font-heading dark:text-slate-300">
-        {
-          link ? (
-            <a
-              class="inline-block hover:text-primary dark:hover:text-blue-700 transition ease-in duration-200"
-              href={link}
-            >
-              {post.title}
-            </a>
-          ) : (
-            post.title
-          )
-        }
-      </h2>
-    </header>
-
-    {post.excerpt && <p class="flex-grow text-muted dark:text-slate-400 text-lg">{post.excerpt}</p>}
+<article class="blog-entry" lang={isEnglish ? 'en' : 'zh-CN'}>
+  <div class="blog-entry__meta">
+    <time datetime={isoDate}>{displayDate}</time>
     {
-      post.tags && Array.isArray(post.tags) ? (
-        <footer class="mt-5">
-          <PostTags tags={post.tags} />
-        </footer>
+      showCategory && post.category ? (
+        <a href={getPermalink(post.category.slug, 'category')}>
+          <span data-lang-zh={categoryLabel.zh} data-lang-en={categoryLabel.en}>
+            {categoryLabel.zh}
+          </span>
+        </a>
+      ) : null
+    }
+    {
+      !hasTranslation && !isEnglish ? (
+        <span class="blog-entry__availability i18n-en" lang="en">
+          ZH ONLY
+        </span>
+      ) : null
+    }
+  </div>
+
+  <div class:list={['blog-entry__media', { 'blog-entry__media--fallback': !post.image }]} aria-hidden="true">
+    {
+      post.image ? (
+        <Image
+          src={post.image}
+          watermark
+          class="blog-entry__image"
+          widths={[320, 480, 640]}
+          width={720}
+          height={405}
+          sizes="(max-width: 896px) 1px, 224px"
+          alt=""
+          format="webp"
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
-        <Fragment />
+        <>
+          <span class="blog-entry__fallback-code">{fallbackCode}</span>
+          <span class="blog-entry__fallback-year">{isoDate.slice(0, 4)}</span>
+        </>
       )
     }
   </div>
+
+  <div class="blog-entry__content">
+    <h2>
+      {
+        link ? (
+          <a href={link}>
+            <span>{post.title}</span>
+            <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+          </a>
+        ) : (
+          post.title
+        )
+      }
+    </h2>
+    {post.excerpt && <p>{post.excerpt}</p>}
+  </div>
 </article>
+
+<style>
+  .blog-entry {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(6.75rem, 0.26fr) minmax(11rem, 14rem) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 3.5vw, 3.5rem);
+    padding: clamp(1.75rem, 3vw, 2.75rem) 0;
+  }
+
+  .blog-entry__meta {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .blog-entry__meta time,
+  .blog-entry__availability {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+
+  .blog-entry__meta > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    border-bottom: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-muted);
+    font-size: var(--rc-type-label);
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .blog-entry__meta > a:hover {
+    border-color: var(--rc-header-rule);
+    color: var(--rc-text-strong);
+  }
+
+  .blog-entry__meta > a:focus-visible,
+  h2 a:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 4px;
+  }
+
+  .blog-entry__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule);
+    border-radius: var(--rc-radius-surface);
+    background: var(--rc-surface);
+  }
+
+  :global(.blog-entry__image) {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    filter: saturate(0.72) brightness(0.72) contrast(1.04);
+    transition:
+      filter 260ms ease,
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .blog-entry__media--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--rc-surface-raised);
+  }
+
+  .blog-entry__fallback-code {
+    color: rgb(233 233 233 / 18%);
+    font-size: clamp(2rem, 3.25vw, 3.5rem);
+    font-weight: 720;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .blog-entry__fallback-year {
+    align-self: flex-end;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+  }
+
+  .blog-entry__content {
+    min-width: 0;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+
+  h2 a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 1rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h2 :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    color: var(--rc-text-faint);
+    transition:
+      color 160ms ease,
+      transform 180ms ease;
+  }
+
+  .blog-entry__content p {
+    display: -webkit-box;
+    max-width: 68ch;
+    margin: 1rem 0 0;
+    overflow: hidden;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+    text-wrap: pretty;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .blog-entry:hover :global(.blog-entry__image) {
+    filter: saturate(0.88) brightness(0.82) contrast(1.02);
+    transform: scale(1.02);
+  }
+
+  .blog-entry:hover h2 :global(svg) {
+    color: var(--rc-text-strong);
+    transform: translate(0.12rem, -0.12rem);
+  }
+
+  @media (max-width: 56rem) {
+    .blog-entry {
+      grid-template-columns: minmax(6.75rem, 0.24fr) minmax(0, 1fr);
+    }
+
+    .blog-entry__media {
+      display: none;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .blog-entry {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      padding-block: 1.5rem;
+    }
+
+    .blog-entry__meta {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .blog-entry__meta > a {
+      min-height: 2.75rem;
+      margin-block: -0.7rem;
+    }
+
+    h2 a {
+      gap: 0.75rem;
+    }
+
+    .blog-entry__content p {
+      margin-top: 0.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-entry__meta > a,
+    :global(.blog-entry__image),
+    h2 :global(svg) {
+      transition: none;
+    }
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
+
 import { getPermalink } from '~/utils/permalinks';
-import Button from '~/components/ui/Button.astro';
 
 export interface Props {
   prevUrl?: string;
@@ -12,31 +12,103 @@ export interface Props {
 
 const { prevUrl, nextUrl, prevText = 'Newer posts', nextText = 'Older posts' } = Astro.props;
 
-// Check if using defaults — if so, wrap with i18n
 const useDefaultPrevText = prevText === 'Newer posts';
 const useDefaultNextText = nextText === 'Older posts';
 ---
 
 {
   (prevUrl || nextUrl) && (
-    <div class="container flex">
-      <div class="flex flex-row mx-auto container justify-between">
-        <Button
-          variant="tertiary"
-          class={`md:px-3 px-3 mr-2 ${!prevUrl ? 'invisible' : ''}`}
-          href={getPermalink(prevUrl)}
-        >
-          <Icon name="tabler:chevron-left" class="w-6 h-6" />
-          <p class="ml-2">{useDefaultPrevText ? <span data-i18n="blog.newerPosts">{prevText}</span> : prevText}</p>
-        </Button>
+    <nav class="blog-pagination" aria-label="文章分页 / Article pagination">
+      {prevUrl && (
+        <a class="blog-pagination__link blog-pagination__link--previous" href={getPermalink(prevUrl)}>
+          <Icon name="tabler:arrow-left" aria-hidden="true" />
+          {useDefaultPrevText ? <span data-i18n="blog.newerPosts">{prevText}</span> : <span>{prevText}</span>}
+        </a>
+      )}
 
-        <Button variant="tertiary" class={`md:px-3 px-3 ${!nextUrl ? 'invisible' : ''}`} href={getPermalink(nextUrl)}>
-          <span class="mr-2">
-            {useDefaultNextText ? <span data-i18n="blog.olderPosts">{nextText}</span> : nextText}
-          </span>
-          <Icon name="tabler:chevron-right" class="w-6 h-6" />
-        </Button>
-      </div>
-    </div>
+      {nextUrl && (
+        <a class="blog-pagination__link blog-pagination__link--next" href={getPermalink(nextUrl)}>
+          {useDefaultNextText ? <span data-i18n="blog.olderPosts">{nextText}</span> : <span>{nextText}</span>}
+          <Icon name="tabler:arrow-right" aria-hidden="true" />
+        </a>
+      )}
+    </nav>
   )
 }
+
+<style>
+  .blog-pagination {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .blog-pagination__link {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0 1.25rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: transparent;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 560;
+    text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .blog-pagination__link--next {
+    margin-left: auto;
+  }
+
+  .blog-pagination__link:hover {
+    border-color: var(--rc-header-rule);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+  }
+
+  .blog-pagination__link:active {
+    transform: translateY(1px);
+  }
+
+  .blog-pagination__link:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
+  }
+
+  .blog-pagination__link :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  @media (max-width: 30rem) {
+    .blog-pagination {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .blog-pagination__link,
+    .blog-pagination__link--next {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-pagination__link {
+      transition: none;
+    }
+  }
+</style>

@@ -1,5 +1,5 @@
 /**
- * Fetch contributors data from GitHub API for all iflytek repositories
+ * Fetch contributors data from active, non-fork iflytek repositories and the listed extra repositories
  * Saves contributor avatars and info to .cache/contributors.json
  * Uses rate-limit-aware fetching with delays to avoid 403 errors.
  */
@@ -162,6 +162,12 @@ async function fetchContributors() {
       {
         updated_at: new Date().toISOString(),
         total: sortedContributors.length,
+        source: {
+          organization: ORG,
+          organization_repository_policy: 'public_non_fork_non_archived',
+          extra_repositories: EXTRA_REPOS.map(({ owner, repo }) => `${owner}/${repo}`),
+          repository_count: repos.length,
+        },
         contributors: sortedContributors,
       },
       null,

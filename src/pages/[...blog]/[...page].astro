@@ -2,8 +2,8 @@
 import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
 
 import Layout from '~/layouts/PageLayout.astro';
-import BlogList from '~/components/blog/List.astro';
-import Pagination from '~/components/blog/Pagination.astro';
+import BlogArchive from '~/components/blog/BlogArchive.astro';
+import { getBlogSection } from '~/data/blog-sections';
 
 import { blogListRobots, getStaticPathsBlogList } from '~/utils/blog';
 
@@ -17,12 +17,13 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { page } = Astro.props as Props;
 const currentPage = page.currentPage ?? 1;
-
-// const allCategories = await findCategories();
-// const allTags = await findTags();
+const lastPage = page.lastPage ?? 1;
+const total = page.total ?? page.data.length;
+const section = getBlogSection('all')!;
 
 const metadata = {
-  title: `Blog${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
+  title: `${section.titleZh}${currentPage > 1 ? ` — 第 ${currentPage} 页` : ''}`,
+  description: section.descriptionZh,
   robots: {
     index: blogListRobots?.index && currentPage === 1,
     follow: blogListRobots?.follow,
@@ -34,31 +35,15 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <!-- Header -->
-  <section
-    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
-  >
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute left-1/3 top-1/3 h-48 w-48 rounded-full bg-primary-400 blur-[80px]"></div>
-      <div class="absolute right-1/3 bottom-1/3 h-48 w-48 rounded-full bg-accent-400 blur-[80px]"></div>
-    </div>
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-i18n="blog.titleZh">技术博客</span
-          >
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="blog.subtitle">
-          深入的技术文章、教程和架构分享，帮助你更好地理解和使用科大讯飞开源项目
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <BlogList posts={page.data} />
-    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
-  </section>
+  <BlogArchive
+    posts={page.data}
+    titleZh={section.titleZh}
+    titleEn={section.titleEn}
+    activeSection="all"
+    total={total}
+    currentPage={currentPage}
+    lastPage={lastPage}
+    prevUrl={page.url.prev}
+    nextUrl={page.url.next}
+  />
 </Layout>

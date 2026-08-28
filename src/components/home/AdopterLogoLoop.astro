@@ -37,6 +37,8 @@ const { adopters = [] } = Astro.props;
                           class="adopter-loop__button"
                           data-adopter-id={adopter.id}
                           tabindex={copyIndex > 0 ? -1 : undefined}
+                          aria-haspopup="dialog"
+                          aria-controls="adopter-modal"
                           aria-labelledby={`adopter-logo-label-${adopter.id}-${copyIndex}`}
                           title={nameEn || name}
                         >

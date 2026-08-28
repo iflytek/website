@@ -96,18 +96,6 @@ export const translations: Record<string, { zh: string; en: string }> = {
   'projects.allLangBtn': { zh: '全部语言', en: 'All Languages' },
   'projects.viewLandscape': { zh: '查看全景图', en: 'View Landscape' },
 
-  // Category
-  'category.techTitle': { zh: '技术博客', en: 'Tech Blog' },
-  'category.techDesc': {
-    zh: '深度技术文章、架构设计与工程实践，探索 AI、NLP、开发者工具等前沿技术',
-    en: 'In-depth technical articles, architecture design and engineering practices exploring AI, NLP, developer tools and more',
-  },
-  'category.newsTitle': { zh: '最新新闻', en: 'Latest News' },
-  'category.newsDesc': {
-    zh: '项目发布、版本更新、社区活动等科大讯飞开源生态最新资讯',
-    en: 'Latest news on project releases, version updates, community events and the iFLYTEK open source ecosystem',
-  },
-
   // Contribute
   'contribute.titleZh': { zh: '参与贡献', en: 'Contribute' },
   'contribute.subtitle': {
@@ -176,11 +164,6 @@ export const translations: Record<string, { zh: string; en: string }> = {
   'events.latestNews': { zh: '最新动态', en: 'Latest News' },
 
   // Blog
-  'blog.titleZh': { zh: '技术博客', en: 'Blog' },
-  'blog.subtitle': {
-    zh: '深入的技术文章、教程和架构分享，帮助你更好地理解和使用科大讯飞开源项目',
-    en: 'In-depth technical articles, tutorials and architecture sharing to help you better understand iFLYTEK open source projects',
-  },
   'blog.prevPost': { zh: '上一篇', en: 'Previous Post' },
   'blog.nextPost': { zh: '下一篇', en: 'Next Post' },
   'blog.relatedPosts': { zh: '相关文章', en: 'Related Posts' },
@@ -226,14 +209,14 @@ export const translations: Record<string, { zh: string; en: string }> = {
   'adopters.titleZh': { zh: '用户案例', en: 'Adopters' },
   'adopters.subtitle': {
     zh: '探索 Astron 开源生态的用户案例，了解各行业如何利用 AI Agent 平台实现业务创新',
-    en: 'Explore Astron open source ecosystem user cases, see how industries leverage AI Agent platform for business innovation',
+    en: 'Explore real-world adoption stories from Astron’s open-source ecosystem and see how organizations use an AI Agent platform to drive business innovation.',
   },
   'adopters.modal.scenario': { zh: '业务场景', en: 'Scenario' },
   'adopters.modal.delivery': { zh: '落地方式', en: 'Delivery' },
   'adopters.modal.outcome': { zh: '应用成果', en: 'Outcome' },
   'adopters.disclaimer': {
-    zh: '* 以上案例已获用户授权同意展示',
-    en: '* All cases shown have been authorized by the users',
+    zh: '以上案例已获用户授权同意展示',
+    en: 'All cases shown here are presented with user authorization.',
   },
 
   // Footer

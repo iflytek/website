@@ -24,44 +24,384 @@ const adopterData = adopters.map((a) => ({
 
 <script is:inline type="application/json" id="adopter-data" set:html={JSON.stringify(adopterData)} />
 
-<!-- Adopter detail modal -->
-<div id="adopter-modal" class="fixed inset-0 z-50 hidden items-end justify-center p-0 md:items-center md:p-6">
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-200 opacity-0" data-modal-close>
-  </div>
-  <!-- Modal card -->
-  <div
-    class="modal-card relative w-full max-w-2xl overflow-y-auto rounded-t-3xl rounded-b-none bg-white/90 backdrop-blur-xl shadow-2xl border border-gray-200/50 transition-all duration-200 opacity-0 scale-95 max-h-[90vh] dark:bg-gray-900/90 dark:border-gray-700/50 md:rounded-3xl md:max-h-[85vh]"
-  >
-    <!-- Close button -->
-    <button
-      class="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-200/60 text-gray-500 transition hover:bg-gray-300/80 hover:text-gray-700 dark:bg-gray-700/60 dark:text-gray-400 dark:hover:bg-gray-600/80 dark:hover:text-gray-200"
-      data-modal-close
-      aria-label="Close"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        ><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg
-      >
+<dialog
+  id="adopter-modal"
+  class="adopter-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="adopter-modal-title"
+  aria-describedby="adopter-modal-subtitle"
+  aria-hidden="true"
+  data-state="closed"
+>
+  <div class="adopter-modal__scrim" data-modal-close aria-hidden="true"></div>
+
+  <div class="modal-card adopter-modal__panel" tabindex="-1">
+    <button type="button" class="adopter-modal__close" data-modal-close>
+      <span class="sr-only" data-lang-zh="关闭案例详情" data-lang-en="Close case details">关闭案例详情</span>
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <path d="m5 5 10 10M15 5 5 15"></path>
+      </svg>
     </button>
 
-    <!-- Content filled by JS -->
     <div id="modal-content"></div>
   </div>
-</div>
+</dialog>
+
+<style is:global>
+  .adopter-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    color: var(--rc-text);
+  }
+
+  .adopter-modal[open] {
+    display: grid;
+    align-items: end;
+    justify-items: center;
+  }
+
+  .adopter-modal::backdrop {
+    background: transparent;
+  }
+
+  .adopter-modal__scrim {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--rc-canvas) 76%, transparent);
+    cursor: default;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .adopter-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 46rem;
+    max-height: 92svh;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--rc-rule-strong);
+    border-bottom: 0;
+    border-radius: var(--rc-radius-surface) var(--rc-radius-surface) 0 0;
+    background: var(--rc-surface-raised);
+    box-shadow: 0 -1.5rem 4rem color-mix(in srgb, var(--rc-canvas) 32%, transparent);
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .adopter-modal[data-state='open'] .adopter-modal__scrim,
+  .adopter-modal[data-state='open'] .adopter-modal__panel {
+    opacity: 1;
+  }
+
+  .adopter-modal[data-state='open'] .adopter-modal__panel {
+    transform: translateY(0);
+  }
+
+  .adopter-modal__close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 2;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-band);
+    color: var(--rc-text-muted);
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .adopter-modal__close svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+  }
+
+  .adopter-modal__close:hover {
+    border-color: var(--rc-text-faint);
+    background: var(--rc-surface-focus);
+    color: var(--rc-text-strong);
+  }
+
+  .adopter-modal__close:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 2px;
+  }
+
+  .adopter-modal__content {
+    padding: 1.5rem;
+  }
+
+  .adopter-modal__header {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: 1.125rem;
+    padding-right: 3.5rem;
+  }
+
+  .adopter-modal__logo {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    padding: 0.5rem;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: #ffffff;
+  }
+
+  .adopter-modal__logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .adopter-modal__identity {
+    min-width: 0;
+  }
+
+  .adopter-modal__eyebrow {
+    margin: 0 0 0.4rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.055em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .adopter-modal__eyebrow::before {
+    display: inline-block;
+    width: 0.35rem;
+    height: 0.35rem;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.7rem rgb(60 143 247 / 42%);
+    content: '';
+    vertical-align: 0.08em;
+  }
+
+  .adopter-modal__identity h2 {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 670;
+    letter-spacing: -0.035em;
+    line-height: 1.18;
+  }
+
+  .adopter-modal__subtitle {
+    margin: 0.55rem 0 0;
+    overflow-wrap: anywhere;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .adopter-modal__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.035em;
+    line-height: 1.45;
+    list-style: none;
+    text-transform: uppercase;
+  }
+
+  .adopter-modal__tags li {
+    position: relative;
+    overflow-wrap: anywhere;
+  }
+
+  .adopter-modal__tags li:not(:last-child)::after {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 0.35rem);
+    color: var(--rc-rule-strong);
+    content: '·';
+    transform: translateY(-52%);
+  }
+
+  .adopter-modal__details {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--rc-rule-strong);
+  }
+
+  .adopter-modal__detail {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .adopter-modal__detail:last-child {
+    padding-bottom: 0.25rem;
+    border-bottom: 0;
+  }
+
+  .adopter-modal__detail h3 {
+    margin: 0;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    letter-spacing: 0.04em;
+    line-height: 1.65;
+    text-transform: uppercase;
+  }
+
+  .adopter-modal__detail p {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--rc-text);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  @media (min-width: 42.01rem) {
+    .adopter-modal[open] {
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .adopter-modal__panel {
+      max-height: min(85svh, 52rem);
+      border-bottom: 1px solid var(--rc-rule-strong);
+      border-radius: var(--rc-radius-surface);
+      box-shadow: 0 1.5rem 4rem color-mix(in srgb, var(--rc-canvas) 38%, transparent);
+      transform: translateY(0.6rem);
+    }
+
+    .adopter-modal__content {
+      padding: 1.75rem;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .adopter-modal__content {
+      padding: 1.25rem 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    .adopter-modal__close {
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .adopter-modal__header {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: 0.875rem;
+      padding-right: 3rem;
+    }
+
+    .adopter-modal__logo {
+      width: 3.5rem;
+      height: 3.5rem;
+      padding: 0.45rem;
+    }
+
+    .adopter-modal__details {
+      margin-top: 1.25rem;
+    }
+
+    .adopter-modal__detail {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      padding: 1rem 0;
+    }
+
+    .adopter-modal__detail:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  @media (max-width: 24rem) {
+    .adopter-modal__content {
+      padding-inline: 1rem;
+    }
+
+    .adopter-modal__header {
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+      gap: 0.75rem;
+    }
+
+    .adopter-modal__logo {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+
+    .adopter-modal__tags li:not(:last-child)::after {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .adopter-modal__scrim,
+    .adopter-modal__panel,
+    .adopter-modal__close {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
 
 <script is:inline>
   (function () {
+    const GLOBAL_KEY = '__iflytekAdopterModalController';
     const PREFIX = 'adopter-';
-    let modal, contentEl;
+    const HISTORY_KEY = '__adopterModalEntry';
+    const CLOSE_DURATION = 180;
+    const FOCUSABLE_SELECTOR =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    if (window[GLOBAL_KEY]) {
+      window[GLOBAL_KEY].refresh();
+      return;
+    }
+
+    let modal = null;
+    let contentEl = null;
     let adopters = [];
+    let returnFocus = null;
+    let pendingHistoryFocusId = '';
+    let closeTimer = 0;
+    let previousBodyOverflow = '';
+    let previousBodyPaddingRight = '';
 
     function refreshRefs() {
       modal = document.getElementById('adopter-modal');
@@ -70,268 +410,464 @@ const adopterData = adopters.map((a) => ({
 
     function loadAdopterData() {
       const dataEl = document.getElementById('adopter-data');
-      if (dataEl) {
+      if (!dataEl) {
+        adopters = [];
+        return;
+      }
+
+      try {
+        adopters = JSON.parse(dataEl.textContent || '[]');
+      } catch {
+        adopters = [];
+      }
+    }
+
+    function findAdopter(slug) {
+      return adopters.find(function (adopter) {
+        return adopter.slug === slug;
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getLang() {
+      return document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
+    }
+
+    function labels() {
+      if (getLang() === 'en') {
+        return {
+          eyebrow: 'Authorized adoption case',
+          scenario: 'Scenario',
+          delivery: 'Delivery',
+          outcome: 'Outcome',
+        };
+      }
+
+      return {
+        eyebrow: '授权用户案例',
+        scenario: '业务场景',
+        delivery: '落地方式',
+        outcome: '应用成果',
+      };
+    }
+
+    function buildModalHtml(adopter) {
+      const isEnglish = getLang() === 'en';
+      const copy = labels();
+      const name = isEnglish ? adopter.nameEn || adopter.name : adopter.name;
+      const subtitle = isEnglish ? adopter.subtitleEn || adopter.subtitle : adopter.subtitle;
+      const scenario = isEnglish ? adopter.scenarioEn || adopter.scenario : adopter.scenario;
+      const delivery = isEnglish ? adopter.deliveryEn || adopter.delivery : adopter.delivery;
+      const outcome = isEnglish ? adopter.outcomeEn || adopter.outcome : adopter.outcome;
+      const activeTags = isEnglish ? adopter.tagsEn || adopter.tags || [] : adopter.tags || [];
+      const tagsHtml = activeTags
+        .map(function (tag) {
+          return '<li>' + escapeHtml(tag) + '</li>';
+        })
+        .join('');
+
+      return (
+        '<div class="adopter-modal__content">' +
+        '<header class="adopter-modal__header">' +
+        '<div class="adopter-modal__logo" aria-hidden="true">' +
+        '<img src="' +
+        escapeHtml(adopter.logo) +
+        '" alt="" width="64" height="64" decoding="async" />' +
+        '</div>' +
+        '<div class="adopter-modal__identity">' +
+        '<p class="adopter-modal__eyebrow">' +
+        escapeHtml(copy.eyebrow) +
+        '</p>' +
+        '<h2 id="adopter-modal-title">' +
+        escapeHtml(name) +
+        '</h2>' +
+        '<p id="adopter-modal-subtitle" class="adopter-modal__subtitle">' +
+        escapeHtml(subtitle) +
+        '</p>' +
+        (tagsHtml ? '<ul class="adopter-modal__tags" role="list">' + tagsHtml + '</ul>' : '') +
+        '</div>' +
+        '</header>' +
+        '<div class="adopter-modal__details">' +
+        '<section class="adopter-modal__detail" aria-labelledby="adopter-modal-scenario">' +
+        '<h3 id="adopter-modal-scenario">' +
+        escapeHtml(copy.scenario) +
+        '</h3>' +
+        '<p>' +
+        escapeHtml(scenario) +
+        '</p>' +
+        '</section>' +
+        '<section class="adopter-modal__detail" aria-labelledby="adopter-modal-delivery">' +
+        '<h3 id="adopter-modal-delivery">' +
+        escapeHtml(copy.delivery) +
+        '</h3>' +
+        '<p>' +
+        escapeHtml(delivery) +
+        '</p>' +
+        '</section>' +
+        '<section class="adopter-modal__detail" aria-labelledby="adopter-modal-outcome">' +
+        '<h3 id="adopter-modal-outcome">' +
+        escapeHtml(copy.outcome) +
+        '</h3>' +
+        '<p>' +
+        escapeHtml(outcome) +
+        '</p>' +
+        '</section>' +
+        '</div>' +
+        '</div>'
+      );
+    }
+
+    function isOpen() {
+      return Boolean(modal && modal.hasAttribute('open'));
+    }
+
+    function rememberTrigger(trigger) {
+      if (trigger instanceof HTMLElement && trigger.isConnected && !trigger.closest('[inert]')) {
+        returnFocus = trigger;
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLElement &&
+        activeElement !== document.body &&
+        activeElement.isConnected &&
+        !activeElement.closest('[inert]')
+      ) {
+        returnFocus = activeElement;
+      }
+    }
+
+    function lockScroll() {
+      previousBodyOverflow = document.body.style.overflow;
+      previousBodyPaddingRight = document.body.style.paddingRight;
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) document.body.style.paddingRight = scrollbarWidth + 'px';
+    }
+
+    function unlockScroll() {
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.paddingRight = previousBodyPaddingRight;
+    }
+
+    function openModal(slug, trigger) {
+      refreshRefs();
+      loadAdopterData();
+      const adopter = findAdopter(slug);
+      if (!adopter || !modal || !contentEl) return;
+
+      const wasOpen = isOpen();
+      if (!wasOpen) rememberTrigger(trigger);
+      window.clearTimeout(closeTimer);
+      contentEl.innerHTML = buildModalHtml(adopter);
+      modal.dataset.adopterSlug = slug;
+
+      if (!wasOpen) {
+        document.dispatchEvent(new CustomEvent('adopter:opening'));
+        lockScroll();
         try {
-          adopters = JSON.parse(dataEl.textContent);
+          if (typeof modal.showModal === 'function') {
+            modal.showModal();
+          } else {
+            modal.setAttribute('open', '');
+          }
         } catch {
-          adopters = [];
+          modal.setAttribute('open', '');
         }
       }
+
+      modal.setAttribute('aria-hidden', 'false');
+      modal.dataset.state = 'opening';
+      requestAnimationFrame(function () {
+        if (!modal || !modal.hasAttribute('open')) return;
+        modal.dataset.state = 'open';
+        if (!wasOpen) modal.querySelector('.adopter-modal__close')?.focus({ preventScroll: true });
+      });
+    }
+
+    function finishClose(restoreFocus) {
+      refreshRefs();
+      if (modal?.hasAttribute('open')) {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.removeAttribute('open');
+        }
+      }
+
+      if (modal) {
+        modal.dataset.state = 'closed';
+        modal.removeAttribute('data-adopter-slug');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      if (contentEl) contentEl.innerHTML = '';
+      unlockScroll();
+
+      const target = returnFocus;
+      returnFocus = null;
+      if (restoreFocus && target instanceof HTMLElement && target.isConnected && !target.closest('[inert]')) {
+        requestAnimationFrame(function () {
+          target.focus({ preventScroll: true });
+        });
+      }
+    }
+
+    function closeModal(options) {
+      refreshRefs();
+      const settings = options || {};
+      const restoreFocus = settings.restoreFocus !== false;
+      const immediate = settings.immediate === true;
+      window.clearTimeout(closeTimer);
+
+      if (!isOpen()) {
+        if (modal) {
+          modal.dataset.state = 'closed';
+          modal.setAttribute('aria-hidden', 'true');
+        }
+        returnFocus = null;
+        return;
+      }
+
+      modal.dataset.state = 'closing';
+      if (immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finishClose(restoreFocus);
+        return;
+      }
+
+      closeTimer = window.setTimeout(function () {
+        finishClose(restoreFocus);
+      }, CLOSE_DURATION);
+    }
+
+    function getHashSlug() {
+      const hash = location.hash.replace(/^#/, '');
+      if (hash.indexOf(PREFIX) !== 0) return '';
+      try {
+        return decodeURIComponent(hash.slice(PREFIX.length));
+      } catch {
+        return '';
+      }
+    }
+
+    function replaceWithoutAdopterHash() {
+      if (!getHashSlug()) return;
+      const currentState = history.state;
+      if (currentState && typeof currentState === 'object') {
+        const nextState = { ...currentState };
+        delete nextState[HISTORY_KEY];
+        history.replaceState(nextState, '', location.pathname + location.search);
+      } else {
+        history.replaceState(currentState, '', location.pathname + location.search);
+      }
+    }
+
+    function requestClose(options) {
+      const state = history.state;
+      if (state && typeof state === 'object' && state[HISTORY_KEY]) {
+        const settings = options || {};
+        pendingHistoryFocusId =
+          returnFocus?.getAttribute('data-adopter-id') || modal?.getAttribute('data-adopter-slug') || '';
+        closeModal({ restoreFocus: false, immediate: settings.immediate === true });
+        history.back();
+        return;
+      }
+
+      replaceWithoutAdopterHash();
+      closeModal(options);
+    }
+
+    function syncHash() {
+      refreshRefs();
+      loadAdopterData();
+      const slug = getHashSlug();
+      if (slug && findAdopter(slug)) {
+        openModal(slug, returnFocus);
+      } else if (isOpen()) {
+        closeModal();
+      }
+    }
+
+    function getFocusableElements() {
+      if (!modal) return [];
+      return Array.from(modal.querySelectorAll(FOCUSABLE_SELECTOR)).filter(function (element) {
+        return (
+          !element.hasAttribute('hidden') &&
+          element.getAttribute('aria-hidden') !== 'true' &&
+          element.getClientRects().length
+        );
+      });
+    }
+
+    function trapFocus(event) {
+      const items = getFocusableElements();
+      if (!items.length) {
+        event.preventDefault();
+        modal?.querySelector('.modal-card')?.focus({ preventScroll: true });
+        return;
+      }
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      const activeElement = document.activeElement;
+      if (event.shiftKey && (activeElement === first || !modal?.contains(activeElement))) {
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+      } else if (!event.shiftKey && (activeElement === last || !modal?.contains(activeElement))) {
+        event.preventDefault();
+        first.focus({ preventScroll: true });
+      }
+    }
+
+    function activateTrigger(trigger) {
+      const id = trigger.getAttribute('data-adopter-id');
+      if (!id) return;
+      rememberTrigger(trigger);
+      const nextHash = PREFIX + encodeURIComponent(id);
+      if (location.hash === '#' + nextHash) {
+        openModal(id, trigger);
+        return;
+      }
+
+      const currentState = history.state;
+      const nextState = currentState && typeof currentState === 'object' ? { ...currentState } : {};
+      nextState[HISTORY_KEY] = true;
+      history.pushState(nextState, '', location.pathname + location.search + '#' + nextHash);
+      syncHash();
+    }
+
+    function handleClick(event) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const trigger = target.closest('[data-adopter-id]');
+      if (trigger) {
+        const isLink = trigger.matches('a[href]');
+        if (isLink && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
+        event.preventDefault();
+        activateTrigger(trigger);
+        return;
+      }
+
+      if (isOpen() && target.closest('[data-modal-close]')) {
+        event.preventDefault();
+        requestClose();
+      }
+    }
+
+    function handleKeydown(event) {
+      const target = event.target;
+      const trigger = target instanceof Element ? target.closest('[data-adopter-id]') : null;
+      if (event.key === 'Enter' && trigger && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        event.preventDefault();
+        activateTrigger(trigger);
+        return;
+      }
+
+      if (!isOpen()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        requestClose();
+      } else if (event.key === 'Tab') {
+        trapFocus(event);
+      }
+    }
+
+    function handleFocusIn(event) {
+      if (!isOpen() || modal?.contains(event.target)) return;
+      modal?.querySelector('.adopter-modal__close')?.focus({ preventScroll: true });
+    }
+
+    function handleCancel(event) {
+      if (event.target !== modal) return;
+      event.preventDefault();
+      requestClose();
+    }
+
+    function handleLanguageChange() {
+      const slug = getHashSlug();
+      if (slug && isOpen()) openModal(slug, returnFocus);
+    }
+
+    function handleSearchOpening() {
+      if (!isOpen()) return;
+      replaceWithoutAdopterHash();
+      closeModal({ restoreFocus: false, immediate: true });
+    }
+
+    function handleBeforeSwap() {
+      window.clearTimeout(closeTimer);
+      closeModal({ restoreFocus: false, immediate: true });
+      returnFocus = null;
+    }
+
+    function handleAfterSwap() {
+      refreshRefs();
+      loadAdopterData();
+      if (modal && !modal.hasAttribute('open')) {
+        modal.dataset.state = 'closed';
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      syncHash();
+
+      if (pendingHistoryFocusId && !getHashSlug()) {
+        const adopterId = pendingHistoryFocusId;
+        pendingHistoryFocusId = '';
+        const target = Array.from(document.querySelectorAll('[data-adopter-id]')).find(function (element) {
+          return (
+            element.getAttribute('data-adopter-id') === adopterId &&
+            element instanceof HTMLElement &&
+            element.isConnected &&
+            !element.closest('[inert]') &&
+            element.getClientRects().length
+          );
+        });
+        if (target instanceof HTMLElement) {
+          requestAnimationFrame(function () {
+            target.focus({ preventScroll: true });
+          });
+        }
+      }
+    }
+
+    function bindGlobalListeners() {
+      document.addEventListener('click', handleClick, true);
+      document.addEventListener('keydown', handleKeydown);
+      document.addEventListener('focusin', handleFocusIn);
+      document.addEventListener('cancel', handleCancel, true);
+      document.addEventListener('languagechange', handleLanguageChange);
+      document.addEventListener('search:opening', handleSearchOpening);
+      window.addEventListener('hashchange', syncHash);
+      document.addEventListener('astro:before-swap', handleBeforeSwap);
+      document.addEventListener('astro:after-swap', handleAfterSwap);
+    }
+
+    function refresh() {
+      refreshRefs();
+      loadAdopterData();
+      window.setTimeout(syncHash, 0);
     }
 
     function init() {
       refreshRefs();
       loadAdopterData();
-
-      function findAdopter(slug) {
-        return adopters.find(function (a) {
-          return a.slug === slug;
-        });
-      }
-
-      function escapeHtml(str) {
-        return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-
-      function getLang() {
-        return document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
-      }
-
-      function t(key) {
-        const map = {
-          'adopters.modal.scenario': ['业务场景', 'Scenario'],
-          'adopters.modal.delivery': ['落地方式', 'Delivery'],
-          'adopters.modal.outcome': ['应用成果', 'Outcome'],
-        };
-        const pair = map[key] || [key, key];
-        return getLang() === 'en' ? pair[1] : pair[0];
-      }
-
-      function buildModalHtml(a) {
-        const isEn = getLang() === 'en';
-        const name = isEn ? a.nameEn || a.name : a.name;
-        const subtitle = isEn ? a.subtitleEn || a.subtitle : a.subtitle;
-        const scenario = isEn ? a.scenarioEn || a.scenario : a.scenario;
-        const delivery = isEn ? a.deliveryEn || a.delivery : a.delivery;
-        const outcome = isEn ? a.outcomeEn || a.outcome : a.outcome;
-        const labelScenario = t('adopters.modal.scenario');
-        const labelDelivery = t('adopters.modal.delivery');
-        const labelOutcome = t('adopters.modal.outcome');
-
-        const activeTags = isEn ? a.tagsEn || a.tags || [] : a.tags || [];
-        const tagsHtml = activeTags
-          .map(function (tag) {
-            return (
-              '<span class="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">' +
-              escapeHtml(tag) +
-              '</span>'
-            );
-          })
-          .join('');
-
-        return (
-          '<div class="p-6 md:p-8">' +
-          '<div class="flex items-start gap-5 mb-6">' +
-          '<div class="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-inner dark:bg-gray-800">' +
-          '<img src="' +
-          escapeHtml(a.logo) +
-          '" alt="' +
-          escapeHtml(name) +
-          '" class="h-full w-full object-contain" loading="lazy" />' +
-          '</div>' +
-          '<div class="flex-1 min-w-0 pt-1">' +
-          '<h2 class="text-2xl font-bold text-gray-900 dark:text-white truncate">' +
-          escapeHtml(name) +
-          '</h2>' +
-          '<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">' +
-          escapeHtml(subtitle) +
-          '</p>' +
-          (tagsHtml ? '<div class="mt-3 flex flex-wrap gap-1.5">' + tagsHtml + '</div>' : '') +
-          '</div>' +
-          '</div>' +
-          '<div class="border-t border-gray-200/60 dark:border-gray-700/60 my-2"></div>' +
-          '<div class="mt-6 space-y-0">' +
-          '<div class="mb-6"><div class="flex items-center gap-2 mb-2"><div class="h-4 w-1 rounded-full bg-gradient-to-b from-blue-500 to-purple-500"></div><span class="text-sm font-semibold text-gray-500 dark:text-gray-400">' +
-          escapeHtml(labelScenario) +
-          '</span></div><p class="text-sm leading-relaxed text-gray-700 dark:text-gray-300 pl-3">' +
-          escapeHtml(scenario) +
-          '</p></div>' +
-          '<div class="mb-6"><div class="flex items-center gap-2 mb-2"><div class="h-4 w-1 rounded-full bg-gradient-to-b from-purple-500 to-pink-500"></div><span class="text-sm font-semibold text-gray-500 dark:text-gray-400">' +
-          escapeHtml(labelDelivery) +
-          '</span></div><p class="text-sm leading-relaxed text-gray-700 dark:text-gray-300 pl-3">' +
-          escapeHtml(delivery) +
-          '</p></div>' +
-          '<div class="mb-2"><div class="flex items-center gap-2 mb-2"><div class="h-4 w-1 rounded-full bg-gradient-to-b from-pink-500 to-orange-400"></div><span class="text-sm font-semibold text-gray-500 dark:text-gray-400">' +
-          escapeHtml(labelOutcome) +
-          '</span></div><p class="text-sm leading-relaxed text-gray-700 dark:text-gray-300 pl-3">' +
-          escapeHtml(outcome) +
-          '</p></div>' +
-          '</div>' +
-          '</div>'
-        );
-      }
-
-      function openModal(slug) {
-        refreshRefs();
-        loadAdopterData(); // Ensure data is loaded
-        const a = findAdopter(slug);
-        if (!a || !contentEl || !modal) {
-          console.warn('Adopter modal: missing data or DOM elements', { a, contentEl, modal });
-          return;
-        }
-        contentEl.innerHTML = buildModalHtml(a);
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-
-        // Re-query card and overlay after content is set
-        const currentCard = modal.querySelector('.modal-card');
-        const currentOverlay = modal.querySelector('[data-modal-close]');
-
-        requestAnimationFrame(function () {
-          if (currentCard) {
-            currentCard.classList.remove('opacity-0', 'scale-95');
-            currentCard.classList.add('opacity-100', 'scale-100');
-          }
-          if (currentOverlay) {
-            currentOverlay.classList.remove('opacity-0');
-            currentOverlay.classList.add('opacity-100');
-          }
-        });
-      }
-
-      function closeModal() {
-        refreshRefs();
-        if (!modal) return;
-
-        const currentCard = modal.querySelector('.modal-card');
-        const currentOverlay = modal.querySelector('[data-modal-close]');
-
-        if (currentCard) {
-          currentCard.classList.remove('opacity-100', 'scale-100');
-          currentCard.classList.add('opacity-0', 'scale-95');
-        }
-        if (currentOverlay) {
-          currentOverlay.classList.remove('opacity-100');
-          currentOverlay.classList.add('opacity-0');
-        }
-        setTimeout(function () {
-          if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-          }
-          document.body.style.overflow = '';
-          if (contentEl) contentEl.innerHTML = '';
-        }, 200);
-      }
-
-      function getHashSlug() {
-        const h = location.hash.replace(/^#/, '');
-        if (h.indexOf(PREFIX) === 0) return h.slice(PREFIX.length);
-        return '';
-      }
-
-      function syncHash() {
-        refreshRefs();
-        loadAdopterData(); // Ensure data is loaded
-        const slug = getHashSlug();
-        if (slug) {
-          openModal(slug);
-        } else if (modal && !modal.classList.contains('hidden')) {
-          closeModal();
-        }
-      }
-
-      // Card click → hash (document delegation)
-      document.addEventListener('click', function (e) {
-        const clickedCard = e.target.closest('[data-adopter-id]');
-        if (clickedCard) {
-          const id = clickedCard.getAttribute('data-adopter-id');
-          if (id) {
-            e.preventDefault();
-            location.hash = PREFIX + id;
-          }
-        }
-      });
-
-      // Close buttons + overlay (document delegation)
-      document.addEventListener('click', function (e) {
-        if (e.target.hasAttribute('data-modal-close') || e.target.closest('[data-modal-close]')) {
-          if (modal && !modal.classList.contains('hidden')) {
-            closeModal();
-            history.replaceState(null, '', location.pathname + location.search);
-          }
-        }
-      });
-
-      // ESC
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && getHashSlug()) {
-          closeModal();
-          history.replaceState(null, '', location.pathname + location.search);
-        }
-      });
-
-      // Hash change
-      window.addEventListener('hashchange', syncHash);
-
-      // Language change → rebuild modal content if open
-      document.addEventListener('languagechange', function () {
-        refreshRefs();
-        const slug = getHashSlug();
-        if (slug && modal && !modal.classList.contains('hidden')) {
-          openModal(slug);
-        }
-      });
-
-      // View Transitions: refresh refs, reload data, and check hash after page swap
-      document.addEventListener('astro:after-swap', function () {
-        // Use requestAnimationFrame + setTimeout to ensure DOM is fully ready
-        requestAnimationFrame(function () {
-          setTimeout(function () {
-            refreshRefs();
-            loadAdopterData();
-
-            // Retry hash detection in case URL update is delayed
-            let attempts = 0;
-            const maxAttempts = 10;
-            const checkHash = function () {
-              const slug = getHashSlug();
-              if (slug) {
-                syncHash();
-              } else if (attempts < maxAttempts) {
-                attempts++;
-                setTimeout(checkHash, 50);
-              }
-            };
-            checkHash();
-          }, 50);
-        });
-      });
-
-      // Initial check with retry mechanism
-      let initialAttempts = 0;
-      const maxInitialAttempts = 20;
-      const checkInitialHash = function () {
-        refreshRefs();
-        loadAdopterData();
-        const slug = getHashSlug();
-        if (slug && modal) {
-          syncHash();
-        } else if (slug && initialAttempts < maxInitialAttempts) {
-          // Hash exists but modal not ready yet, retry
-          initialAttempts++;
-          setTimeout(checkInitialHash, 50);
-        }
-      };
-      // Delay initial check to ensure DOM is ready
-      setTimeout(checkInitialHash, 100);
+      bindGlobalListeners();
+      syncHash();
     }
 
-    if (document.readyState !== 'loading') {
-      init();
+    window[GLOBAL_KEY] = { refresh: refresh };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
     } else {
-      document.addEventListener('DOMContentLoaded', init);
+      init();
     }
   })();
 </script>

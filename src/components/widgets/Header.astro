@@ -44,7 +44,22 @@ const {
 
 const pathname = new URL(Astro.url).pathname;
 const currentPath = pathname === '/' ? '/' : `/${trimSlash(pathname)}`;
-const isActive = (href?: string) => Boolean(href && href === currentPath);
+const isActive = (href?: string) => {
+  if (!href) return false;
+  const normalizedHref = href === '/' ? '/' : `/${trimSlash(href)}`;
+  if (normalizedHref === currentPath) return true;
+  return Boolean(
+    normalizedHref !== '/' &&
+    new RegExp(`^${normalizedHref.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/\\d+$`).test(currentPath)
+  );
+};
+const isWithin = (href?: string) => {
+  if (!href) return false;
+  const normalizedHref = href === '/' ? '/' : `/${trimSlash(href)}`;
+  return normalizedHref === '/'
+    ? currentPath === '/'
+    : currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+};
 ---
 
 <header
@@ -61,7 +76,7 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
       <ul class="site-nav__list">
         {
           links.map(({ text, textEn, href, links: subLinks }) => {
-            const parentActive = isActive(href) || Boolean(subLinks?.some((item) => isActive(item.href)));
+            const parentActive = isWithin(href) || Boolean(subLinks?.some((item) => isWithin(item.href)));
             return (
               <li class:list={['site-nav__item', { 'site-nav__item--dropdown': subLinks?.length }]}>
                 {href ? (
@@ -96,7 +111,7 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
                           <span data-lang-zh={childText} data-lang-en={childTextEn || childText}>
                             {childText}
                           </span>
-                          <Icon name="tabler:arrow-up-right" class="h-3.5 w-3.5" />
+                          <Icon name="tabler:chevron-right" class="h-3.5 w-3.5" aria-hidden="true" />
                         </a>
                       </li>
                     ))}
@@ -154,7 +169,7 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
       <ul class="drawer-tree">
         {
           links.map(({ text, textEn, href, links: subLinks }) => {
-            const parentActive = isActive(href) || Boolean(subLinks?.some((item) => isActive(item.href)));
+            const parentActive = isWithin(href) || Boolean(subLinks?.some((item) => isWithin(item.href)));
             return (
               <li class:list={['drawer-tree__section', { 'has-children': subLinks?.length }]}>
                 <a
@@ -207,7 +222,6 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
     font-family:
       var(--aw-font-sans, 'Inter Variable'), 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif, system-ui,
       sans-serif;
-    transition: padding 180ms ease;
   }
 
   .site-header--sticky {
@@ -438,7 +452,7 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
     position: fixed;
     z-index: 55;
     inset: 0;
-    background: rgb(0 0 0 / 72%);
+    background: color-mix(in srgb, var(--rc-canvas) 72%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 220ms ease;
@@ -627,6 +641,12 @@ const isActive = (href?: string) => Boolean(href && href === currentPath);
     .site-header .site-logo img {
       width: 1.625rem;
       height: 1.625rem;
+    }
+  }
+
+  @media (max-width: 22rem) {
+    html.lang-en .site-header .site-logo > span:last-child {
+      display: none;
     }
   }
 

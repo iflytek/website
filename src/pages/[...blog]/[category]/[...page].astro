@@ -1,10 +1,11 @@
 ---
 import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
-import { blogCategoryRobots, getStaticPathsBlogCategory } from '~/utils/blog';
 
 import Layout from '~/layouts/PageLayout.astro';
-import BlogList from '~/components/blog/List.astro';
-import Pagination from '~/components/blog/Pagination.astro';
+import BlogArchive from '~/components/blog/BlogArchive.astro';
+
+import { blogCategoryRobots, getStaticPathsBlogCategory } from '~/utils/blog';
+import { getBlogSection, type BlogSectionKey } from '~/data/blog-sections';
 
 export const prerender = true;
 
@@ -15,72 +16,37 @@ export const getStaticPaths = (async ({ paginate }) => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths> & { category: Record<string, string> };
 
 const { page, category } = Astro.props as Props;
-
 const currentPage = page.currentPage ?? 1;
+const lastPage = page.lastPage ?? 1;
+const total = page.total ?? page.data.length;
+const section = getBlogSection(category.slug);
+const titleZh = section?.titleZh || category.title;
+const titleEn = section?.titleEn || category.title;
+const descriptionZh = section?.descriptionZh || `${category.title} 相关文章`;
 
 const metadata = {
-  title: `Category '${category.title}' ${currentPage > 1 ? ` — Page ${currentPage}` : ''}`,
+  title: `${titleZh}${currentPage > 1 ? ` — 第 ${currentPage} 页` : ''}`,
+  description: descriptionZh,
   robots: {
     index: blogCategoryRobots?.index,
     follow: blogCategoryRobots?.follow,
   },
 };
-const categoryMeta: Record<string, { titleZh: string; titleEn: string; description: string; descriptionEn: string }> = {
-  tech: {
-    titleZh: '技术博客',
-    titleEn: 'Tech Blog',
-    description: '深度技术文章、架构设计与工程实践，探索 AI、NLP、开发者工具等前沿技术',
-    descriptionEn:
-      'In-depth technical articles, architecture design and engineering practices exploring AI, NLP, developer tools and more',
-  },
-  news: {
-    titleZh: '最新新闻',
-    titleEn: 'Latest News',
-    description: '项目发布、版本更新、社区活动等科大讯飞开源生态最新资讯',
-    descriptionEn:
-      'Latest news on project releases, version updates, community events and the iFLYTEK open source ecosystem',
-  },
-};
 
-const cat = categoryMeta[category.slug] || {
-  titleZh: category.title,
-  titleEn: category.title,
-  description: `${category.title} 相关文章`,
-  descriptionEn: `${category.title} related posts`,
-};
+const activeSection: BlogSectionKey | null = section?.key === 'tech' || section?.key === 'news' ? section.key : null;
 ---
 
 <Layout metadata={metadata}>
-  <!-- Header -->
-  <section
-    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
-  >
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute left-1/3 top-1/3 h-48 w-48 rounded-full bg-primary-400 blur-[80px]"></div>
-      <div class="absolute right-1/3 bottom-1/3 h-48 w-48 rounded-full bg-accent-400 blur-[80px]"></div>
-    </div>
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-lang-zh={cat.titleZh}
-            data-lang-en={cat.titleEn}>{cat.titleZh}</span
-          >
-        </h1>
-        <p
-          class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400"
-          data-lang-zh={cat.description}
-          data-lang-en={cat.descriptionEn}
-        >
-          {cat.description}
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <BlogList posts={page.data} />
-    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
-  </section>
+  <BlogArchive
+    posts={page.data}
+    titleZh={titleZh}
+    titleEn={titleEn}
+    activeSection={activeSection}
+    total={total}
+    currentPage={currentPage}
+    lastPage={lastPage}
+    prevUrl={page.url.prev}
+    nextUrl={page.url.next}
+    showCategory={false}
+  />
 </Layout>
