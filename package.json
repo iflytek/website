@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/mdx": "^7.0.7",
+    "@astrojs/mdx": "^7.0.8",
     "@astrojs/partytown": "^2.1.7",
     "@eslint/js": "^10.0.1",
     "@iconify-json/flat-color-icons": "^1.2.3",
@@ -56,14 +56,14 @@
     "@types/js-yaml": "^4.0.9",
     "@types/lodash.merge": "^4.6.9",
     "@types/mdx": "^2.0.14",
-    "@typescript-eslint/eslint-plugin": "^8.67.0",
-    "@typescript-eslint/parser": "^8.67.0",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
     "astro-compress": "^2.4.3",
     "astro-eslint-parser": "^1.4.0",
-    "eslint": "^10.8.1",
+    "eslint": "^10.9.1",
     "eslint-plugin-astro": "^1.7.0",
     "globals": "^17.11.0",
-    "js-yaml": "^4.3.1",
+    "js-yaml": "^4.3.2",
     "license-checker": "^25.0.1",
     "mdast-util-to-string": "^4.0.0",
     "prettier": "^3.9.6",
@@ -74,7 +74,7 @@
     "tailwindcss": "^4.3.0",
     "tsx": "^4.23.12",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.67.0"
+    "typescript-eslint": "^8.68.0"
   },
   "overrides": {
     "yaml": ">=2.8.3",
