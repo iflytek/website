@@ -135,7 +135,8 @@ export async function GET() {
   const pages = [
     { id: 'home', title: '首页', titleEn: 'Home', url: '/' },
     { id: 'projects', title: '项目', titleEn: 'Projects', url: '/projects' },
-    { id: 'landscape', title: '全景图', titleEn: 'Landscape', url: '/landscape' },
+    { id: 'landscape', title: '项目全景图', titleEn: 'Project Landscape', url: '/#project-landscape' },
+    { id: 'milestone', title: '里程碑', titleEn: 'Milestone', url: '/milestone' },
     { id: 'events', title: '社区活动', titleEn: 'Events', url: '/events' },
     { id: 'blog', title: '博客', titleEn: 'Blog', url: '/blog' },
     { id: 'contribute', title: '贡献', titleEn: 'Contribute', url: '/contribute' },

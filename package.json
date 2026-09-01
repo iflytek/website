@@ -1,6 +1,6 @@
 {
   "name": "@iflytek/website",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "iFLYTEK Open Source Website - Showcasing open source projects, blog, events and community contributions.",
   "type": "module",
   "private": true,
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run prebuild && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "prebuild": "tsx scripts/fetch-community-files.ts && tsx scripts/fetch-project-stats.ts && tsx scripts/watermark-images.ts",
@@ -28,14 +28,14 @@
     "license:summary": "license-checker --production --summary"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/markdown-remark": "^7.2.4",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^11.0.4",
+    "@astrojs/vercel": "^11.0.8",
     "@fontsource-variable/inter": "^5.3.0",
-    "astro": "^7.1.6",
-    "astro-embed": "^0.13.1",
-    "astro-icon": "^1.1.5",
+    "astro": "^7.2.9",
+    "astro-embed": "^0.14.0",
+    "astro-icon": "^1.2.0",
     "astro-seo": "^1.1.0",
     "fuse.js": "^7.5.0",
     "html-to-image": "^1.11.13",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/mdx": "^7.0.8",
     "@astrojs/partytown": "^2.1.7",
     "@eslint/js": "^10.0.1",
     "@iconify-json/flat-color-icons": "^1.2.3",
@@ -56,14 +56,14 @@
     "@types/js-yaml": "^4.0.9",
     "@types/lodash.merge": "^4.6.9",
     "@types/mdx": "^2.0.14",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
-    "astro-compress": "^2.4.1",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
+    "astro-compress": "^2.4.3",
     "astro-eslint-parser": "^1.4.0",
-    "eslint": "^10.8.0",
+    "eslint": "^10.9.1",
     "eslint-plugin-astro": "^1.7.0",
-    "globals": "^17.8.0",
-    "js-yaml": "^4.3.0",
+    "globals": "^17.11.0",
+    "js-yaml": "^4.3.2",
     "license-checker": "^25.0.1",
     "mdast-util-to-string": "^4.0.0",
     "prettier": "^3.9.6",
@@ -72,15 +72,16 @@
     "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
-    "tsx": "^4.23.1",
+    "tsx": "^4.23.12",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript-eslint": "^8.68.0"
   },
   "overrides": {
     "yaml": ">=2.8.3",
     "esbuild": ">=0.28.1",
     "path-to-regexp": ">=6.3.0",
     "svgo": ">=4.0.2",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "@iconify/tools": "^5.0.12"
   }
 }

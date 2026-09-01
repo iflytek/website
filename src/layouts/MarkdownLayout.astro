@@ -13,10 +13,11 @@ export interface Props {
 }
 
 const { frontmatter } = Astro.props;
+const description = [frontmatter?.description, frontmatter?.descriptionEn].filter(Boolean).join(' - ');
 
 const metadata: MetaData = {
   title: frontmatter?.title,
-  description: frontmatter?.description,
+  description: description || undefined,
 };
 ---
 

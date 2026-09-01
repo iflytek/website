@@ -1,0 +1,208 @@
+---
+import Image from '~/components/common/Image.astro';
+import landscapeImage from '~/assets/images/iflytek-landscape-dark.png';
+---
+
+<section id="project-landscape" class="project-landscape" aria-labelledby="project-landscape-title">
+  <div class="project-landscape__shell">
+    <header class="project-landscape__header">
+      <h2 id="project-landscape-title">
+        <span data-lang-zh="项目全景图" data-lang-en="Project Landscape">项目全景图</span>
+      </h2>
+      <p
+        class="project-landscape__hint"
+        data-lang-zh="左右滑动查看全幅内容"
+        data-lang-en="Swipe horizontally to explore the full landscape"
+      >
+        左右滑动查看全幅内容
+      </p>
+    </header>
+
+    <figure aria-describedby="project-landscape-description">
+      <div class="project-landscape__stage">
+        <div
+          class="project-landscape__viewport"
+          tabindex="0"
+          aria-labelledby="project-landscape-title"
+          aria-describedby="project-landscape-description"
+        >
+          <div class="project-landscape__frame">
+            <Image
+              src={landscapeImage}
+              class="project-landscape__image"
+              widths={[1200, 1600, 2400, 3328]}
+              width={3328}
+              height={1600}
+              sizes="(max-width: 1280px) 1280px, (min-width: 1600px) 1280px, 80vw"
+              alt=""
+              format="png"
+              layout="responsive"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+      <figcaption id="project-landscape-description" class="sr-only">
+        <span
+          data-lang-zh="展示 Astron 工作流、技能、自动化、管理、引擎、记忆与模型项目之间的关系。"
+          data-lang-en="Shows the relationships across Astron workflow, skills, automation, management, engine, memory, and model projects."
+        >
+          展示 Astron 工作流、技能、自动化、管理、引擎、记忆与模型项目之间的关系。
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .project-landscape {
+    padding: clamp(7rem, 10vw, 10rem) 0 0;
+    scroll-margin-top: 6.5rem;
+    background: transparent;
+    color: var(--rc-text);
+  }
+
+  .project-landscape__shell {
+    width: min(calc(100% - 3rem), 92.5rem);
+    margin-inline: auto;
+  }
+
+  .project-landscape__header {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .project-landscape__hint {
+    display: none;
+    margin: 0;
+    color: var(--rc-text-faint);
+    font-size: var(--rc-type-label);
+    line-height: 1.4;
+  }
+
+  figure {
+    margin: clamp(4rem, 6vw, 6rem) 0 0;
+  }
+
+  .project-landscape__stage {
+    position: relative;
+    width: min(80vw, 80rem);
+    margin-inline: auto;
+    padding: 0.75rem;
+    overflow: hidden;
+    border-radius: 11px;
+    background: var(--rc-band);
+    box-shadow:
+      inset 0 0 0 1px var(--rc-header-rule),
+      0 2rem 5rem -2.5rem rgb(31 39 57 / 44%);
+  }
+
+  .project-landscape__stage::before {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgb(233 233 233 / 5%), transparent 12%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .project-landscape__viewport {
+    position: relative;
+    z-index: 2;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: var(--rc-radius-surface);
+    background: var(--rc-canvas);
+    box-shadow: inset 0 0 0 1px var(--rc-rule-strong);
+    overscroll-behavior-inline: contain;
+    scrollbar-color: var(--rc-rule-strong) var(--rc-canvas);
+    scrollbar-width: thin;
+  }
+
+  .project-landscape__viewport:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -4px;
+  }
+
+  .project-landscape__viewport::-webkit-scrollbar {
+    height: 0.5rem;
+  }
+
+  .project-landscape__viewport::-webkit-scrollbar-track {
+    background: var(--rc-canvas);
+  }
+
+  .project-landscape__viewport::-webkit-scrollbar-thumb {
+    border: 2px solid var(--rc-canvas);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-rule-strong);
+  }
+
+  .project-landscape__frame {
+    width: 100%;
+    line-height: 0;
+  }
+
+  :global(.project-landscape__image) {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  @media (max-width: 80rem) {
+    .project-landscape__hint {
+      display: block;
+    }
+
+    .project-landscape__frame {
+      width: 80rem;
+    }
+  }
+
+  @media (max-width: 64rem) {
+    .project-landscape__shell {
+      width: min(calc(100% - 2rem), 48rem);
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .project-landscape {
+      padding-top: 6rem;
+      scroll-margin-top: 5.5rem;
+    }
+
+    .project-landscape__shell {
+      width: min(calc(100% - 1.5rem), 38rem);
+    }
+
+    figure {
+      margin-top: 2rem;
+    }
+
+    .project-landscape__stage {
+      padding: 0.5rem;
+      border-radius: 11px;
+    }
+
+    .project-landscape__viewport {
+      border-radius: var(--rc-radius-control);
+    }
+
+    .project-landscape__frame {
+      width: 80rem;
+    }
+  }
+</style>

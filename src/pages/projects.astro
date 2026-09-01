@@ -3,236 +3,1405 @@ import Layout from '~/layouts/PageLayout.astro';
 import ProjectCard from '~/components/projects/ProjectCard.astro';
 import { getProjectsWithStats } from '~/utils/project-stats';
 
-export const prerender = false;
+export const prerender = true;
 
 const metadata = {
   title: 'Projects',
-  description:
-    '探索科大讯飞开源项目生态 — Explore iFLYTEK open source projects covering AI Agent, agentic workflow, developer tools and more, filterable by category and language.',
+  description: '探索 Astron 企业级 Agentic AI 开源生态中的项目、工具与能力。',
 };
 
 const projects = await getProjectsWithStats();
-
-// Sort by stars
-const sortedProjects = projects.sort((a, b) => (b.data.stars || 0) - (a.data.stars || 0));
-
-// Extract unique categories
-const categories = [...new Set(sortedProjects.map((p) => p.data.category))];
-
-// Extract unique languages
-const languages = [...new Set(sortedProjects.flatMap((p) => p.data.languages || []))].sort();
+const sortedProjects = [...projects].sort((a, b) => (b.data.stars || 0) - (a.data.stars || 0));
 
 const categoryLabels: Record<string, { zh: string; en: string }> = {
-  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
-  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
-  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
-  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
-  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
-  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
-  'memory-system': { zh: '记忆系统 (memory-system)', en: 'memory-system' },
-  llm: { zh: '大语言模型 (LLM)', en: 'LLM' },
+  'agentic-workflow': { zh: '智能体工作流', en: 'Agentic workflow' },
+  'agentic-automation': { zh: '智能体自动化', en: 'Agentic automation' },
+  'agent-skills': { zh: '智能体技能', en: 'Agent skills' },
+  tutorial: { zh: '教程指南', en: 'Tutorial' },
+  'agent-management': { zh: '智能体管理', en: 'Agent management' },
+  'agent-engine': { zh: '智能体引擎', en: 'Agent engine' },
+  'memory-system': { zh: '记忆系统', en: 'Memory system' },
+  llm: { zh: '大语言模型', en: 'LLM' },
 };
 
-// Total stats
-const totalStars = sortedProjects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
-const totalForks = sortedProjects.reduce((sum, p) => sum + (p.data.forks || 0), 0);
+const categoryOrder = Object.keys(categoryLabels);
+const presentCategories = new Set(sortedProjects.map((project) => project.data.category));
+const categories = categoryOrder.filter((category) => presentCategories.has(category));
+const languages = [...new Set(sortedProjects.flatMap((project) => project.data.languages || []))].sort();
 
-// URL-driven filter state so filtered views are crawlable and shareable
-const { searchParams } = Astro.url;
-const categoryParam = searchParams.get('category') || 'all';
-const languageParam = searchParams.get('language') || 'all';
-const activeCategory = categories.includes(categoryParam) ? categoryParam : 'all';
-const activeLanguage = languages.includes(languageParam) ? languageParam : 'all';
+const totalStars = sortedProjects.reduce((sum, project) => sum + (project.data.stars || 0), 0);
+const totalForks = sortedProjects.reduce((sum, project) => sum + (project.data.forks || 0), 0);
+const hasCompleteStarTotals = sortedProjects.every((project) => typeof project.data.stars === 'number');
+const hasCompleteForkTotals = sortedProjects.every((project) => typeof project.data.forks === 'number');
+const featuredCount = sortedProjects.filter((project) => project.data.featured).length;
 
-const filteredProjects = sortedProjects.filter(
-  (p) =>
-    (activeCategory === 'all' || p.data.category === activeCategory) &&
-    (activeLanguage === 'all' || (p.data.languages || []).includes(activeLanguage))
-);
-
-const buildFilterUrl = (category: string, language: string) => {
-  const params = new URLSearchParams();
-  if (category !== 'all') params.set('category', category);
-  if (language !== 'all') params.set('language', language);
-  const query = params.toString();
-  return query ? `/projects?${query}` : '/projects';
+const formatCompactNumber = (value: number) => {
+  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  return value.toLocaleString('en-US');
 };
-
-const activeChipClass = 'bg-primary-600 text-white';
-const inactiveChipClass =
-  'bg-gray-100 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
 ---
 
 <Layout metadata={metadata}>
-  <!-- Page Header -->
-  <section
-    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-24"
-  >
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-primary-400 blur-[100px]"></div>
-      <div class="absolute right-1/4 bottom-1/4 h-64 w-64 rounded-full bg-accent-400 blur-[100px]"></div>
-    </div>
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-i18n="projects.titleZh"
-          >
-            开源项目
-          </span>
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="projects.subtitle">
-          探索科大讯飞的开源项目生态，涵盖 AI Agent、开发工具等前沿领域
-        </p>
-      </div>
+  <section class="projects-directory" data-projects-directory>
+    <div class="projects-directory__shell">
+      <form class="directory-control-deck" data-filter-form novalidate hidden>
+        <fieldset class="directory-scope" data-scope-group>
+          <legend class="sr-only" data-lang-zh="项目范围" data-lang-en="Project scope">项目范围</legend>
+          <button type="button" data-scope="all" aria-pressed="true">
+            <span data-lang-zh="全部项目" data-lang-en="All projects">全部项目</span>
+            <span class="directory-scope__count">{sortedProjects.length}</span>
+          </button>
+          <button type="button" data-scope="featured" aria-pressed="false">
+            <span data-lang-zh="精选项目" data-lang-en="Featured">精选项目</span>
+            <span class="directory-scope__count">{featuredCount}</span>
+          </button>
+        </fieldset>
 
-      <!-- Stats Row -->
-      <div class="mx-auto mt-12 flex max-w-xl items-center justify-center gap-8 sm:gap-16">
-        <div class="text-center">
-          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{sortedProjects.length}</div>
-          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statProjects">开源项目</div>
-        </div>
-        <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
-        <div class="text-center">
-          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{(totalStars / 1000).toFixed(1)}k</div>
-          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statStars">GitHub Stars</div>
-        </div>
-        <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
-        <div class="text-center">
-          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{(totalForks / 1000).toFixed(1)}k</div>
-          <div class="mt-1 text-sm text-gray-500" data-i18n="projects.statForks">Forks</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects Grid -->
-  <section class="py-12 md:py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Filter Bar -->
-      <div class="mb-4 flex flex-wrap items-center justify-center gap-2">
-        <a
-          href={buildFilterUrl('all', activeLanguage)}
-          class:list={[
-            'rounded-full px-4 py-1.5 text-xs font-medium sm:px-5 sm:py-2 sm:text-sm',
-            activeCategory === 'all' ? activeChipClass : inactiveChipClass,
-          ]}
-        >
-          <span data-lang-zh={`全部 (${sortedProjects.length})`} data-lang-en={`All (${sortedProjects.length})`}
-            >全部 ({sortedProjects.length})</span
-          >
-        </a>
-        {
-          categories.map((cat) => (
-            <a
-              href={buildFilterUrl(cat, activeLanguage)}
-              class:list={[
-                'rounded-full px-4 py-1.5 text-xs font-medium sm:px-5 sm:py-2 sm:text-sm',
-                activeCategory === cat ? activeChipClass : inactiveChipClass,
-              ]}
+        <div class="directory-tools">
+          <div class="directory-select" data-select-control="category">
+            <span id="category-filter-label" class="directory-control-label" data-lang-zh="类别" data-lang-en="Category"
+              >类别</span
             >
-              <span class="i18n-zh">{categoryLabels[cat]?.zh?.split(' ')[0] || cat}</span>
-              <span class="i18n-en">{categoryLabels[cat]?.en || cat}</span>
-              <span class="ml-1 text-gray-400 dark:text-gray-500">
-                ({sortedProjects.filter((p) => p.data.category === cat).length})
-              </span>
-            </a>
-          ))
-        }
-      </div>
-
-      <!-- Language Filter Bar -->
-      {
-        languages.length > 0 && (
-          <div class="mb-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={buildFilterUrl(activeCategory, 'all')}
-              class:list={[
-                'rounded-full px-4 py-1.5 text-xs font-medium',
-                activeLanguage === 'all' ? activeChipClass : inactiveChipClass,
-              ]}
+            <select data-category-filter hidden>
+              <option value="all" data-lang-zh="全部类别" data-lang-en="All categories">全部类别</option>
+              {
+                categories.map((category) => (
+                  <option
+                    value={category}
+                    data-lang-zh={categoryLabels[category]?.zh || category}
+                    data-lang-en={categoryLabels[category]?.en || category}
+                  >
+                    {categoryLabels[category]?.zh || category}
+                  </option>
+                ))
+              }
+            </select>
+            <button
+              class="directory-select__trigger"
+              type="button"
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="category-filter-listbox"
+              aria-labelledby="category-filter-label category-filter-value"
+              data-select-trigger
             >
-              <span data-lang-zh="全部语言" data-lang-en="All Languages">
-                全部语言
-              </span>
-            </a>
-            {languages.map((lang) => (
-              <a
-                href={buildFilterUrl(activeCategory, lang)}
-                class:list={[
-                  'rounded-full px-4 py-1.5 text-xs font-medium',
-                  activeLanguage === lang ? activeChipClass : inactiveChipClass,
-                ]}
+              <span id="category-filter-value" class="directory-select__value" data-select-value>全部类别</span>
+              <span class="directory-select__chevron" aria-hidden="true"></span>
+            </button>
+            <div
+              id="category-filter-listbox"
+              class="directory-select__menu"
+              role="listbox"
+              aria-labelledby="category-filter-label"
+              data-select-list
+              hidden
+            >
+              <div
+                id="category-filter-option-0"
+                class="directory-select__option"
+                role="option"
+                aria-selected="true"
+                data-select-option
+                data-value="all"
+                data-lang-zh="全部类别"
+                data-lang-en="All categories"
               >
-                {lang} ({sortedProjects.filter((p) => p.data.languages?.includes(lang)).length})
-              </a>
-            ))}
-          </div>
-        )
-      }
-
-      <!-- Project Cards -->
-      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
-        {
-          filteredProjects.map((project) => (
-            <div class="h-full">
-              <ProjectCard
-                name={project.data.name}
-                description={project.data.description}
-                descriptionEn={project.data.descriptionEn}
-                repo={project.data.repo}
-                homepage={project.data.homepage}
-                category={project.data.category}
-                tags={project.data.tags}
-                languages={project.data.languages}
-                stars={project.data.stars}
-                forks={project.data.forks}
-                license={project.data.license}
-                icon={project.data.icon}
-                links={project.data.links}
-              />
+                全部类别
+              </div>
+              {
+                categories.map((category, index) => (
+                  <div
+                    id={`category-filter-option-${index + 1}`}
+                    class="directory-select__option"
+                    role="option"
+                    aria-selected="false"
+                    data-select-option
+                    data-value={category}
+                    data-lang-zh={categoryLabels[category]?.zh || category}
+                    data-lang-en={categoryLabels[category]?.en || category}
+                  >
+                    {categoryLabels[category]?.zh || category}
+                  </div>
+                ))
+              }
             </div>
-          ))
-        }
-      </div>
-
-      {
-        filteredProjects.length === 0 && (
-          <div class="py-16 text-center text-gray-500 dark:text-gray-400">
-            <p data-lang-zh="没有符合当前筛选条件的项目" data-lang-en="No projects match the current filters">
-              没有符合当前筛选条件的项目
-            </p>
-            <a
-              href="/projects"
-              class="mt-4 inline-block font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
-            >
-              <span data-lang-zh="清除筛选" data-lang-en="Clear filters">
-                清除筛选
-              </span>
-            </a>
           </div>
-        )
-      }
 
-      <!-- View Landscape Link -->
-      <div class="mt-16 text-center">
-        <a
-          href="/landscape"
-          class="inline-flex items-center gap-2 rounded-xl border-2 border-primary-200 bg-primary-50 px-8 py-4 font-medium text-primary-700 transition-all hover:border-primary-300 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300 dark:hover:bg-primary-900"
+          <div class="directory-select" data-select-control="language" data-select-align="end">
+            <span id="language-filter-label" class="directory-control-label" data-lang-zh="语言" data-lang-en="Language"
+              >语言</span
+            >
+            <select data-language-filter hidden>
+              <option value="all" data-lang-zh="全部语言" data-lang-en="All languages">全部语言</option>
+              {languages.map((language) => <option value={language}>{language}</option>)}
+            </select>
+            <button
+              class="directory-select__trigger"
+              type="button"
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="language-filter-listbox"
+              aria-labelledby="language-filter-label language-filter-value"
+              data-select-trigger
+            >
+              <span id="language-filter-value" class="directory-select__value" data-select-value>全部语言</span>
+              <span class="directory-select__chevron" aria-hidden="true"></span>
+            </button>
+            <div
+              id="language-filter-listbox"
+              class="directory-select__menu"
+              role="listbox"
+              aria-labelledby="language-filter-label"
+              data-select-list
+              hidden
+            >
+              <div
+                id="language-filter-option-0"
+                class="directory-select__option"
+                role="option"
+                aria-selected="true"
+                data-select-option
+                data-value="all"
+                data-lang-zh="全部语言"
+                data-lang-en="All languages"
+              >
+                全部语言
+              </div>
+              {
+                languages.map((language, index) => (
+                  <div
+                    id={`language-filter-option-${index + 1}`}
+                    class="directory-select__option"
+                    role="option"
+                    aria-selected="false"
+                    data-select-option
+                    data-value={language}
+                  >
+                    {language}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          <label class="directory-search">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="5.25"></circle>
+              <path d="m12.5 12.5 4 4"></path>
+            </svg>
+            <span class="sr-only" data-lang-zh="搜索项目" data-lang-en="Search projects">搜索项目</span>
+            <input
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="搜索项目…"
+              data-placeholder-zh="搜索项目…"
+              data-placeholder-en="Search projects…"
+              data-search-filter
+            />
+          </label>
+        </div>
+      </form>
+
+      <header class="directory-intro">
+        <h1 data-lang-zh="开源项目" data-lang-en="Projects">开源项目</h1>
+        <p
+          data-lang-zh="探索 Astron 企业级 Agentic AI 开源生态，快速找到适合使用、集成或贡献的项目。"
+          data-lang-en="Explore the Astron enterprise Agentic AI ecosystem and find the right project to use, integrate, or contribute to."
         >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-            ></path>
-          </svg>
-          <span data-i18n="projects.viewLandscape">查看全景图</span>
-          <span>→</span>
-        </a>
+          探索 Astron 企业级 Agentic AI 开源生态，快速找到适合使用、集成或贡献的项目。
+        </p>
+        <span id="project-statistics-label" class="sr-only" data-lang-zh="项目统计" data-lang-en="Project statistics"
+          >项目统计</span
+        >
+        <div class="directory-proof" aria-labelledby="project-statistics-label">
+          <span
+            ><strong>{sortedProjects.length}</strong>
+            <span data-lang-zh="个项目" data-lang-en="projects">个项目</span></span
+          >
+          {
+            hasCompleteStarTotals && (
+              <span>
+                <strong>{formatCompactNumber(totalStars)}</strong> GitHub Stars
+              </span>
+            )
+          }
+          {
+            hasCompleteForkTotals && (
+              <span>
+                <strong>{formatCompactNumber(totalForks)}</strong> Forks
+              </span>
+            )
+          }
+          <span>Apache 2.0</span>
+        </div>
+      </header>
+
+      <div class="directory-status">
+        <p data-result-count data-template-zh="显示 {count} 个项目" data-template-en="Showing {count} projects">
+          显示 {sortedProjects.length} 个项目
+        </p>
+        <div class="directory-status__actions">
+          <span data-lang-zh="按 GitHub Stars 排序" data-lang-en="Sorted by GitHub Stars">按 GitHub Stars 排序</span>
+          <button type="button" data-clear-filters hidden>
+            <span data-lang-zh="清除筛选" data-lang-en="Clear filters">清除筛选</span>
+          </button>
+        </div>
       </div>
+
+      <section class="directory-results" aria-labelledby="project-list-title">
+        <h2 id="project-list-title" class="sr-only" data-lang-zh="项目目录" data-lang-en="Project directory">
+          项目目录
+        </h2>
+
+        <div class="project-grid" data-project-grid>
+          {
+            sortedProjects.map((project) => {
+              const slug = project.id.replace(/\.ya?ml$/, '');
+              const categoryLabel = categoryLabels[project.data.category] || {
+                zh: project.data.category,
+                en: project.data.category,
+              };
+              const searchableText = [
+                project.data.name,
+                project.data.nameEn,
+                project.data.description,
+                project.data.descriptionEn,
+                project.data.repo,
+                categoryLabel.zh,
+                categoryLabel.en,
+                ...(project.data.languages || []),
+                ...(project.data.tags || []),
+              ]
+                .filter(Boolean)
+                .join(' ')
+                .normalize('NFKC')
+                .toLocaleLowerCase();
+
+              return (
+                <div
+                  class="project-item"
+                  data-project-item
+                  data-category={project.data.category}
+                  data-languages={(project.data.languages || []).join(',')}
+                  data-featured={String(Boolean(project.data.featured))}
+                  data-search={searchableText}
+                >
+                  <ProjectCard
+                    slug={slug}
+                    name={project.data.name}
+                    nameEn={project.data.nameEn}
+                    description={project.data.description}
+                    descriptionEn={project.data.descriptionEn}
+                    repo={project.data.repo}
+                    homepage={project.data.homepage}
+                    categoryLabelZh={categoryLabel.zh}
+                    categoryLabelEn={categoryLabel.en}
+                    languages={project.data.languages}
+                    featured={project.data.featured}
+                    stars={project.data.stars}
+                    forks={project.data.forks}
+                    license={project.data.license}
+                    icon={project.data.icon}
+                    links={project.data.links}
+                  />
+                </div>
+              );
+            })
+          }
+        </div>
+
+        <div class="directory-empty" data-empty-state hidden>
+          <div class="directory-empty__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="10.5" cy="10.5" r="6.5"></circle>
+              <path d="m15.5 15.5 5 5M8 10.5h5"></path>
+            </svg>
+          </div>
+          <p class="directory-empty__title" data-lang-zh="没有匹配的项目" data-lang-en="No matching projects">
+            没有匹配的项目
+          </p>
+          <p
+            data-lang-zh="换一个关键词或清除筛选，即可重新浏览全部项目。"
+            data-lang-en="Try another term or clear the filters to browse every project."
+          >
+            换一个关键词或清除筛选，即可重新浏览全部项目。
+          </p>
+          <button type="button" data-clear-filters>
+            <span data-lang-zh="清除筛选" data-lang-en="Clear filters">清除筛选</span>
+          </button>
+        </div>
+
+        <p class="sr-only" aria-live="polite" aria-atomic="true" data-result-live></p>
+      </section>
+
+      <a class="directory-landscape" href="/#project-landscape">
+        <span>
+          <strong data-lang-zh="查看 Astron 项目全景图" data-lang-en="View the Astron project landscape"
+            >查看 Astron 项目全景图</strong
+          >
+          <span
+            data-lang-zh="了解项目在企业级 Agentic AI 生态中的位置"
+            data-lang-en="See where each project sits in the enterprise Agentic AI ecosystem"
+            >了解项目在企业级 Agentic AI 生态中的位置</span
+          >
+        </span>
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10h10m-3.5-3.5 3.5 3.5-3.5 3.5"></path></svg>
+      </a>
     </div>
   </section>
+
+  <script is:inline data-astro-rerun>
+    (() => {
+      const root = document.querySelector('[data-projects-directory]');
+      if (!root || root.dataset.directoryReady === 'true') return;
+      root.dataset.directoryReady = 'true';
+
+      const form = root.querySelector('[data-filter-form]');
+      const scopeButtons = Array.from(root.querySelectorAll('[data-scope]'));
+      const categorySelect = root.querySelector('[data-category-filter]');
+      const languageSelect = root.querySelector('[data-language-filter]');
+      const searchInput = root.querySelector('[data-search-filter]');
+      const projectItems = Array.from(root.querySelectorAll('[data-project-item]'));
+      const resultCount = root.querySelector('[data-result-count]');
+      const resultLive = root.querySelector('[data-result-live]');
+      const emptyState = root.querySelector('[data-empty-state]');
+      const clearButtons = Array.from(root.querySelectorAll('[data-clear-filters]'));
+
+      if (!form || !categorySelect || !languageSelect || !searchInput) return;
+
+      const validScopes = new Set(scopeButtons.map((button) => button.dataset.scope));
+      const validCategories = new Set(Array.from(categorySelect.options).map((option) => option.value));
+      const validLanguages = new Set(Array.from(languageSelect.options).map((option) => option.value));
+      const initialUrl = new URL(window.location.href);
+      const requestedScope = initialUrl.searchParams.get('scope') || 'all';
+      const requestedCategory = initialUrl.searchParams.get('category') || 'all';
+      const requestedLanguage = initialUrl.searchParams.get('language') || 'all';
+      let activeScope = validScopes.has(requestedScope) ? requestedScope : 'all';
+
+      categorySelect.value = validCategories.has(requestedCategory) ? requestedCategory : 'all';
+      languageSelect.value = validLanguages.has(requestedLanguage) ? requestedLanguage : 'all';
+      searchInput.value = initialUrl.searchParams.get('q') || '';
+
+      const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase().trim();
+      const currentLanguage = () => (localStorage.lang === 'en' ? 'en' : 'zh');
+
+      function createSelectController(control) {
+        const nativeSelect = control.querySelector('select');
+        const trigger = control.querySelector('[data-select-trigger]');
+        const valueLabel = control.querySelector('[data-select-value]');
+        const listbox = control.querySelector('[data-select-list]');
+        const options = Array.from(control.querySelectorAll('[data-select-option]'));
+
+        if (!nativeSelect || !trigger || !valueLabel || !listbox || options.length === 0) return null;
+
+        let activeIndex = 0;
+        let typeahead = '';
+        let typeaheadTimer;
+
+        const selectedIndex = () =>
+          Math.max(
+            0,
+            options.findIndex((option) => option.dataset.value === nativeSelect.value)
+          );
+        const localizedLabel = (option) => {
+          const nativeOption = Array.from(nativeSelect.options).find(
+            (candidate) => candidate.value === option.dataset.value
+          );
+          if (!nativeOption) return option.textContent?.trim() || '';
+          const localized = currentLanguage() === 'en' ? nativeOption.dataset.langEn : nativeOption.dataset.langZh;
+          return localized || nativeOption.textContent?.trim() || '';
+        };
+
+        function clearTypeahead() {
+          window.clearTimeout(typeaheadTimer);
+          typeahead = '';
+        }
+
+        function positionListbox() {
+          const visualViewport = window.visualViewport;
+          const viewportTop = visualViewport?.offsetTop || 0;
+          const viewportBottom = viewportTop + (visualViewport?.height || window.innerHeight);
+          const triggerRect = trigger.getBoundingClientRect();
+          const edgeClearance = 12;
+          const menuGap = 8;
+          const spaceBelow = Math.max(0, viewportBottom - triggerRect.bottom - menuGap - edgeClearance);
+          const spaceAbove = Math.max(0, triggerRect.top - viewportTop - menuGap - edgeClearance);
+          const desiredHeight = Math.min(listbox.scrollHeight, 352);
+          const openAbove = spaceBelow < desiredHeight && spaceAbove > spaceBelow;
+          const availableHeight = openAbove ? spaceAbove : spaceBelow;
+
+          control.dataset.selectPlacement = openAbove ? 'top' : 'bottom';
+          listbox.style.setProperty('--directory-menu-available', `${Math.floor(availableHeight)}px`);
+        }
+
+        function setActive(index) {
+          activeIndex = Math.min(Math.max(index, 0), options.length - 1);
+          options.forEach((option, optionIndex) => {
+            option.toggleAttribute('data-active', optionIndex === activeIndex);
+          });
+          trigger.setAttribute('aria-activedescendant', options[activeIndex].id);
+          options[activeIndex].scrollIntoView({ block: 'nearest' });
+        }
+
+        function sync() {
+          const index = selectedIndex();
+          valueLabel.textContent = localizedLabel(options[index]);
+          options.forEach((option, optionIndex) => {
+            option.setAttribute('aria-selected', String(optionIndex === index));
+          });
+          if (trigger.getAttribute('aria-expanded') === 'true') setActive(index);
+        }
+
+        function close({ restoreFocus = false } = {}) {
+          clearTypeahead();
+          listbox.hidden = true;
+          control.dataset.open = 'false';
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.removeAttribute('aria-activedescendant');
+          options.forEach((option) => option.removeAttribute('data-active'));
+          if (restoreFocus) trigger.focus({ preventScroll: true });
+        }
+
+        function open(index = selectedIndex()) {
+          selectControllers.forEach((controller) => {
+            if (controller && controller.control !== control) controller.close();
+          });
+          listbox.hidden = false;
+          control.dataset.open = 'true';
+          trigger.setAttribute('aria-expanded', 'true');
+          positionListbox();
+          setActive(index);
+          trigger.focus({ preventScroll: true });
+        }
+
+        function reposition() {
+          if (trigger.getAttribute('aria-expanded') !== 'true') return;
+          positionListbox();
+          setActive(activeIndex);
+        }
+
+        function commit(index) {
+          const option = options[index];
+          if (!option) return;
+          nativeSelect.value = option.dataset.value || 'all';
+          sync();
+          nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          close({ restoreFocus: true });
+        }
+
+        trigger.addEventListener('click', () => {
+          if (trigger.getAttribute('aria-expanded') === 'true') close({ restoreFocus: true });
+          else open();
+        });
+
+        trigger.addEventListener('keydown', (event) => {
+          const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            if (!isOpen) {
+              open();
+              return;
+            }
+            const direction = event.key === 'ArrowDown' ? 1 : -1;
+            setActive((activeIndex + direction + options.length) % options.length);
+            return;
+          }
+
+          if (event.key === 'Home' || event.key === 'End') {
+            event.preventDefault();
+            if (!isOpen) open(event.key === 'Home' ? 0 : options.length - 1);
+            else setActive(event.key === 'Home' ? 0 : options.length - 1);
+            return;
+          }
+
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            if (isOpen) commit(activeIndex);
+            else open();
+            return;
+          }
+
+          if (event.key === 'Escape' && isOpen) {
+            event.preventDefault();
+            close({ restoreFocus: true });
+            return;
+          }
+
+          if (event.key === 'Tab' && isOpen) {
+            event.preventDefault();
+            close();
+            const focusableControls = Array.from(
+              form.querySelectorAll('[data-scope], [data-select-trigger], [data-search-filter]')
+            );
+            const currentIndex = focusableControls.indexOf(trigger);
+            const nextIndex = currentIndex + (event.shiftKey ? -1 : 1);
+            focusableControls[nextIndex]?.focus();
+            return;
+          }
+
+          if (isOpen && event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey) {
+            const typedCharacter = normalize(event.key);
+            if (!typedCharacter) return;
+
+            const previousRunRepeats =
+              typeahead.length > 0 && Array.from(typeahead).every((character) => character === typeahead[0]);
+            const cycleByInitial = previousRunRepeats && typedCharacter === typeahead[0];
+
+            if (previousRunRepeats && typedCharacter !== typeahead[0]) {
+              typeahead = `${typeahead[0]}${typedCharacter}`;
+            } else {
+              typeahead += typedCharacter;
+            }
+
+            window.clearTimeout(typeaheadTimer);
+            typeaheadTimer = window.setTimeout(() => {
+              typeahead = '';
+            }, 600);
+
+            const query = cycleByInitial ? typedCharacter : typeahead;
+            const startIndex = cycleByInitial ? (activeIndex + 1) % options.length : 0;
+            const matchIndex = Array.from(
+              { length: options.length },
+              (_, offset) => (startIndex + offset) % options.length
+            ).find((index) => normalize(localizedLabel(options[index])).startsWith(query));
+            if (matchIndex >= 0) setActive(matchIndex);
+          }
+        });
+
+        options.forEach((option, index) => {
+          option.addEventListener('pointermove', () => setActive(index));
+          option.addEventListener('pointerdown', (event) => event.preventDefault());
+          option.addEventListener('click', () => commit(index));
+        });
+
+        sync();
+        return { control, close, reposition, sync };
+      }
+
+      const selectControllers = Array.from(root.querySelectorAll('[data-select-control]'))
+        .map(createSelectController)
+        .filter(Boolean);
+
+      const syncSelectControls = () => selectControllers.forEach((controller) => controller.sync());
+
+      function localizedResult(count) {
+        if (currentLanguage() !== 'en') return `显示 ${count} 个项目`;
+        return count === 1 ? 'Showing 1 project' : `Showing ${count} projects`;
+      }
+
+      function syncUrl() {
+        const url = new URL(window.location.href);
+        const query = searchInput.value.trim();
+        const values = {
+          scope: activeScope,
+          category: categorySelect.value,
+          language: languageSelect.value,
+          q: query,
+        };
+
+        Object.entries(values).forEach(([key, value]) => {
+          const isDefault = key === 'q' ? !value : value === 'all';
+          if (isDefault) url.searchParams.delete(key);
+          else url.searchParams.set(key, value);
+        });
+        window.history.replaceState(window.history.state, '', url);
+      }
+
+      function applyFilters({ announce = true, sync = true } = {}) {
+        const category = categorySelect.value;
+        const language = languageSelect.value;
+        const query = normalize(searchInput.value);
+        let visibleCount = 0;
+
+        projectItems.forEach((item) => {
+          const languages = (item.dataset.languages || '').split(',').filter(Boolean);
+          const matchesScope = activeScope === 'all' || item.dataset.featured === 'true';
+          const matchesCategory = category === 'all' || item.dataset.category === category;
+          const matchesLanguage = language === 'all' || languages.includes(language);
+          const matchesSearch = !query || normalize(item.dataset.search || '').includes(query);
+          const isVisible = matchesScope && matchesCategory && matchesLanguage && matchesSearch;
+          item.hidden = !isVisible;
+          if (isVisible) visibleCount += 1;
+        });
+
+        scopeButtons.forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.scope === activeScope));
+        });
+
+        const hasFilters = activeScope !== 'all' || category !== 'all' || language !== 'all' || Boolean(query);
+        clearButtons.forEach((button) => {
+          button.hidden = !hasFilters && button.closest('[data-empty-state]') === null;
+        });
+        emptyState.hidden = visibleCount !== 0;
+
+        const resultText = localizedResult(visibleCount);
+        resultCount.textContent = resultText;
+        if (announce) resultLive.textContent = resultText;
+        if (sync) syncUrl();
+      }
+
+      function clearFilters() {
+        activeScope = 'all';
+        categorySelect.value = 'all';
+        languageSelect.value = 'all';
+        searchInput.value = '';
+        syncSelectControls();
+        applyFilters();
+        scopeButtons[0]?.focus();
+      }
+
+      scopeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeScope = button.dataset.scope || 'all';
+          applyFilters();
+        });
+      });
+      categorySelect.addEventListener('change', () => {
+        syncSelectControls();
+        applyFilters();
+      });
+      languageSelect.addEventListener('change', () => {
+        syncSelectControls();
+        applyFilters();
+      });
+      searchInput.addEventListener('input', () => applyFilters());
+      searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && searchInput.value) {
+          searchInput.value = '';
+          applyFilters();
+        }
+      });
+      clearButtons.forEach((button) => button.addEventListener('click', clearFilters));
+      form.addEventListener('submit', (event) => event.preventDefault());
+
+      const previousLanguageHandler = window.__projectsDirectoryLanguageHandler;
+      if (previousLanguageHandler) document.removeEventListener('languagechange', previousLanguageHandler);
+      const previousPointerHandler = window.__projectsDirectoryPointerHandler;
+      if (previousPointerHandler) document.removeEventListener('pointerdown', previousPointerHandler);
+      const previousViewportHandler = window.__projectsDirectoryViewportHandler;
+      if (previousViewportHandler) {
+        window.removeEventListener('resize', previousViewportHandler);
+        window.visualViewport?.removeEventListener('resize', previousViewportHandler);
+        window.visualViewport?.removeEventListener('scroll', previousViewportHandler);
+      }
+
+      const pointerHandler = (event) => {
+        selectControllers.forEach((controller) => {
+          if (!controller.control.contains(event.target)) controller.close();
+        });
+      };
+      const viewportHandler = () => selectControllers.forEach((controller) => controller.reposition());
+      const languageHandler = () => {
+        searchInput.placeholder =
+          currentLanguage() === 'en' ? searchInput.dataset.placeholderEn : searchInput.dataset.placeholderZh;
+        syncSelectControls();
+        applyFilters({ announce: false, sync: false });
+      };
+      window.__projectsDirectoryLanguageHandler = languageHandler;
+      window.__projectsDirectoryPointerHandler = pointerHandler;
+      window.__projectsDirectoryViewportHandler = viewportHandler;
+      document.addEventListener('languagechange', languageHandler);
+      document.addEventListener('pointerdown', pointerHandler);
+      window.addEventListener('resize', viewportHandler);
+      window.visualViewport?.addEventListener('resize', viewportHandler);
+      window.visualViewport?.addEventListener('scroll', viewportHandler);
+
+      const cleanup = () => {
+        document.removeEventListener('languagechange', languageHandler);
+        document.removeEventListener('pointerdown', pointerHandler);
+        window.removeEventListener('resize', viewportHandler);
+        window.visualViewport?.removeEventListener('resize', viewportHandler);
+        window.visualViewport?.removeEventListener('scroll', viewportHandler);
+        if (window.__projectsDirectoryLanguageHandler === languageHandler) {
+          delete window.__projectsDirectoryLanguageHandler;
+        }
+        if (window.__projectsDirectoryPointerHandler === pointerHandler) {
+          delete window.__projectsDirectoryPointerHandler;
+        }
+        if (window.__projectsDirectoryViewportHandler === viewportHandler) {
+          delete window.__projectsDirectoryViewportHandler;
+        }
+      };
+      document.addEventListener('astro:before-swap', cleanup, { once: true });
+
+      languageHandler();
+      applyFilters({ announce: false });
+      form.hidden = false;
+    })();
+  </script>
 </Layout>
+
+<style>
+  .projects-directory {
+    min-height: 70vh;
+    padding: clamp(2rem, 3vw, 2.75rem) 0 clamp(6rem, 10vw, 9rem);
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .projects-directory__shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin: 0 auto;
+  }
+
+  .directory-control-deck {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .directory-scope {
+    display: inline-flex;
+    min-width: 0;
+    margin: 0;
+    padding: 0.25rem;
+    border: 1px solid var(--rc-rule);
+    border-radius: var(--rc-radius-surface);
+    background: rgb(5 7 13 / 62%);
+  }
+
+  .directory-scope button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--rc-radius-control);
+    background: transparent;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .directory-scope button:hover {
+    color: var(--rc-text);
+  }
+
+  .directory-scope button[aria-pressed='true'] {
+    border-color: var(--rc-rule-strong);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+  }
+
+  .directory-scope button[aria-pressed='true']::before {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.75rem rgb(60 143 247 / 45%);
+    content: '';
+  }
+
+  .directory-scope__count {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .directory-tools {
+    display: flex;
+    min-width: 0;
+    gap: 0.625rem;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .directory-select,
+  .directory-search {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 3rem;
+    align-items: center;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: rgb(5 7 13 / 78%);
+    color: var(--rc-text-muted);
+  }
+
+  .directory-select {
+    display: grid;
+    width: var(--directory-select-width, auto);
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.55rem;
+    padding-left: 0.75rem;
+  }
+
+  .directory-select[data-select-control='category'] {
+    --directory-select-width: 14rem;
+  }
+
+  .directory-select[data-select-control='language'] {
+    --directory-select-width: 11rem;
+  }
+
+  :global(html.lang-en) .directory-select[data-select-control='language'] {
+    --directory-select-width: 13rem;
+  }
+
+  .directory-select[data-open='true'] {
+    z-index: 30;
+    border-color: var(--rc-header-rule);
+    background: var(--rc-surface-raised);
+  }
+
+  .directory-control-label {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .directory-select__trigger {
+    display: flex;
+    min-width: 8rem;
+    height: 2.875rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.875rem;
+    padding: 0 0.875rem 0 0.25rem;
+    border: 0;
+    background: transparent;
+    color: var(--rc-text);
+    font: inherit;
+    font-size: 0.8125rem;
+    outline: 0;
+    text-align: left;
+  }
+
+  .directory-select__value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .directory-select__chevron {
+    width: 0.42rem;
+    height: 0.42rem;
+    flex: 0 0 auto;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    color: var(--rc-text-faint);
+    pointer-events: none;
+    transform: rotate(45deg) translate(-0.1rem, 0.1rem);
+    transition: transform 160ms ease;
+  }
+
+  .directory-select[data-open='true'] .directory-select__chevron {
+    color: var(--rc-blue);
+    transform: rotate(225deg) translate(-0.05rem, -0.05rem);
+  }
+
+  .directory-select__menu {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 0.5rem);
+    inset-inline-start: 0;
+    width: max-content;
+    min-width: max(100%, 13.5rem);
+    max-width: min(19rem, calc(100vw - 1.5rem));
+    max-height: min(22rem, var(--directory-menu-available, calc(100vh - 8rem)));
+    padding: 0.375rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: #05070d;
+    box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 32%);
+    overscroll-behavior: contain;
+  }
+
+  .directory-select[data-select-placement='top'] .directory-select__menu {
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+  }
+
+  .directory-select[data-select-align='end'] .directory-select__menu {
+    inset-inline: auto 0;
+  }
+
+  .directory-select[data-select-control='language'] .directory-select__menu {
+    inset-inline: -1px;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .directory-select__option {
+    position: relative;
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding: 0.625rem 2rem 0.625rem 0.75rem;
+    border-radius: calc(var(--rc-radius-control) - 2px);
+    color: var(--rc-text-muted);
+    cursor: default;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .directory-select__option + .directory-select__option {
+    margin-top: 0.125rem;
+  }
+
+  .directory-select__option[data-active] {
+    background: var(--rc-band);
+    box-shadow: inset 0 0 0 1px var(--rc-rule-strong);
+    color: var(--rc-text-strong);
+  }
+
+  .directory-select__option[aria-selected='true'] {
+    background: rgb(60 143 247 / 12%);
+    color: var(--rc-text-strong);
+  }
+
+  .directory-select__option[aria-selected='true']::after {
+    position: absolute;
+    right: 0.85rem;
+    width: 0.35rem;
+    height: 0.65rem;
+    border-right: 1.5px solid var(--rc-blue);
+    border-bottom: 1.5px solid var(--rc-blue);
+    content: '';
+    transform: translateY(-0.1rem) rotate(45deg);
+  }
+
+  .directory-select__option[data-active][aria-selected='true'] {
+    box-shadow: inset 0 0 0 1px var(--rc-focus);
+  }
+
+  .directory-search {
+    width: clamp(14rem, 23vw, 21rem);
+    padding: 0 0.875rem;
+  }
+
+  .directory-search svg {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+  }
+
+  .directory-search input {
+    width: 100%;
+    height: 2.875rem;
+    min-width: 0;
+    padding: 0 0 0 0.625rem;
+    border: 0;
+    background: transparent;
+    color: var(--rc-text);
+    font-size: 0.9375rem;
+    outline: 0;
+  }
+
+  .directory-search input::placeholder {
+    color: var(--rc-text-faint);
+    opacity: 1;
+  }
+
+  .directory-select:focus-within,
+  .directory-search:focus-within,
+  .directory-scope button:focus-visible,
+  .directory-status button:focus-visible,
+  .directory-empty button:focus-visible,
+  .directory-landscape:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
+  }
+
+  .directory-intro {
+    max-width: 53rem;
+    margin-top: clamp(2.75rem, 4vw, 3.75rem);
+  }
+
+  .directory-intro h1 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .directory-intro > p {
+    max-width: 42rem;
+    margin: 1rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  .directory-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    align-items: center;
+    margin-top: 1.25rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .directory-proof > span {
+    position: relative;
+    display: inline-flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .directory-proof > span:not(:last-child)::after {
+    width: 1px;
+    height: 0.75rem;
+    margin-left: 1rem;
+    background: var(--rc-rule-strong);
+    content: '';
+  }
+
+  .directory-proof strong {
+    color: var(--rc-text-muted);
+    font-weight: 600;
+  }
+
+  .directory-status {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(1.5rem, 2.4vw, 2.25rem);
+    border-bottom: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .directory-status p {
+    margin: 0;
+    color: var(--rc-text-muted);
+  }
+
+  .directory-status p::before {
+    display: inline-block;
+    width: 0.35rem;
+    height: 0.35rem;
+    margin-right: 0.55rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.75rem rgb(60 143 247 / 45%);
+    content: '';
+    vertical-align: 0.08em;
+  }
+
+  .directory-status__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .directory-status button,
+  .directory-empty button {
+    min-height: 2.75rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text);
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .directory-status button:hover,
+  .directory-empty button:hover {
+    border-color: var(--rc-header-rule);
+    background: var(--rc-band);
+  }
+
+  .directory-results {
+    padding-top: 1rem;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .project-item {
+    min-width: 0;
+  }
+
+  .project-item[hidden] {
+    display: none;
+  }
+
+  .directory-empty {
+    display: grid;
+    min-height: 22rem;
+    place-items: center;
+    align-content: center;
+    padding: 3rem 1.5rem;
+    border: 1px solid var(--rc-rule);
+    border-radius: var(--rc-radius-surface);
+    background: rgb(5 7 13 / 62%);
+    text-align: center;
+  }
+
+  .directory-empty[hidden] {
+    display: none;
+  }
+
+  .directory-empty__mark {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-faint);
+  }
+
+  .directory-empty__mark svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+  }
+
+  .directory-empty__title {
+    margin: 1.25rem 0 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .directory-empty > p:not(.directory-empty__title) {
+    max-width: 32rem;
+    margin: 0.625rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  .directory-empty button {
+    margin-top: 1.5rem;
+  }
+
+  .directory-landscape {
+    display: flex;
+    min-height: 6rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: clamp(4.5rem, 7vw, 6.5rem);
+    border-block: 1px solid var(--rc-rule);
+    color: var(--rc-text-muted);
+    text-decoration: none;
+  }
+
+  .directory-landscape > span {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .directory-landscape strong {
+    color: var(--rc-text-strong);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .directory-landscape > span > span {
+    color: var(--rc-text-faint);
+    font-size: 0.8125rem;
+  }
+
+  .directory-landscape svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--rc-blue);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    transition: transform 160ms ease;
+  }
+
+  .directory-landscape:hover svg {
+    transform: translateX(0.2rem);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 64rem) {
+    .projects-directory__shell {
+      width: min(calc(100% - 2rem), 87.5rem);
+    }
+
+    .directory-control-deck {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .directory-scope {
+      align-self: flex-start;
+    }
+
+    .directory-tools {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(15rem, 1.45fr);
+    }
+
+    .directory-select,
+    .directory-search {
+      width: 100%;
+    }
+
+    .directory-select__trigger {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .projects-directory {
+      padding-top: 1.75rem;
+    }
+
+    .projects-directory__shell {
+      width: calc(100% - 1.5rem);
+    }
+
+    .directory-scope {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .directory-scope button {
+      min-width: 0;
+      padding: 0 0.625rem;
+      white-space: normal;
+    }
+
+    .directory-tools {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .directory-search {
+      grid-column: 1 / -1;
+    }
+
+    .directory-intro {
+      margin-top: 2.75rem;
+    }
+
+    .directory-status {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 0.75rem 0;
+    }
+
+    .directory-status__actions {
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .directory-results {
+      padding-top: 1rem;
+    }
+
+    .project-grid {
+      gap: 1rem;
+    }
+
+    .directory-landscape {
+      align-items: flex-start;
+      padding: 1.5rem 0;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .directory-tools {
+      grid-template-columns: 1fr;
+    }
+
+    .directory-search {
+      grid-column: auto;
+    }
+
+    .directory-select__menu,
+    .directory-select[data-select-align='end'] .directory-select__menu {
+      inset-inline: 0;
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+    }
+
+    .directory-status {
+      gap: 0.5rem;
+    }
+
+    .directory-status__actions > span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .directory-scope button,
+    .directory-select__chevron,
+    .directory-landscape svg {
+      transition: none;
+    }
+
+    .directory-landscape:hover svg {
+      transform: none;
+    }
+  }
+</style>

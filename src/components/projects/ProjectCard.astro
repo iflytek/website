@@ -2,14 +2,17 @@
 import hfIcon from '~/assets/images/hugging-face.svg';
 
 interface Props {
+  slug: string;
   name: string;
+  nameEn?: string;
   description: string;
   descriptionEn?: string;
   repo: string;
   homepage?: string;
-  category: string;
-  tags?: string[];
+  categoryLabelZh: string;
+  categoryLabelEn: string;
   languages?: string[];
+  featured?: boolean;
   stars?: number;
   forks?: number;
   license?: string;
@@ -18,252 +21,508 @@ interface Props {
 }
 
 const {
+  slug,
   name,
+  nameEn,
   description,
   descriptionEn,
   repo,
   homepage,
-  category,
-  tags = [],
+  categoryLabelZh,
+  categoryLabelEn,
   languages = [],
-  stars = 0,
-  forks = 0,
+  featured = false,
+  stars,
+  forks,
   license,
   icon,
   links = [],
 } = Astro.props;
 
-const categoryColors: Record<string, string> = {
-  'agentic-workflow': 'bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300',
-  'agentic-automation': 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
-  'agent-skills': 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  tutorial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-  'agent-management': 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
-  'agent-engine': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
-  'memory-system': 'bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300',
-  llm: 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300',
+const projectInitials = name
+  .split(/\s+/)
+  .map((part) => part.charAt(0))
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+
+const formatNumber = (value: number) => {
+  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  return value.toLocaleString('en-US');
 };
 
-const categoryLabels: Record<string, { zh: string; en: string }> = {
-  'agentic-workflow': { zh: '智能体工作流 (agentic-workflow)', en: 'agentic-workflow' },
-  'agentic-automation': { zh: '智能体自动化 (agentic-automation)', en: 'agentic-automation' },
-  'agent-skills': { zh: '智能体技能 (agent-skills)', en: 'agent-skills' },
-  tutorial: { zh: '教程指南 (tutorial)', en: 'tutorial' },
-  'agent-management': { zh: '智能体管理 (agent-management)', en: 'agent-management' },
-  'agent-engine': { zh: '智能体引擎 (agent-engine)', en: 'agent-engine' },
-  'memory-system': { zh: '记忆系统 (memory-system)', en: 'memory-system' },
-  llm: { zh: '大语言模型 (LLM)', en: 'LLM' },
-};
-
-const langColors: Record<string, string> = {
-  Java: '#b07219',
-  TypeScript: '#3178c6',
-  Python: '#3572A5',
-  JavaScript: '#f1e05a',
-  Go: '#00ADD8',
-  Shell: '#89e051',
-};
-
-function formatNumber(n: number): string {
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  return n.toString();
-}
+const resources = [
+  ...(homepage ? [{ href: homepage, labelZh: '官网', labelEn: 'Website', kind: 'website' }] : []),
+  ...links.map((href) => {
+    const isHuggingFace = href.includes('huggingface');
+    const isModelScope = href.includes('modelscope');
+    return {
+      href,
+      labelZh: isHuggingFace ? 'Hugging Face' : isModelScope ? 'ModelScope' : '资源',
+      labelEn: isHuggingFace ? 'Hugging Face' : isModelScope ? 'ModelScope' : 'Resource',
+      kind: isHuggingFace ? 'huggingface' : isModelScope ? 'modelscope' : 'resource',
+    };
+  }),
+];
 ---
 
-<div
-  class:list={[
-    'group relative flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-gray-700 dark:bg-gray-900',
-  ]}
->
-  <!-- Header -->
-  <div class="flex items-start gap-4">
-    <!-- Project Icon -->
-    <div
-      class:list={[
-        'flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden',
-        icon ? '' : 'bg-gradient-to-br from-gradient-start to-gradient-end text-xl font-bold text-white',
-      ]}
-    >
-      {icon ? <img src={icon} alt={name} class="h-full w-full object-contain" loading="lazy" /> : name.charAt(0)}
-    </div>
-
-    <div class="min-w-0 flex-1">
-      <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-        <a
-          href={homepage || `https://github.com/${repo}`}
-          class="hover:text-primary-600 dark:hover:text-primary-400"
-          target="_blank"
-          rel="noopener"
-        >
-          {name}
-        </a>
-      </h3>
-      <!-- Category tag -->
-      <span
-        class:list={[
-          'mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium',
-          categoryColors[category] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-        ]}
-      >
-        {
-          categoryLabels[category] ? (
-            <span data-lang-zh={categoryLabels[category].zh} data-lang-en={categoryLabels[category].en}>
-              {categoryLabels[category].zh}
-            </span>
-          ) : (
-            category
-          )
-        }
-      </span>
-    </div>
-  </div>
-
-  <!-- Description -->
-  <p class="mt-4 flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-    {
-      descriptionEn ? (
-        <span data-lang-zh={description} data-lang-en={descriptionEn}>
-          {description}
-        </span>
-      ) : (
-        description
-      )
-    }
-  </p>
-
-  <!-- Languages -->
-  {
-    languages.length > 0 && (
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        {languages.map((lang) => (
-          <span class="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-            <span class="inline-block h-3 w-3 rounded-full" style={`background-color: ${langColors[lang] || '#999'}`} />
-            {lang}
-          </span>
-        ))}
-      </div>
-    )
-  }
-
-  <!-- Tags -->
-  {
-    tags.length > 0 && (
-      <div class="mt-3 flex flex-wrap gap-1.5">
-        {tags.slice(0, 4).map((tag) => (
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-            {tag}
-          </span>
-        ))}
-        {tags.length > 4 && (
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-500">
-            +{tags.length - 4}
-          </span>
-        )}
-      </div>
-    )
-  }
-
-  <!-- Footer: Stats + Links -->
-  <div
-    class="mt-5 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800"
-  >
-    <!-- GitHub Stats -->
-    <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-      <a
-        href={`https://github.com/${repo}/stargazers`}
-        target="_blank"
-        rel="noopener"
-        class="inline-flex items-center gap-1 transition-colors hover:text-yellow-600"
-      >
-        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"
-          ><path
-            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-          ></path></svg
-        >
-        {formatNumber(stars)}
-      </a>
-      <a
-        href={`https://github.com/${repo}/network/members`}
-        target="_blank"
-        rel="noopener"
-        class="inline-flex items-center gap-1 transition-colors hover:text-blue-600"
-      >
-        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"
-          ><path
-            fill-rule="evenodd"
-            d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clip-rule="evenodd"></path></svg
-        >
-        {formatNumber(forks)}
-      </a>
+<article class="project-entry">
+  <header class="project-entry__header">
+    <div class:list={['project-entry__icon', featured && 'is-featured']}>
       {
-        license && (
-          <span class="inline-flex items-center gap-1">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              />
-            </svg>
-            {license}
-          </span>
+        icon ? (
+          <img src={icon} alt="" loading="lazy" decoding="async" />
+        ) : (
+          <span aria-hidden="true">{projectInitials}</span>
         )
       }
     </div>
 
-    <!-- Links + GitHub Button -->
-    <div class="inline-flex flex-wrap items-center gap-2">
-      {
-        links.map((link) => {
-          const isHF = link.includes('huggingface');
-          const isMS = link.includes('modelscope');
-          const label = isHF ? 'Hugging Face' : isMS ? 'ModelScope' : 'Link';
-          return (
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              {isHF ? (
-                <img src={hfIcon.src} alt="Hugging Face" class="h-4 w-4" />
-              ) : isMS ? (
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <circle cx="12" cy="12" r="10" />
-                  <circle cx="12" cy="12" r="6" />
-                  <circle cx="12" cy="12" r="2" />
-                </svg>
-              ) : (
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              )}
-              {label}
-            </a>
-          );
-        })
-      }
-      <!-- GitHub Link -->
-      <a
-        href={`https://github.com/${repo}`}
-        target="_blank"
-        rel="noopener"
-        class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-      >
-        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"
-          ><path
-            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-          ></path></svg
-        >
-        GitHub
-      </a>
+    <div class="project-entry__identity">
+      <h3>
+        <a href={`/projects/${slug}`}>
+          <span data-lang-zh={name} data-lang-en={nameEn || name}>{name}</span>
+        </a>
+      </h3>
+      <div class="project-entry__classification">
+        <span data-lang-zh={categoryLabelZh} data-lang-en={categoryLabelEn}>{categoryLabelZh}</span>
+        {
+          featured && (
+            <>
+              <span class="project-entry__separator" aria-hidden="true">
+                ·
+              </span>
+              <span data-lang-zh="精选" data-lang-en="Featured">
+                精选
+              </span>
+            </>
+          )
+        }
+      </div>
     </div>
-  </div>
-</div>
+
+    <a class="project-entry__detail" href={`/projects/${slug}`}>
+      <span data-lang-zh="查看详情" data-lang-en="View details">查看详情</span>
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M4.5 10h10m-3.5-3.5 3.5 3.5-3.5 3.5"></path>
+      </svg>
+    </a>
+  </header>
+
+  <p class="project-entry__description" data-lang-zh={description} data-lang-en={descriptionEn || description}>
+    {description}
+  </p>
+
+  <footer class="project-entry__footer">
+    <div class="project-entry__metadata">
+      {
+        languages.length > 0 && (
+          <span class="project-entry__languages">
+            <span class="project-entry__signal" aria-hidden="true" />
+            {languages.join(' · ')}
+          </span>
+        )
+      }
+      {
+        typeof stars === 'number' && (
+          <span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="m10 2.8 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7L10 2.8Z" />
+            </svg>
+            <span>{formatNumber(stars)}</span>
+            <span
+              class="sr-only"
+              data-lang-zh={`${name} 的 GitHub Stars`}
+              data-lang-en={`${nameEn || name} GitHub Stars`}
+            >
+              {name} 的 GitHub Stars
+            </span>
+          </span>
+        )
+      }
+      {
+        typeof forks === 'number' && (
+          <a href={`https://github.com/${repo}/network/members`} target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M6 3.25v2.5M14 3.25v2.5M6 5.75h8M10 5.75v6M7 14.75h6M10 11.75v3" />
+              <circle cx="6" cy="3.25" r="1.5" />
+              <circle cx="14" cy="3.25" r="1.5" />
+              <circle cx="10" cy="15.75" r="1.5" />
+            </svg>
+            <span>{formatNumber(forks)}</span>
+            <span
+              class="sr-only"
+              data-lang-zh={`${name} 的 GitHub Forks（在新标签页打开）`}
+              data-lang-en={`${nameEn || name} GitHub Forks (opens in a new tab)`}
+            >
+              {name} 的 GitHub Forks（在新标签页打开）
+            </span>
+          </a>
+        )
+      }
+      {license && <span>{license}</span>}
+    </div>
+
+    <nav class="project-entry__resources" aria-labelledby={`project-resources-${slug}`}>
+      <span
+        id={`project-resources-${slug}`}
+        class="sr-only"
+        data-lang-zh={`${name} 资源`}
+        data-lang-en={`${nameEn || name} resources`}>{name} 资源</span
+      >
+      <a href={`https://github.com/${repo}`} target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M12 .9a11.1 11.1 0 0 0-3.5 21.7c.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2V22c0 .3.2.7.8.6A11.1 11.1 0 0 0 12 .9Z"
+          ></path>
+        </svg>
+        <span>GitHub</span>
+        <span class="sr-only" data-lang-zh="（在新标签页打开）" data-lang-en="(opens in a new tab)"
+          >（在新标签页打开）</span
+        >
+      </a>
+
+      {
+        resources.map((resource) => (
+          <a href={resource.href} target="_blank" rel="noopener noreferrer">
+            {resource.kind === 'huggingface' ? (
+              <img src={hfIcon.src} alt="" aria-hidden="true" />
+            ) : resource.kind === 'modelscope' ? (
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="7" />
+                <circle cx="10" cy="10" r="3" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M7.5 4.5h8v8M15.5 4.5l-9 9" />
+              </svg>
+            )}
+            <span data-lang-zh={resource.labelZh} data-lang-en={resource.labelEn}>
+              {resource.labelZh}
+            </span>
+            <span class="sr-only" data-lang-zh="（在新标签页打开）" data-lang-en="(opens in a new tab)">
+              （在新标签页打开）
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+  </footer>
+</article>
+
+<style>
+  .project-entry {
+    position: relative;
+    display: flex;
+    height: 100%;
+    min-height: 14rem;
+    flex-direction: column;
+    padding: 1.25rem;
+    border: 1px solid var(--rc-rule);
+    border-radius: var(--rc-radius-surface);
+    background: rgb(5 7 13 / 72%);
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .project-entry:hover,
+  .project-entry:focus-within {
+    border-color: var(--rc-rule-strong);
+    background: var(--rc-band);
+  }
+
+  .project-entry__header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.875rem;
+    align-items: start;
+  }
+
+  .project-entry__icon {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface);
+    color: var(--rc-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+  }
+
+  .project-entry__icon.is-featured {
+    border-color: rgb(60 143 247 / 62%);
+  }
+
+  .project-entry__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .project-entry__identity {
+    min-width: 0;
+  }
+
+  .project-entry__classification {
+    display: flex;
+    min-height: 1rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    margin-top: 0.15rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .project-entry__separator {
+    color: var(--rc-blue);
+  }
+
+  .project-entry h3 {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    margin: 0;
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  .project-entry h3 a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--rc-text-strong);
+    text-decoration: none;
+  }
+
+  .project-entry h3 a:hover {
+    color: #ffffff;
+  }
+
+  .project-entry__detail {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text);
+    font-size: 0.8125rem;
+    font-weight: 580;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .project-entry__detail:hover {
+    border-color: var(--rc-header-rule);
+    background: var(--rc-band);
+    color: #ffffff;
+  }
+
+  .project-entry__detail svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    transition: transform 160ms ease;
+  }
+
+  .project-entry__detail:hover svg {
+    transform: translateX(0.125rem);
+  }
+
+  .project-entry__description {
+    max-width: 68ch;
+    flex: 1;
+    margin: 1rem 0 0.75rem;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .project-entry__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .project-entry__metadata,
+  .project-entry__resources {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.875rem;
+    align-items: center;
+  }
+
+  .project-entry__metadata {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .project-entry__metadata > span,
+  .project-entry__metadata > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .project-entry__metadata > a {
+    min-width: 2.75rem;
+    justify-content: center;
+    color: var(--rc-text-muted);
+    text-decoration: none;
+  }
+
+  .project-entry__metadata > a:hover {
+    color: var(--rc-text);
+  }
+
+  .project-entry__metadata svg {
+    width: 0.9375rem;
+    height: 0.9375rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.35;
+  }
+
+  .project-entry__languages {
+    white-space: nowrap;
+  }
+
+  .project-entry__signal {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.75rem rgb(60 143 247 / 45%);
+  }
+
+  .project-entry__resources {
+    justify-content: flex-end;
+  }
+
+  .project-entry__resources a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.38rem;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 520;
+    text-decoration: underline;
+    text-decoration-color: rgb(160 159 162 / 35%);
+    text-underline-offset: 0.28em;
+  }
+
+  .project-entry__resources a:hover {
+    color: var(--rc-text);
+    text-decoration-color: var(--rc-blue);
+  }
+
+  .project-entry__resources svg,
+  .project-entry__resources img {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .project-entry__resources svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+  }
+
+  :where(.project-entry a):focus-visible {
+    border-radius: var(--rc-radius-control);
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 64rem) {
+    .project-entry {
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .project-entry {
+      min-height: auto;
+      padding: 1.125rem;
+    }
+
+    .project-entry__header {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .project-entry__detail {
+      grid-column: 1 / -1;
+      justify-self: stretch;
+      margin-top: 0.25rem;
+    }
+
+    .project-entry__description {
+      margin-top: 1.25rem;
+    }
+
+    .project-entry__footer {
+      align-items: flex-start;
+    }
+
+    .project-entry__resources {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-entry,
+    .project-entry__detail,
+    .project-entry__detail svg {
+      transition: none;
+    }
+
+    .project-entry__detail:hover svg {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+const { class: className = '', ...rest } = Astro.props;
+---
+
+<span class:list={['star-border', className]} {...rest}>
+  <slot />
+</span>
+
+<style>
+  .star-border {
+    --star-border-speed: 6s;
+    --star-border-opacity: 0.7;
+    position: relative;
+    display: inline-grid;
+    min-width: 0;
+    overflow: hidden;
+    padding: 1px;
+    isolation: isolate;
+    border-radius: 11px;
+    background: var(--rc-rule-strong);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+    transition:
+      box-shadow 180ms ease,
+      transform 160ms ease;
+  }
+
+  .star-border::before,
+  .star-border::after {
+    position: absolute;
+    z-index: 0;
+    width: 300%;
+    height: 50%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(255 255 255 / 96%), transparent 10%);
+    content: '';
+    opacity: var(--star-border-opacity);
+    pointer-events: none;
+  }
+
+  .star-border::before {
+    right: -250%;
+    bottom: -0.6875rem;
+    animation: star-border-bottom var(--star-border-speed) linear infinite alternate;
+  }
+
+  .star-border::after {
+    top: -0.625rem;
+    left: -250%;
+    animation: star-border-top var(--star-border-speed) linear infinite alternate;
+  }
+
+  .star-border:hover {
+    box-shadow: 0 12px 28px rgb(0 0 0 / 20%);
+  }
+
+  .star-border:active {
+    transform: translateY(1px);
+  }
+
+  .star-border:focus-within {
+    outline: 2px solid var(--rc-text);
+    outline-offset: 3px;
+  }
+
+  :global(.star-border__action) {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 3.25rem;
+    justify-content: center;
+    gap: 0.65rem;
+    padding-inline: 1.65rem;
+    border-color: var(--rc-rule);
+    border-radius: var(--rc-radius-surface);
+    background: linear-gradient(180deg, var(--rc-canvas) 0%, var(--rc-surface-raised) 100%);
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%);
+  }
+
+  :global(.star-border__action:hover) {
+    border-color: var(--rc-rule-strong);
+    background: linear-gradient(180deg, var(--rc-surface) 0%, var(--rc-surface-raised) 100%);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+  }
+
+  :global(.star-border__action:active) {
+    transform: none;
+  }
+
+  :global(.star-border__action:focus-visible) {
+    outline: none;
+  }
+
+  @keyframes star-border-bottom {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes star-border-top {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star-border,
+    :global(.star-border__action) {
+      transition: none;
+    }
+
+    .star-border::before,
+    .star-border::after {
+      animation: none;
+      opacity: 0.38;
+    }
+  }
+</style>

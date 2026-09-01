@@ -3,16 +3,24 @@ import Layout from '~/layouts/PageLayout.astro';
 import { getProjectsWithStats } from '~/utils/project-stats';
 import hfIcon from '~/assets/images/hugging-face.svg';
 
-export const prerender = false;
+export const prerender = true;
 
-const slug = Astro.params.slug as string;
-const projects = await getProjectsWithStats();
-const project = projects.find((p) => p.id.replace('.yaml', '').replace('.yml', '') === slug);
+type ProjectWithStats = Awaited<ReturnType<typeof getProjectsWithStats>>[number];
 
-if (!project) {
-  return Astro.redirect('/404');
+interface Props {
+  project: ProjectWithStats;
 }
 
+export async function getStaticPaths() {
+  const projects = await getProjectsWithStats();
+
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.ya?ml$/, '') },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
 const { data } = project;
 
 const metadata = {
@@ -128,7 +136,7 @@ const categoryLabels: Record<string, { zh: string; en: string }> = {
                   <span class="flex items-center gap-1 text-sm font-semibold">
                     <span
                       class="inline-block h-3 w-3 rounded-full"
-                      style={`background-color: ${langColors[lang] || '#999'}`}
+                      style={`background-color: ${langColors[lang] || '#85868e'}`}
                     />
                     {lang}
                   </span>

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:       # Manual trigger
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   update:
@@ -14,7 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          token: ${{ secrets.ADMIN_PAT }}
+          token: ${{ github.token }}
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -23,11 +24,30 @@ jobs:
       - name: Update contributors data
         run: npm run fetch:contributors
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Commit and push if changed
+        env:
+          ADMIN_PAT: ${{ secrets.ADMIN_PAT }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .cache/contributors.json
-          git diff --cached --quiet || git commit -m "chore: update contributors data [skip ci]"
-          git push
+          if git diff --cached --quiet; then
+            echo "No contributor cache changes."
+            exit 0
+          fi
+          if [ -z "$ADMIN_PAT" ]; then
+            echo "::error::ADMIN_PAT is missing; add or rotate the repository secret before pushing cache updates."
+            exit 1
+          fi
+          if ! curl --fail --silent --show-error \
+            --header "Authorization: Bearer ${ADMIN_PAT}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}" > /dev/null; then
+            echo "::error::ADMIN_PAT cannot access this repository; rotate the repository secret."
+            exit 1
+          fi
+          git commit -m "chore: update contributors data"
+          git push \
+            "https://x-access-token:${ADMIN_PAT}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:${GITHUB_REF_NAME}"

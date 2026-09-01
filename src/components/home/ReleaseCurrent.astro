@@ -1,0 +1,476 @@
+---
+import Button from '~/components/ui/Button.astro';
+import StarBorder from '~/components/ui/StarBorder.astro';
+import HeroFlowField from './HeroFlowField.astro';
+
+export interface ReleaseProject {
+  slug: string;
+  name: string;
+  nameEn: string;
+  category: string;
+}
+
+export interface Props {
+  projects: ReleaseProject[];
+  projectCount: number;
+  starDisplay: string;
+}
+
+const { projects, projectCount, starDisplay } = Astro.props;
+const previewProjects = projects.slice(0, 3);
+
+const proofZh = `${projectCount} 个项目 · ${starDisplay} GitHub Stars · Apache 2.0`;
+const proofEn = `${projectCount} projects · ${starDisplay} GitHub Stars · Apache 2.0`;
+const allProjectsZh = '查看全部项目';
+const allProjectsEn = 'View all projects';
+---
+
+<section class="release-stage" aria-labelledby="release-title">
+  <div class="release-shell">
+    <div class="release-hero">
+      <HeroFlowField />
+
+      <div class="release-judgment">
+        <h1 id="release-title">Astron</h1>
+
+        <p
+          class="release-positioning"
+          data-lang-zh="企业级 Agentic AI 开源生态"
+          data-lang-en="Enterprise-Grade Agentic AI Open Source Ecosystem"
+        >
+          企业级 Agentic AI 开源生态
+        </p>
+
+        <p
+          class="release-summary"
+          data-lang-zh="以 Astron 为核心，汇聚工作流编排、技能、自动化、记忆、模型与工具，共建开放的企业级 Agentic AI 生态"
+          data-lang-en="Centered on Astron, connecting workflow orchestration, skills, automation, memory, models, and tools in an open enterprise Agentic AI ecosystem."
+        >
+          以 Astron 为核心，汇聚工作流编排、技能、自动化、记忆、模型与工具，共建开放的企业级 Agentic AI 生态
+        </p>
+
+        <div class="release-actions" aria-label="Homepage actions">
+          <StarBorder class="release-star-border">
+            <Button
+              variant="secondary"
+              href="/projects"
+              icon="tabler:arrow-right"
+              class="release-action star-border__action"
+              text='<span data-lang-zh="探索项目" data-lang-en="Explore Projects">探索项目</span>'
+            />
+          </StarBorder>
+        </div>
+
+        <p class="release-proof">
+          <span data-lang-zh={proofZh} data-lang-en={proofEn}>{proofZh}</span>
+        </p>
+      </div>
+    </div>
+
+    <h2
+      id="release-preview-title"
+      class="release-preview__title"
+      data-lang-zh="项目速览"
+      data-lang-en="Project preview"
+    >
+      项目速览
+    </h2>
+    <nav class="release-preview" aria-labelledby="release-preview-title">
+      <ul>
+        {
+          previewProjects.map((project) => (
+            <li>
+              <a href={`/projects/${project.slug}`}>
+                <span class="release-preview__signal" aria-hidden="true" />
+                <span class="release-preview__identity">
+                  <strong data-lang-zh={project.name} data-lang-en={project.nameEn}>
+                    {project.name}
+                  </strong>
+                  <span>{project.category}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+        <li class="release-preview__all">
+          <a href="/projects">
+            <strong data-lang-zh={allProjectsZh} data-lang-en={allProjectsEn}>{allProjectsZh}</strong>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .release-stage {
+    --ground: #010208;
+    --rule: #1b1f26;
+    --rule-strong: #383b45;
+    --text: #e9e9e9;
+    --secondary: #a09fa2;
+    --muted: #85868e;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 1.15rem 0 0;
+    background: var(--ground);
+    color: var(--text);
+  }
+
+  .release-stage::before {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url('/images/release-current-grain.webp');
+    background-repeat: repeat;
+    opacity: 0.014;
+    content: '';
+    pointer-events: none;
+  }
+
+  .release-stage::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 50% 48%, rgb(1 2 8 / 14%), transparent 64%),
+      radial-gradient(ellipse at 50% 50%, transparent 0%, rgb(1 2 8 / 20%) 100%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .release-shell {
+    width: min(calc(100% - 3rem), 92.5rem);
+    margin-inline: auto;
+  }
+
+  .release-hero {
+    position: relative;
+    display: grid;
+    min-height: clamp(34rem, calc(100svh - 5.25rem), 46rem);
+    place-items: center;
+  }
+
+  .release-judgment {
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    width: min(calc(100vw - 3rem), 88rem);
+    padding: clamp(5.5rem, 11vh, 8rem) 1.5rem clamp(5rem, 10vh, 7rem);
+    text-align: center;
+  }
+
+  .release-judgment::before {
+    position: absolute;
+    inset: -10% -16%;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse at 50% 48%,
+      rgb(1 2 8 / 64%) 0%,
+      rgb(1 2 8 / 42%) 37%,
+      rgb(1 2 8 / 12%) 61%,
+      transparent 79%
+    );
+    content: '';
+    pointer-events: none;
+  }
+
+  h1 {
+    margin: 0;
+    color: #f3f3f1;
+    font-family: var(--aw-font-heading, 'Inter Variable'), 'PingFang SC', sans-serif;
+    font-size: clamp(4.75rem, 8vw, 6rem);
+    font-weight: 720;
+    letter-spacing: -0.04em;
+    line-height: 0.94;
+  }
+
+  .release-positioning {
+    max-width: 44rem;
+    margin: 1.35rem auto 0;
+    color: #ededed;
+    font-size: clamp(1.72rem, 2.65vw, 2.35rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .release-summary {
+    max-width: 42rem;
+    margin: 1.75rem auto 0;
+    color: var(--secondary);
+    font-size: clamp(1.02rem, 1.3vw, 1.16rem);
+    line-height: 1.72;
+    text-wrap: pretty;
+    white-space: normal;
+  }
+
+  .release-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.15rem;
+  }
+
+  :global(.release-star-border) {
+    min-width: 11.75rem;
+  }
+
+  .release-proof {
+    display: flex;
+    margin: 1.45rem 0 0;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.025em;
+    line-height: 1.5;
+  }
+
+  .release-preview__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .release-preview {
+    position: relative;
+    z-index: 3;
+    border-block: 1px solid var(--rule-strong);
+  }
+
+  .release-preview ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .release-preview li {
+    min-width: 0;
+  }
+
+  .release-preview li + li {
+    border-left: 1px solid var(--rule);
+  }
+
+  .release-preview a {
+    display: grid;
+    grid-template-columns: 0.5rem minmax(0, 1fr);
+    min-height: 7.5rem;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.35rem 1.5rem;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 180ms ease;
+  }
+
+  .release-preview a:hover {
+    background: #070b13;
+  }
+
+  .release-preview a:focus-visible {
+    z-index: 1;
+    outline: 2px solid #8db9ff;
+    outline-offset: -2px;
+  }
+
+  .release-preview__signal {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: #3c8ff7;
+    box-shadow: 0 5px 14px rgb(40 100 228 / 32%);
+    transition: transform 180ms ease;
+  }
+
+  .release-preview a:hover .release-preview__signal {
+    transform: scale(1.35);
+  }
+
+  .release-preview__identity {
+    display: grid;
+    min-width: 0;
+    gap: 0.38rem;
+  }
+
+  .release-preview__identity strong,
+  .release-preview__all strong {
+    overflow: hidden;
+    color: #ededed;
+    font-size: 1.08rem;
+    font-weight: 630;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .release-preview__identity > span {
+    overflow: hidden;
+    color: #828995;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .release-preview__all a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .release-preview__all strong {
+    color: #d6d8dd;
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    transition: color 180ms ease;
+  }
+
+  .release-preview__all a:hover strong {
+    color: #ffffff;
+  }
+
+  @media (max-width: 68.74rem) {
+    .release-shell {
+      width: min(calc(100% - 2rem), 48rem);
+    }
+
+    .release-hero {
+      min-height: clamp(36rem, calc(100svh - 4.5rem), 43rem);
+    }
+
+    .release-judgment {
+      max-width: none;
+    }
+
+    .release-preview ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .release-preview li + li {
+      border-left: 0;
+    }
+
+    .release-preview li:nth-child(even) {
+      border-left: 1px solid var(--rule);
+    }
+
+    .release-preview li:nth-child(n + 3) {
+      border-top: 1px solid var(--rule);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    :global(html:not(.lang-en)) .release-summary {
+      max-width: none;
+      white-space: nowrap;
+    }
+  }
+
+  @media (min-width: 90rem) {
+    :global(html.lang-en) .release-summary {
+      max-width: none;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .release-stage {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .release-shell {
+      width: min(calc(100% - 1.5rem), 38rem);
+    }
+
+    .release-hero {
+      min-height: 0;
+    }
+
+    .release-judgment {
+      width: 100%;
+      padding: 6.75rem 0 5.5rem;
+    }
+
+    .release-judgment::before {
+      inset: -4% -28%;
+      background: radial-gradient(
+        ellipse at 50% 48%,
+        rgb(1 2 8 / 78%) 0%,
+        rgb(1 2 8 / 58%) 43%,
+        rgb(1 2 8 / 18%) 67%,
+        transparent 84%
+      );
+    }
+
+    h1 {
+      font-size: clamp(4rem, 19vw, 5rem);
+    }
+
+    .release-positioning {
+      margin-top: 1.1rem;
+      font-size: clamp(1.45rem, 6.4vw, 1.72rem);
+    }
+
+    .release-summary {
+      margin-top: 1.45rem;
+      font-size: 1rem;
+      line-height: 1.68;
+    }
+
+    .release-actions {
+      margin-top: 1.8rem;
+    }
+
+    .release-proof {
+      display: grid;
+      max-width: 22rem;
+      margin-top: 1.3rem;
+      margin-inline: auto;
+      justify-items: center;
+      row-gap: 0.35rem;
+      font-size: 0.76rem;
+      text-align: center;
+    }
+
+    .release-preview ul {
+      grid-template-columns: 1fr;
+    }
+
+    .release-preview li,
+    .release-preview li:nth-child(even) {
+      border-left: 0;
+    }
+
+    .release-preview li + li,
+    .release-preview li:nth-child(n + 3) {
+      border-top: 1px solid var(--rule);
+    }
+
+    .release-preview a {
+      min-height: 6.25rem;
+      padding: 1.25rem 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .release-preview a,
+    .release-preview__signal {
+      transition: none;
+    }
+  }
+</style>

@@ -20,44 +20,79 @@ import '@fontsource-variable/inter';
 ---
 
 <style is:inline>
-  :root {
+  :root,
+  .dark {
+    color-scheme: dark;
+
     --aw-font-sans: 'Inter Variable';
     --aw-font-serif: 'Inter Variable';
     --aw-font-heading: 'Inter Variable';
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    --rc-canvas: #010208;
+    --rc-header: #02080f;
+    --rc-surface: #030912;
+    --rc-surface-raised: #080c14;
+    --rc-surface-focus: #010612;
+    --rc-band: #070b13;
+    --rc-rule: #1b1f26;
+    --rc-rule-strong: #383b45;
+    --rc-header-rule: #4f4e58;
+    --rc-text: #e9e9e9;
+    --rc-text-strong: #ededee;
+    --rc-text-muted: #a09fa2;
+    --rc-text-faint: #85868e;
+    --rc-blue: #3c8ff7;
+    --rc-blue-action: #2864e4;
+    --rc-blue-active: #4773c8;
+    --rc-amber: #efa63d;
+    --rc-green: #65ba76;
+    --rc-cyan: #35b5cb;
+    --rc-coral: #df827a;
+    --rc-violet: #7e64c7;
+    --rc-focus: #50befb;
+    --rc-radius-control: 6px;
+    --rc-radius-surface: 8px;
+    --rc-max-width: 1482px;
+    --rc-type-section-heading: clamp(2rem, 3.25vw, 3.5rem);
+    --rc-type-label: 0.8125rem;
 
-    --aw-color-text-heading: rgb(0 0 0);
-    --aw-color-text-default: rgb(16 16 16);
-    --aw-color-text-muted: rgb(16 16 16 / 66%);
-    --aw-color-bg-page: rgb(235 242 255);
-
-    --aw-color-bg-page-dark: rgb(3 6 32);
-
-    ::selection {
-      background-color: lavender;
-    }
+    --aw-color-primary: var(--rc-blue-action);
+    --aw-color-secondary: #1f56ca;
+    --aw-color-accent: var(--rc-violet);
+    --aw-color-text-heading: var(--rc-text-strong);
+    --aw-color-text-default: var(--rc-text);
+    --aw-color-text-muted: var(--rc-text-muted);
+    --aw-color-bg-page: var(--rc-canvas);
+    --aw-color-bg-page-dark: var(--rc-canvas);
   }
 
-  .dark {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+  html {
+    min-width: 20rem;
+    background: var(--rc-canvas);
+  }
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+  body {
+    min-height: 100vh;
+    background-color: var(--rc-canvas);
+    background-image:
+      linear-gradient(rgb(1 2 8 / 98.4%), rgb(1 2 8 / 98.4%)), url('/images/release-current-grain.webp');
+    background-position: 0 0;
+    background-size:
+      auto,
+      256px 256px;
+    color: var(--rc-text);
+  }
 
-    --aw-color-text-heading: rgb(247, 248, 248);
-    --aw-color-text-default: rgb(229 236 246);
-    --aw-color-text-muted: rgb(229 236 246 / 66%);
-    --aw-color-bg-page: rgb(3 6 32);
+  ::selection {
+    background: rgb(40 100 228 / 70%);
+    color: #ffffff;
+  }
 
-    ::selection {
-      background-color: black;
-      color: snow;
-    }
+  :where(input, textarea, [contenteditable='true']) {
+    caret-color: var(--rc-focus);
+  }
+
+  :where(a) {
+    text-underline-offset: 0.24em;
   }
 </style>

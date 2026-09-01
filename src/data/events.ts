@@ -5,6 +5,8 @@
 export interface Event {
   title: string;
   titleZh: string;
+  subtitle?: string;
+  subtitleEn?: string;
   date: string;
   type: 'conference' | 'meetup' | 'hackathon' | 'workshop' | 'webinar';
   status?: 'upcoming' | 'ongoing' | 'past';
@@ -15,6 +17,34 @@ export interface Event {
 }
 
 export const events: Event[] = [
+  {
+    title: 'Focus on Efficiency, Not Compute',
+    titleZh: '不卷算力，卷效率',
+    subtitle: '基于 Volcano + HAMi-core 打造 K8s 异构 AI 加速算力底座',
+    subtitleEn: 'Building a Heterogeneous AI Acceleration Infrastructure on Kubernetes with Volcano + HAMi-core',
+    date: '2026-09-06',
+    type: 'meetup',
+    description:
+      '聚焦 Kubernetes 上的异构 AI 算力调度与虚拟化：介绍 Volcano 批任务调度器如何承接大规模 AI 训练 / 推理作业，HAMi-core（异构计算中间层）如何对 GPU / NPU / 各类加速卡进行统一抽象与切分（MIG / vGPU / 共享显存），并分享讯飞在 Astron Agent 等平台上的落地经验——如何让多种异构 AI 加速设备在一个 K8s 集群中以统一接口被调度、配额、监控，显著降低 AI 算力成本。',
+    descriptionEn:
+      'A deep dive into heterogeneous AI compute scheduling on Kubernetes: how the Volcano batch scheduler handles large-scale AI training and inference workloads, how HAMi-core (the Heterogeneous AI Computing Middleware) unifies GPU / NPU / other accelerators through abstraction and slicing (MIG / vGPU / shared VRAM), and how iFLYTEK deploys this stack on platforms like Astron Agent — letting heterogeneous AI devices be scheduled, quota-managed and monitored under a single K8s interface, materially cutting AI compute costs.',
+    location: 'Shanghai, China',
+    link: 'https://mp.weixin.qq.com/s/JQWwoF_pwsdv7Do-EUBt_g',
+  },
+  {
+    title: 'How One Person Can Sustainably Maintain an Enterprise-Grade Open-Source Agent Project',
+    titleZh: '一个人，如何持续维护一个企业级 Agent 开源项目',
+    subtitle: '从 Astron Agent 的工程复杂度，到 Loop Engineering 的自驱动闭环',
+    subtitleEn: "From Astron Agent's Engineering Complexity to a Self-Driving Loop with Loop Engineering",
+    date: '2026-09-04',
+    type: 'conference',
+    description:
+      '如何通过 Loop Engineering，将 AI Coding 引入真实研发流程，自动化解决需求拆解、代码开发、测试验证、CI 检测、部署上线等环节中的效率与质量问题，形成从需求到交付的自动化闭环。通过这一实践，Astron Agent 项目的研发流程正在从传统人工驱动，逐步演进为 AI 原生、自动化、可验证的工程体系，为复杂 AI 应用平台的持续迭代和规模化交付提供了新的实践路径。',
+    descriptionEn:
+      "Learn how Loop Engineering brings AI Coding into real-world development workflows to automate requirements decomposition, code development, test validation, CI checks, and deployment, improving efficiency and quality while creating an automated loop from requirements to delivery. Through this practice, Astron Agent's development process is evolving from traditional human-driven workflows into an AI-native, automated, and verifiable engineering system, offering a new path for the continuous iteration and scalable delivery of complex AI application platforms.",
+    location: 'IBP International Conference Center, Shanghai, China',
+    link: 'https://a2m.msup.com.cn/course/19413?aid=4949&qd=dahui&city=shanghai&_a2m_nocache=1787040965742',
+  },
   {
     title: 'Driving Real Hardware with Astron Agent',
     titleZh: '用 Astron Agent 驱动真实硬件',
@@ -31,7 +61,7 @@ export const events: Event[] = [
     title: '2nd AI Innovation Exchange Conference · Tianjin',
     titleZh: '智汇津城·破界新生——第 2 届人工智能创新发展交流会',
     date: '2026-07-11',
-    type: 'meetup',
+    type: 'conference',
     description: '技术分享：企业级 Agentic AI 智能体应用架构与知识工程实践',
     descriptionEn: 'Tech sharing: enterprise Agentic AI agent architecture and knowledge engineering practices',
     location: 'Tianjin, China',

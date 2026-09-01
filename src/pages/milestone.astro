@@ -1,0 +1,1561 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '~/layouts/PageLayout.astro';
+
+const metadata = {
+  title: '开源里程碑',
+  description:
+    'Milestones of the iFLYTEK Astron open source ecosystem across community rankings, global trends, ecosystem recognition, and industry awards.',
+};
+
+type ProjectKey = 'agent' | 'rpa' | 'skillhub' | 'ecosystem';
+
+const projectMeta: Record<ProjectKey, { labelZh: string; labelEn: string; accent: string }> = {
+  agent: { labelZh: 'Astron Agent', labelEn: 'Astron Agent', accent: 'var(--rc-blue)' },
+  rpa: { labelZh: 'Astron RPA', labelEn: 'Astron RPA', accent: 'var(--rc-cyan)' },
+  skillhub: { labelZh: 'SkillHub', labelEn: 'SkillHub', accent: 'var(--rc-violet)' },
+  ecosystem: {
+    labelZh: 'Astron 生态',
+    labelEn: 'Astron ecosystem',
+    accent: 'var(--rc-amber)',
+  },
+};
+
+const milestones: Array<{
+  dateZh: string;
+  dateEn: string;
+  datetime: string;
+  project: ProjectKey;
+  icon: string;
+  titleZh: string;
+  titleEn: string;
+  descriptionZh: string;
+  descriptionEn: string;
+  highlights?: Array<{ zh: string; en: string }>;
+  link?: { href: string; zh: string; en: string };
+}> = [
+  {
+    dateZh: '2025.09—2026.08',
+    dateEn: 'Sep 2025—Aug 2026',
+    datetime: '2025-09',
+    project: 'agent',
+    icon: 'tabler:chart-bar',
+    titleZh: '中国 Agent 活跃度第一，全球 Java 趋势 TOP 5',
+    titleEn: 'China’s No. 1 Agent by activity and a global Java TOP 5 project',
+    descriptionZh: 'Astron Agent 在国内与全球开源观测平台上保持长期领先，展现持续的项目活跃度与开发者关注度。',
+    descriptionEn:
+      'Astron Agent sustained strong visibility across Chinese and global open-source analytics platforms, reflecting lasting project activity and developer interest.',
+    highlights: [
+      {
+        zh: 'OpenLeaderboard 活跃度于 2025 年 9 月至 2026 年 1 月位列中国 Agent 第一',
+        en: 'Ranked No. 1 among Chinese agent projects by OpenLeaderboard activity from Sep 2025 to Jan 2026',
+      },
+      {
+        zh: 'OSS Insight 全球开源趋势 Java 语言榜单于 2025 年 9 月至 2026 年 8 月位居 TOP 5',
+        en: 'Placed in the OSS Insight global Java trending TOP 5 from Sep 2025 to Aug 2026',
+      },
+    ],
+  },
+  {
+    dateZh: '2026.01.29',
+    dateEn: 'Jan 29, 2026',
+    datetime: '2026-01-29',
+    project: 'ecosystem',
+    icon: 'tabler:award',
+    titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
+    titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
+    descriptionZh:
+      'Astron Agent、Astron RPA 与 AgentBridge 共同获得 Gitee 2025 年度开源项目评选“人工智能 TOP 10”荣誉。',
+    descriptionEn:
+      'Astron Agent, Astron RPA, and AgentBridge were named to the AI TOP 10 in the Gitee 2025 Annual Open Source Project Awards.',
+    link: {
+      href: 'https://blog.gitee.com/2026/01/29/gitee-annual-open-source-project-awards-top-10-projects-across-7-major-tracks-announced/',
+      zh: '查看榜单',
+      en: 'View the list',
+    },
+  },
+  {
+    dateZh: '2026.01—2026.06',
+    dateEn: 'Jan—Jun 2026',
+    datetime: '2026-01',
+    project: 'rpa',
+    icon: 'tabler:chart-arrows-vertical',
+    titleZh: '中国 RPA 第一，全球 Java 趋势 TOP 10',
+    titleEn: 'China’s No. 1 RPA and a global Java TOP 10 project',
+    descriptionZh: 'Astron RPA 在 RPA 赛道的国内活跃度与全球开源趋势中同步取得突破。',
+    descriptionEn: 'Astron RPA broke through simultaneously in domestic RPA activity and global open-source trends.',
+    highlights: [
+      {
+        zh: 'OpenLeaderboard 于 2026 年 1 月至 2 月位列中国 RPA 第一',
+        en: 'Ranked No. 1 among Chinese RPA projects on OpenLeaderboard from Jan to Feb 2026',
+      },
+      {
+        zh: 'OSS Insight 全球 Java 语言榜单于 2026 年 1 月至 6 月位居 TOP 10',
+        en: 'Placed in the OSS Insight global Java TOP 10 from Jan to Jun 2026',
+      },
+    ],
+  },
+  {
+    dateZh: '2026.02',
+    dateEn: 'Feb 2026',
+    datetime: '2026-02',
+    project: 'agent',
+    icon: 'tabler:trending-up',
+    titleZh: 'OpenRank 值位列中国 Agent 第一',
+    titleEn: 'No. 1 Chinese agent project by OpenRank',
+    descriptionZh: 'Astron Agent 于 2026 年 2 月在 OpenLeaderboard 的 OpenRank 指标中位列中国 Agent 第一。',
+    descriptionEn:
+      'Astron Agent ranked No. 1 among Chinese agent projects by the OpenRank metric on OpenLeaderboard in February 2026.',
+  },
+  {
+    dateZh: '2026.03.28',
+    dateEn: 'Mar 28, 2026',
+    datetime: '2026-03-28',
+    project: 'rpa',
+    icon: 'tabler:trophy',
+    titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
+    titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
+    descriptionZh: 'Astron RPA 凭借开源智能自动化领域的技术创新与实践，获得 OS2ATC 2026“最佳开源智能突破奖”。',
+    descriptionEn:
+      'Astron RPA received the OS2ATC 2026 Best Open Source Intelligent Breakthrough Award for its innovation and practice in open-source intelligent automation.',
+    link: { href: 'https://os2atc.cn/award.html', zh: '查看大会奖项', en: 'View conference awards' },
+  },
+  {
+    dateZh: '2026.03—2026.08',
+    dateEn: 'Mar—Aug 2026',
+    datetime: '2026-03',
+    project: 'skillhub',
+    icon: 'tabler:chart-histogram',
+    titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+    titleEn: 'OSS Insight global Java trending TOP 5',
+    descriptionZh: 'SkillHub 于 2026 年 3 月至 8 月持续位居 OSS Insight 全球开源趋势 Java 语言榜单 TOP 5。',
+    descriptionEn: 'SkillHub remained in the OSS Insight global Java trending TOP 5 from March through August 2026.',
+  },
+  {
+    dateZh: '2026.04.03',
+    dateEn: 'Apr 3, 2026',
+    datetime: '2026-04-03',
+    project: 'agent',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #1',
+    titleEn: 'GitHub Trending #1',
+    descriptionZh: 'Astron Agent 登顶 GitHub Trending，成为 #1 Repository of the Day。',
+    descriptionEn: 'Astron Agent topped GitHub Trending as the #1 Repository of the Day.',
+    link: { href: 'https://github.com/iflytek/astron-agent', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.04.04',
+    dateEn: 'Apr 4, 2026',
+    datetime: '2026-04-04',
+    project: 'rpa',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    descriptionZh: 'Astron RPA 登上 GitHub Trending，达到 #2 Repository of the Day。',
+    descriptionEn: 'Astron RPA reached #2 Repository of the Day on GitHub Trending.',
+    link: { href: 'https://github.com/iflytek/astron-rpa', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.05.20',
+    dateEn: 'May 20, 2026',
+    datetime: '2026-05-20',
+    project: 'agent',
+    icon: 'tabler:sparkles',
+    titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
+    titleEn: 'QbitAI’s 2026 China AIGC Companies & Products to Watch',
+    descriptionZh: 'Astron Agent 申获量子位“2026 中国 AIGC 最值得关注的企业（科大讯飞）& 产品”荣誉。',
+    descriptionEn:
+      'Astron Agent was recognized in QbitAI’s 2026 China AIGC Companies (iFLYTEK) & Products to Watch selection.',
+    link: {
+      href: 'https://finance.sina.com.cn/wm/2026-05-20/doc-inhyphnp1790438.shtml',
+      zh: '查看评选',
+      en: 'View the selection',
+    },
+  },
+  {
+    dateZh: '2026.05.30',
+    dateEn: 'May 30, 2026',
+    datetime: '2026-05-30',
+    project: 'skillhub',
+    icon: 'tabler:brand-github',
+    titleZh: 'GitHub Trending #2',
+    titleEn: 'GitHub Trending #2',
+    descriptionZh: 'SkillHub 登上 GitHub Trending，达到 #2 Repository of the Day。',
+    descriptionEn: 'SkillHub reached #2 Repository of the Day on GitHub Trending.',
+    link: { href: 'https://github.com/iflytek/skillhub', zh: '访问项目', en: 'Visit project' },
+  },
+  {
+    dateZh: '2026.07.14',
+    dateEn: 'Jul 14, 2026',
+    datetime: '2026-07-14',
+    project: 'skillhub',
+    icon: 'tabler:users-group',
+    titleZh: '加入 AAIF，成为 Associate Member',
+    titleEn: 'Joined AAIF as an Associate Member',
+    descriptionZh:
+      'SkillHub 以 Associate Member 身份加入 Agentic AI Foundation（AAIF），与全球社区共同推动 Agentic AI 开源生态。',
+    descriptionEn:
+      'SkillHub joined the Agentic AI Foundation (AAIF) as an Associate Member to advance the open-source agentic AI ecosystem with the global community.',
+    link: { href: '/blog/skillhub-joins-aaif', zh: '了解更多', en: 'Learn more' },
+  },
+  {
+    dateZh: '2026.07.16',
+    dateEn: 'Jul 16, 2026',
+    datetime: '2026-07-16',
+    project: 'agent',
+    icon: 'tabler:world',
+    titleZh: '进入 CNCF 云原生全景图',
+    titleEn: 'Added to the CNCF Landscape',
+    descriptionZh:
+      'Astron Agent 被收录至 CNCF Landscape 的 AI Native — Workflow Orchestration 分类，进入全球云原生生态视野。',
+    descriptionEn:
+      'Astron Agent was listed in the AI Native — Workflow Orchestration category of the CNCF Landscape, expanding its visibility across the global cloud-native ecosystem.',
+    link: { href: '/blog/astron-agent-joins-cncf-landscape', zh: '了解更多', en: 'Learn more' },
+  },
+];
+
+type GanttItem = {
+  sourceIndex: number;
+  kind: 'range' | 'point';
+  start: number;
+  end?: number;
+  titleZh: string;
+  titleEn: string;
+  dateZh: string;
+  dateEn: string;
+  barZh: string;
+  barEn: string;
+};
+
+const months = [
+  { zh: '2025.09', en: 'Sep 2025' },
+  { zh: '2025.10', en: 'Oct 2025' },
+  { zh: '2025.11', en: 'Nov 2025' },
+  { zh: '2025.12', en: 'Dec 2025' },
+  { zh: '2026.01', en: 'Jan 2026' },
+  { zh: '2026.02', en: 'Feb 2026' },
+  { zh: '2026.03', en: 'Mar 2026' },
+  { zh: '2026.04', en: 'Apr 2026' },
+  { zh: '2026.05', en: 'May 2026' },
+  { zh: '2026.06', en: 'Jun 2026' },
+  { zh: '2026.07', en: 'Jul 2026' },
+  { zh: '2026.08', en: 'Aug 2026' },
+];
+
+// A compact presentation model keeps the original horizontal map while the
+// milestone records above remain the single source of truth for descriptions
+// and official destinations.
+const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
+  {
+    project: 'agent',
+    items: [
+      {
+        sourceIndex: 0,
+        kind: 'range',
+        start: 1,
+        end: 5,
+        titleZh: 'OpenLeaderboard 活跃度 · 中国 Agent 第一',
+        titleEn: 'OpenLeaderboard activity · No. 1 Chinese agent project',
+        dateZh: '2025.09—2026.01',
+        dateEn: 'Sep 2025—Jan 2026',
+        barZh: '中国 Agent #1',
+        barEn: 'China Agent #1',
+      },
+      {
+        sourceIndex: 0,
+        kind: 'range',
+        start: 1,
+        end: 12,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+        titleEn: 'OSS Insight global Java trending TOP 5',
+        dateZh: '2025.09—2026.08',
+        dateEn: 'Sep 2025—Aug 2026',
+        barZh: '全球 Java TOP 5',
+        barEn: 'Global Java TOP 5',
+      },
+      {
+        sourceIndex: 3,
+        kind: 'point',
+        start: 6,
+        titleZh: 'OpenRank 值 · 中国 Agent 第一',
+        titleEn: 'OpenRank · No. 1 Chinese agent project',
+        dateZh: '2026.02',
+        dateEn: 'Feb 2026',
+        barZh: '#1 · 02月',
+        barEn: '#1 · Feb',
+      },
+      {
+        sourceIndex: 6,
+        kind: 'point',
+        start: 8,
+        titleZh: 'GitHub Trending #1',
+        titleEn: 'GitHub Trending #1',
+        dateZh: '2026.04.03',
+        dateEn: 'Apr 3, 2026',
+        barZh: '#1 · 04.03',
+        barEn: '#1 · Apr 3',
+      },
+      {
+        sourceIndex: 8,
+        kind: 'point',
+        start: 9,
+        titleZh: '量子位“2026 中国 AIGC 最值得关注”荣誉',
+        titleEn: 'QbitAI 2026 China AIGC recognition',
+        dateZh: '2026.05.20',
+        dateEn: 'May 20, 2026',
+        barZh: '荣誉 · 05.20',
+        barEn: 'Award · May 20',
+      },
+      {
+        sourceIndex: 11,
+        kind: 'point',
+        start: 11,
+        titleZh: '进入 CNCF 云原生全景图',
+        titleEn: 'Added to the CNCF Landscape',
+        dateZh: '2026.07.16',
+        dateEn: 'Jul 16, 2026',
+        barZh: 'CNCF · 07.16',
+        barEn: 'CNCF · Jul 16',
+      },
+    ],
+  },
+  {
+    project: 'rpa',
+    items: [
+      {
+        sourceIndex: 2,
+        kind: 'range',
+        start: 5,
+        end: 6,
+        titleZh: 'OpenLeaderboard · 中国 RPA 第一',
+        titleEn: 'OpenLeaderboard · No. 1 Chinese RPA project',
+        dateZh: '2026.01—2026.02',
+        dateEn: 'Jan—Feb 2026',
+        barZh: '中国 RPA #1',
+        barEn: 'China RPA #1',
+      },
+      {
+        sourceIndex: 2,
+        kind: 'range',
+        start: 5,
+        end: 10,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 10',
+        titleEn: 'OSS Insight global Java trending TOP 10',
+        dateZh: '2026.01—2026.06',
+        dateEn: 'Jan—Jun 2026',
+        barZh: '全球 Java TOP 10',
+        barEn: 'Global Java TOP 10',
+      },
+      {
+        sourceIndex: 4,
+        kind: 'point',
+        start: 7,
+        titleZh: 'OS2ATC 2026 最佳开源智能突破奖',
+        titleEn: 'OS2ATC 2026 Best Open Source Intelligent Breakthrough Award',
+        dateZh: '2026.03.28',
+        dateEn: 'Mar 28, 2026',
+        barZh: '奖项 · 03.28',
+        barEn: 'Award · Mar 28',
+      },
+      {
+        sourceIndex: 7,
+        kind: 'point',
+        start: 8,
+        titleZh: 'GitHub Trending #2',
+        titleEn: 'GitHub Trending #2',
+        dateZh: '2026.04.04',
+        dateEn: 'Apr 4, 2026',
+        barZh: '#2 · 04.04',
+        barEn: '#2 · Apr 4',
+      },
+    ],
+  },
+  {
+    project: 'skillhub',
+    items: [
+      {
+        sourceIndex: 5,
+        kind: 'range',
+        start: 7,
+        end: 12,
+        titleZh: 'OSS Insight 全球 Java 趋势 TOP 5',
+        titleEn: 'OSS Insight global Java trending TOP 5',
+        dateZh: '2026.03—2026.08',
+        dateEn: 'Mar—Aug 2026',
+        barZh: '全球 Java TOP 5',
+        barEn: 'Global Java TOP 5',
+      },
+      {
+        sourceIndex: 9,
+        kind: 'point',
+        start: 9,
+        titleZh: 'GitHub Trending #2',
+        titleEn: 'GitHub Trending #2',
+        dateZh: '2026.05.30',
+        dateEn: 'May 30, 2026',
+        barZh: '#2 · 05.30',
+        barEn: '#2 · May 30',
+      },
+      {
+        sourceIndex: 10,
+        kind: 'point',
+        start: 11,
+        titleZh: '加入 AAIF，成为 Associate Member',
+        titleEn: 'Joined AAIF as an Associate Member',
+        dateZh: '2026.07.14',
+        dateEn: 'Jul 14, 2026',
+        barZh: 'AAIF · 07.14',
+        barEn: 'AAIF · Jul 14',
+      },
+    ],
+  },
+  {
+    project: 'ecosystem',
+    items: [
+      {
+        sourceIndex: 1,
+        kind: 'point',
+        start: 5,
+        titleZh: 'Gitee 年度开源项目“人工智能 TOP 10”',
+        titleEn: 'Gitee Annual Open Source Projects: AI TOP 10',
+        dateZh: '2026.01.29',
+        dateEn: 'Jan 29, 2026',
+        barZh: 'Gitee · 01.29',
+        barEn: 'Gitee · Jan 29',
+      },
+    ],
+  },
+];
+
+const ganttSignalCount = ganttGroups.reduce((total, group) => total + group.items.length, 0);
+
+const stats = [
+  {
+    value: '2',
+    labelZh: '项目加入国际基金会生态',
+    labelEn: 'Projects joined international foundation ecosystems',
+  },
+  {
+    value: '3',
+    labelZh: '核心项目登上 GitHub Trending',
+    labelEn: 'Core projects reached GitHub Trending',
+  },
+  {
+    value: '#1',
+    labelZh: 'GitHub Trending 最高排名',
+    labelEn: 'Highest GitHub Trending rank',
+  },
+  {
+    value: 'TOP 5',
+    labelZh: 'OSS Insight 全球 Java 长期排名',
+    labelEn: 'Sustained global Java ranking on OSS Insight',
+  },
+];
+
+const periodZh = '2025.09 — 2026.08';
+const periodEn = 'Sep 2025 — Aug 2026';
+---
+
+<Layout metadata={metadata}>
+  <div class="milestone-page">
+    <header class="milestone-hero">
+      <div class="milestone-shell milestone-hero__inner">
+        <div class="milestone-hero__copy">
+          <h1 data-lang-zh="开源里程碑" data-lang-en="Open-source milestones">开源里程碑</h1>
+          <p
+            data-lang-zh="记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻。"
+            data-lang-en="A dated record of Astron's technical breakthroughs, community momentum, and growing recognition across the open-source ecosystem."
+          >
+            记录 Astron 开源生态从技术突破、社区活跃到全球生态认可的重要时刻。
+          </p>
+        </div>
+
+        <div class="milestone-hero__index" aria-labelledby="milestone-index-label">
+          <span
+            id="milestone-index-label"
+            class="milestone-index__label"
+            data-lang-zh="里程碑索引"
+            data-lang-en="Milestone index"
+          >
+            里程碑索引
+          </span>
+          <strong>
+            <span data-lang-zh={periodZh} data-lang-en={periodEn}>{periodZh}</span>
+          </strong>
+          <span
+            class="milestone-index__count"
+            data-lang-zh={milestones.length + ' 条记录'}
+            data-lang-en={milestones.length + ' records'}
+          >
+            {milestones.length} 条记录
+          </span>
+        </div>
+      </div>
+
+      <div class="milestone-shell">
+        <span id="milestone-proof-label" class="sr-only" data-lang-zh="里程碑证据" data-lang-en="Milestone evidence">
+          里程碑证据
+        </span>
+        <dl class="milestone-proof" aria-labelledby="milestone-proof-label">
+          {
+            stats.map((stat) => (
+              <div class="milestone-proof__cell">
+                <dt data-lang-zh={stat.labelZh} data-lang-en={stat.labelEn}>
+                  {stat.labelZh}
+                </dt>
+                <dd>{stat.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </header>
+
+    <section class="milestone-section milestone-timeline" aria-labelledby="milestone-timeline-title">
+      <div class="milestone-shell">
+        <header class="milestone-section__heading">
+          <div>
+            <h2 id="milestone-timeline-title" data-lang-zh="横向成就时间轴" data-lang-en="Achievement timeline">
+              横向成就时间轴
+            </h2>
+            <p
+              data-lang-zh="沿统一月份刻度查看 Astron 各项目的持续表现与单点成就。"
+              data-lang-en="Compare Astron projects across one shared month scale, from sustained signals to point achievements."
+            >
+              沿统一月份刻度查看 Astron 各项目的持续表现与单点成就。
+            </p>
+          </div>
+          <span
+            class="milestone-section__count"
+            data-lang-zh={ganttSignalCount + ' 个信号'}
+            data-lang-en={ganttSignalCount + ' signals'}
+          >
+            {ganttSignalCount} 个信号
+          </span>
+        </header>
+
+        <div class="milestone-timeline__legend" aria-label="图例 / Legend">
+          <span>
+            <span class="milestone-legend__range" aria-hidden="true"></span>
+            <span data-lang-zh="持续时间段" data-lang-en="Sustained period">持续时间段</span>
+          </span>
+          <span>
+            <span class="milestone-legend__point" aria-hidden="true"></span>
+            <span data-lang-zh="单点里程碑" data-lang-en="Point milestone">单点里程碑</span>
+          </span>
+        </div>
+
+        <p id="milestone-scroll-note" class="milestone-timeline__scroll-note">
+          <span data-lang-zh="横向滑动查看完整时间轴" data-lang-en="Swipe horizontally to view the full timeline">
+            横向滑动查看完整时间轴
+          </span>
+          <Icon name="tabler:arrows-horizontal" aria-hidden="true" />
+        </p>
+
+        <div class="milestone-gantt-frame">
+          <div
+            class="milestone-gantt-scroll"
+            tabindex="0"
+            role="region"
+            aria-labelledby="milestone-timeline-title"
+            aria-describedby="milestone-scroll-note milestone-gantt-description"
+          >
+            <div
+              class="milestone-gantt"
+              role="table"
+              aria-label="Astron open source milestone timeline"
+              aria-describedby="milestone-gantt-description"
+            >
+              <span
+                id="milestone-gantt-description"
+                class="sr-only"
+                data-lang-zh="时间轴按月份排列，左侧显示项目与成就，右侧显示持续时间段或单点标记；部分记录会拆分为多个信号。"
+                data-lang-en="The timeline is arranged by month. Projects and achievements are listed on the left, with sustained periods or point markers on the right; some records expand into multiple signals."
+              >
+                时间轴按月份排列，左侧显示项目与成就，右侧显示持续时间段或单点标记；部分记录会拆分为多个信号。
+              </span>
+
+              <div class="milestone-gantt__row milestone-gantt__header" role="row">
+                <div class="milestone-gantt__label milestone-gantt__label--header" role="columnheader">
+                  <span data-lang-zh="项目 / 成就" data-lang-en="Project / Achievement">项目 / 成就</span>
+                </div>
+                <div class="milestone-gantt__track milestone-gantt__track--months">
+                  {
+                    months.map((month, index) => (
+                      <div class:list={['milestone-gantt__month', index === 4 && 'is-current']} role="columnheader">
+                        <span data-lang-zh={month.zh} data-lang-en={month.en}>
+                          {month.zh}
+                        </span>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+
+              {
+                ganttGroups.map((group) => {
+                  const project = projectMeta[group.project];
+                  const groupId = `milestone-gantt-${group.project}`;
+
+                  return (
+                    <div class="milestone-gantt__group" role="rowgroup">
+                      <div
+                        class="milestone-gantt__row milestone-gantt__group-row"
+                        role="row"
+                        style={'--milestone-accent:' + project.accent}
+                      >
+                        <div class="milestone-gantt__label milestone-gantt__group-label" role="rowheader">
+                          <span
+                            class="milestone-gantt__project-dot"
+                            style={'--milestone-accent:' + project.accent}
+                            aria-hidden="true"
+                          />
+                          <span id={groupId} data-lang-zh={project.labelZh} data-lang-en={project.labelEn}>
+                            {project.labelZh}
+                          </span>
+                          <span
+                            class="milestone-gantt__group-count"
+                            data-lang-zh={`${group.items.length} 项`}
+                            data-lang-en={`${group.items.length} signals`}
+                          >
+                            {group.items.length} 项
+                          </span>
+                        </div>
+                        <div class="milestone-gantt__track milestone-gantt__track--group" aria-hidden="true">
+                          <div class="milestone-gantt__grid">
+                            {months.map((_, index) => (
+                              <span class:list={['milestone-gantt__grid-line', index === 4 && 'is-current']} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {group.items.map((item, itemIndex) => {
+                        const source = milestones[item.sourceIndex];
+                        const gridEnd = (item.end ?? item.start) + 1;
+                        const titleId = `milestone-gantt-title-${group.project}-${itemIndex}`;
+                        const descriptionId = `milestone-gantt-description-${group.project}-${itemIndex}`;
+                        const hasExternalLink = source.link?.href.startsWith('http') ?? false;
+
+                        return (
+                          <div class="milestone-gantt__row milestone-gantt__item" role="row">
+                            <div class="milestone-gantt__label milestone-gantt__item-label" role="rowheader">
+                              <span
+                                class="milestone-gantt__icon"
+                                style={'--milestone-accent:' + project.accent}
+                                aria-hidden="true"
+                              >
+                                <Icon name={source.icon} />
+                              </span>
+                              <div class="milestone-gantt__item-copy">
+                                <span
+                                  id={titleId}
+                                  class="milestone-gantt__item-title"
+                                  data-lang-title-zh={item.titleZh}
+                                  data-lang-title-en={item.titleEn}
+                                  title={item.titleZh}
+                                >
+                                  <span data-lang-zh={item.titleZh} data-lang-en={item.titleEn}>
+                                    {item.titleZh}
+                                  </span>
+                                </span>
+                                <span class="milestone-gantt__item-meta">
+                                  <time datetime={source.datetime}>
+                                    <span data-lang-zh={item.dateZh} data-lang-en={item.dateEn}>
+                                      {item.dateZh}
+                                    </span>
+                                  </time>
+                                  {source.link ? (
+                                    <a
+                                      class="milestone-gantt__source-link"
+                                      href={source.link.href}
+                                      target={hasExternalLink ? '_blank' : undefined}
+                                      rel={hasExternalLink ? 'noopener noreferrer' : undefined}
+                                    >
+                                      <Icon name="tabler:external-link" aria-hidden="true" />
+                                      <span
+                                        class="sr-only"
+                                        data-lang-zh={`打开${item.titleZh}：${source.link.zh}${hasExternalLink ? '（新标签页）' : ''}`}
+                                        data-lang-en={`Open ${item.titleEn}: ${source.link.en}${hasExternalLink ? ' (new tab)' : ''}`}
+                                      >
+                                        打开{item.titleZh}：{source.link.zh}
+                                        {hasExternalLink ? '（新标签页）' : ''}
+                                      </span>
+                                    </a>
+                                  ) : null}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div
+                              class="milestone-gantt__track milestone-gantt__track--item"
+                              role="cell"
+                              aria-labelledby={titleId}
+                              aria-describedby={descriptionId}
+                              data-lang-title-zh={source.descriptionZh}
+                              data-lang-title-en={source.descriptionEn}
+                              title={source.descriptionZh}
+                            >
+                              <div class="milestone-gantt__grid" aria-hidden="true">
+                                {months.map((_, index) => (
+                                  <span class:list={['milestone-gantt__grid-line', index === 4 && 'is-current']} />
+                                ))}
+                              </div>
+                              {item.kind === 'range' ? (
+                                <div
+                                  class="milestone-gantt__range"
+                                  style={`--milestone-accent:${project.accent};grid-column:${item.start} / ${gridEnd}`}
+                                >
+                                  <span data-lang-zh={item.barZh} data-lang-en={item.barEn}>
+                                    {item.barZh}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div class="milestone-gantt__point-wrap" style={`grid-column:${item.start}`}>
+                                  <span
+                                    class="milestone-gantt__point"
+                                    style={'--milestone-accent:' + project.accent}
+                                    aria-hidden="true"
+                                  />
+                                  <span class="milestone-gantt__point-label">
+                                    <span data-lang-zh={item.barZh} data-lang-en={item.barEn}>
+                                      {item.barZh}
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                              <span
+                                id={descriptionId}
+                                class="sr-only"
+                                data-lang-zh={source.descriptionZh}
+                                data-lang-en={source.descriptionEn}
+                              >
+                                {source.descriptionZh}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="milestone-next" aria-labelledby="milestone-next-title">
+      <div class="milestone-shell milestone-next__inner">
+        <div>
+          <h2 id="milestone-next-title" data-lang-zh="继续探索 Astron" data-lang-en="Keep exploring Astron">
+            继续探索 Astron
+          </h2>
+          <p
+            data-lang-zh="从项目全景图与最新动态继续了解 Astron 开源生态。"
+            data-lang-en="Continue with the project landscape and the latest Astron updates."
+          >
+            从项目全景图与最新动态继续了解 Astron 开源生态。
+          </p>
+        </div>
+        <nav class="milestone-next__nav" aria-label="继续探索 / Continue exploring">
+          <a href="/#project-landscape">
+            <span data-lang-zh="探索项目全景" data-lang-en="Explore project landscape">探索项目全景</span>
+            <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+          </a>
+          <a href="/blog">
+            <span data-lang-zh="阅读最新动态" data-lang-en="Read latest updates">阅读最新动态</span>
+            <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+          </a>
+        </nav>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  (() => {
+    const syncMilestoneTitles = () => {
+      const language = document.documentElement.lang === 'en' ? 'en' : 'zh';
+      document.querySelectorAll('[data-lang-title-zh]').forEach((element) => {
+        const title = element.getAttribute(`data-lang-title-${language}`);
+        if (title) element.setAttribute('title', title);
+      });
+    };
+
+    const initMilestoneGanttKeyboard = () => {
+      document.querySelectorAll('.milestone-gantt-scroll').forEach((node) => {
+        if (!(node instanceof HTMLElement) || node.dataset.keyboardScroll === 'true') return;
+        node.dataset.keyboardScroll = 'true';
+        node.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+          event.preventDefault();
+          const distance = Math.max(160, node.clientWidth * 0.72);
+          const left =
+            event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? node.scrollWidth - node.clientWidth
+                : node.scrollLeft + (event.key === 'ArrowRight' ? distance : -distance);
+
+          node.scrollTo({
+            left,
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          });
+        });
+      });
+    };
+
+    syncMilestoneTitles();
+    initMilestoneGanttKeyboard();
+    document.addEventListener('languagechange', syncMilestoneTitles);
+    document.addEventListener('astro:after-swap', () => {
+      syncMilestoneTitles();
+      initMilestoneGanttKeyboard();
+      window.requestAnimationFrame(syncMilestoneTitles);
+    });
+  })();
+</script>
+
+<style>
+  .milestone-page {
+    min-height: 70vh;
+    overflow: clip;
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .milestone-shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .milestone-hero {
+    padding: clamp(3.25rem, 5vw, 5rem) 0 0;
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .milestone-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(15rem, 0.7fr);
+    gap: clamp(2.5rem, 7vw, 8rem);
+    align-items: end;
+  }
+
+  .milestone-hero__copy {
+    max-width: 56rem;
+  }
+
+  .milestone-hero h1 {
+    max-width: 52rem;
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .milestone-hero__copy > p {
+    max-width: 44rem;
+    margin: 1.5rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.72;
+    text-wrap: pretty;
+  }
+
+  .milestone-hero__index {
+    display: grid;
+    gap: 0.65rem;
+    align-content: end;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-index__label,
+  .milestone-index__count {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .milestone-hero__index strong {
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 550;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .milestone-index__count {
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .milestone-proof {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: clamp(2.5rem, 4vw, 4rem) 0 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-proof__cell {
+    display: flex;
+    min-width: 0;
+    min-height: 8.5rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1.5rem clamp(1rem, 2vw, 2rem);
+  }
+
+  .milestone-proof__cell + .milestone-proof__cell {
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .milestone-proof dt {
+    max-width: 19ch;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .milestone-proof dd {
+    order: -1;
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(1.72rem, 2.65vw, 2.35rem);
+    font-variant-numeric: tabular-nums;
+    font-weight: 550;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+
+  .milestone-section {
+    padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  }
+
+  .milestone-section__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 6rem);
+    align-items: end;
+  }
+
+  .milestone-section__heading h2,
+  .milestone-next h2 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .milestone-section__heading p {
+    max-width: 40rem;
+    margin: 0.15rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+    text-wrap: pretty;
+  }
+
+  .milestone-section__count {
+    justify-self: end;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .milestone-timeline__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    align-items: center;
+    margin-top: clamp(2rem, 3vw, 2.75rem);
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .milestone-timeline__legend > span {
+    display: inline-flex;
+    gap: 0.65rem;
+    align-items: center;
+  }
+
+  .milestone-legend__range {
+    width: 2.5rem;
+    height: 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--rc-blue) 62%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--rc-blue) 20%, var(--rc-surface-raised));
+  }
+
+  .milestone-legend__point {
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: rotate(45deg);
+    border: 2px solid var(--rc-cyan);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+  }
+
+  .milestone-timeline__scroll-note {
+    display: none;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0.9rem 0 0;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+
+  .milestone-timeline__scroll-note svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--rc-blue);
+  }
+
+  .milestone-gantt-frame {
+    margin-top: 0.85rem;
+    overflow: hidden;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: 11px;
+    background: var(--rc-band);
+    box-shadow: 0 2rem 4rem -2.5rem rgb(31 39 57 / 44%);
+  }
+
+  .milestone-gantt-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-color: var(--rc-rule-strong) var(--rc-surface);
+    scrollbar-width: thin;
+  }
+
+  .milestone-gantt-scroll:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -3px;
+  }
+
+  .milestone-gantt {
+    --gantt-label-width: clamp(16rem, 20vw, 18rem);
+    --gantt-track-width: minmax(60rem, 1fr);
+    --milestone-bar-size: var(--rc-type-label);
+    --milestone-micro-size: 0.6875rem;
+    min-width: 76rem;
+    color: var(--rc-text);
+  }
+
+  .milestone-gantt__row {
+    display: grid;
+    grid-template-columns: var(--gantt-label-width) var(--gantt-track-width);
+  }
+
+  .milestone-gantt__header {
+    min-height: 4.25rem;
+    border-bottom: 1px solid var(--rc-rule-strong);
+    background: var(--rc-surface);
+  }
+
+  .milestone-gantt__label {
+    min-width: 0;
+    border-right: 1px solid var(--rc-rule-strong);
+  }
+
+  .milestone-gantt__label--header {
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .milestone-gantt__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  .milestone-gantt__track--months {
+    min-height: 4.25rem;
+  }
+
+  .milestone-gantt__month {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.35rem;
+    border-left: 1px solid var(--rc-rule);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  .milestone-gantt__month.is-current {
+    background: color-mix(in srgb, var(--rc-blue) 7%, transparent);
+    color: var(--rc-text);
+  }
+
+  .milestone-gantt__group-row {
+    min-height: 3.35rem;
+    border-bottom: 1px solid var(--rc-rule);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 6%, var(--rc-band));
+  }
+
+  .milestone-gantt__group-label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0 1.25rem;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-label);
+    font-weight: 650;
+  }
+
+  .milestone-gantt__project-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--milestone-accent, var(--rc-blue));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 12%, transparent);
+  }
+
+  .milestone-gantt__group-label > span:nth-child(2) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .milestone-gantt__group-count {
+    margin-left: auto;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--milestone-micro-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__track--group,
+  .milestone-gantt__track--item {
+    position: relative;
+  }
+
+  .milestone-gantt__grid {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .milestone-gantt__grid-line {
+    border-left: 1px solid color-mix(in srgb, var(--rc-rule) 82%, transparent);
+  }
+
+  .milestone-gantt__grid-line.is-current {
+    background: color-mix(in srgb, var(--rc-blue) 4%, transparent);
+  }
+
+  .milestone-gantt__item {
+    min-height: 5.5rem;
+    border-bottom: 1px solid var(--rc-rule);
+    background: color-mix(in srgb, var(--rc-surface) 48%, transparent);
+  }
+
+  .milestone-gantt__item:last-child {
+    border-bottom: 0;
+  }
+
+  .milestone-gantt__item-label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .milestone-gantt__icon {
+    display: inline-flex;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 58%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    color: var(--milestone-accent, var(--rc-blue));
+  }
+
+  .milestone-gantt__icon svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .milestone-gantt__item-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  .milestone-gantt__item-title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--rc-text-strong);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__item-meta {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--milestone-micro-size);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+  }
+
+  .milestone-gantt__source-link {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    margin: -0.75rem -0.65rem -0.75rem -0.35rem;
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-blue);
+    text-decoration: none;
+  }
+
+  .milestone-gantt__source-link:hover {
+    background: var(--rc-surface-focus);
+    color: var(--rc-focus);
+  }
+
+  .milestone-gantt__source-link:focus-visible,
+  .milestone-next__nav a:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 2px;
+  }
+
+  .milestone-gantt__source-link svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .milestone-gantt__track--item {
+    align-items: center;
+  }
+
+  .milestone-gantt__range {
+    z-index: 1;
+    display: flex;
+    min-width: 0;
+    height: 2.25rem;
+    align-items: center;
+    margin: 0 0.45rem;
+    padding: 0 0.85rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 52%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 18%, var(--rc-surface-raised));
+    color: var(--rc-text-strong);
+    font-size: var(--milestone-bar-size);
+    font-weight: 650;
+    line-height: 1;
+  }
+
+  .milestone-gantt__range > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__point-wrap {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    height: 100%;
+  }
+
+  .milestone-gantt__point {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 3px solid var(--milestone-accent, var(--rc-blue));
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 10%, transparent);
+  }
+
+  .milestone-gantt__point-label {
+    position: absolute;
+    top: 50%;
+    left: 1.25rem;
+    display: inline-flex;
+    width: max-content;
+    min-width: 5rem;
+    min-height: 2rem;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 52%, var(--rc-rule-strong));
+    border-radius: var(--rc-radius-control);
+    background: color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 10%, var(--rc-surface-raised));
+    color: var(--rc-text-strong);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__point-label > span {
+    white-space: nowrap;
+  }
+
+  .milestone-gantt__track--item:focus-within .milestone-gantt__point,
+  .milestone-gantt__track--item:hover .milestone-gantt__point {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--milestone-accent, var(--rc-blue)) 18%, transparent);
+  }
+
+  .milestone-next__nav svg {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .milestone-next {
+    padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(5rem, 9vw, 8rem);
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .milestone-next__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .milestone-next h2 {
+    max-width: 44rem;
+  }
+
+  .milestone-next p {
+    max-width: 38rem;
+    margin: 1.15rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  .milestone-next__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: flex-end;
+  }
+
+  .milestone-next__nav a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-width: 12rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-strong);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .milestone-next__nav a:hover {
+    border-color: var(--rc-blue);
+    background: var(--rc-surface-focus);
+    color: var(--rc-focus);
+  }
+
+  @media (max-width: 56rem) {
+    .milestone-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+    }
+
+    .milestone-hero__index {
+      max-width: 26rem;
+    }
+
+    .milestone-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+    }
+
+    .milestone-next__inner {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .milestone-next__nav {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .milestone-shell {
+      width: min(calc(100% - 1.5rem), 42rem);
+    }
+
+    .milestone-hero {
+      padding-top: 3.5rem;
+    }
+
+    .milestone-hero__inner {
+      gap: 2.5rem;
+    }
+
+    .milestone-hero h1 {
+      font-size: var(--rc-type-section-heading);
+    }
+
+    .milestone-hero__copy > p {
+      margin-top: 1.15rem;
+      font-size: 0.9375rem;
+    }
+
+    .milestone-proof {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 3rem;
+    }
+
+    .milestone-proof__cell {
+      min-height: 7.5rem;
+      padding: 1.25rem 0.9rem;
+    }
+
+    .milestone-proof__cell:nth-child(odd) + .milestone-proof__cell {
+      border-left: 1px solid var(--rc-rule);
+    }
+
+    .milestone-proof__cell:nth-child(3) {
+      border-top: 1px solid var(--rc-rule);
+    }
+
+    .milestone-section {
+      padding: 4rem 0 5rem;
+    }
+
+    .milestone-timeline__scroll-note {
+      display: inline-flex;
+    }
+
+    .milestone-section__heading {
+      display: block;
+    }
+
+    .milestone-section__heading p {
+      margin-top: 1rem;
+    }
+
+    .milestone-section__count {
+      display: block;
+      margin-top: 1.25rem;
+    }
+
+    .milestone-gantt__item-title {
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    .milestone-next {
+      padding: 3.5rem 0 5rem;
+    }
+
+    .milestone-next__nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .milestone-next__nav a {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .milestone-proof {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .milestone-proof__cell + .milestone-proof__cell,
+    .milestone-proof__cell:nth-child(3) {
+      border-top: 1px solid var(--rc-rule);
+      border-left: 0;
+    }
+
+    .milestone-proof__cell:nth-child(odd) + .milestone-proof__cell {
+      border-left: 0;
+    }
+
+    .milestone-proof__cell {
+      min-height: 6.5rem;
+    }
+  }
+</style>

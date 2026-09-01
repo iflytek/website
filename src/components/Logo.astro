@@ -1,11 +1,18 @@
 ---
 import { SITE } from 'astrowind:config';
-import logoSvg from '~/assets/favicons/favicon.svg';
+import logoSvg from '~/assets/images/iflytek-logo.svg';
 ---
 
 <span
-  class="self-center flex items-center gap-2 ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white"
+  class="site-logo self-center flex items-center gap-2.5 whitespace-nowrap text-[1.35rem] font-semibold tracking-[-0.02em] text-[var(--rc-text)]"
 >
-  <img src={logoSvg.src} alt="" class="h-7 w-7 md:h-6 md:w-6 rounded" aria-hidden="true" />
-  <span data-lang-zh="讯飞开源" data-lang-en="OpenSource">{SITE?.name}</span>
+  <img src={logoSvg.src} alt="" class="site-logo__mark h-8 w-auto object-contain" aria-hidden="true" />
+  <span data-lang-zh="讯飞开源" data-lang-en="iFLYTEK Open Source">{SITE?.name}</span>
 </span>
+
+<style>
+  .site-logo__mark {
+    filter: brightness(0) invert(1);
+    opacity: 0.92;
+  }
+</style>

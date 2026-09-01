@@ -1,4 +1,5 @@
 import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { blogSections } from './data/blog-sections';
 
 // Inline SVG icons for brands not available in tabler icon set
 const HUGGINGFACE_ICON =
@@ -25,9 +26,9 @@ export const headerData = {
           href: getPermalink('/projects'),
         },
         {
-          text: '全景图',
-          textEn: 'Landscape',
-          href: getPermalink('/landscape'),
+          text: '里程碑',
+          textEn: 'Milestone',
+          href: getPermalink('/milestone'),
         },
       ],
     },
@@ -40,23 +41,11 @@ export const headerData = {
       text: '博客',
       textEn: 'Blog',
       href: getBlogPermalink(),
-      links: [
-        {
-          text: '全部文章',
-          textEn: 'All Posts',
-          href: getBlogPermalink(),
-        },
-        {
-          text: '技术博客',
-          textEn: 'Tech Blog',
-          href: getPermalink('/category/tech'),
-        },
-        {
-          text: '最新新闻',
-          textEn: 'Latest News',
-          href: getPermalink('/category/news'),
-        },
-      ],
+      links: blogSections.map((section) => ({
+        text: section.titleZh,
+        textEn: section.titleEn,
+        href: section.key === 'all' ? getBlogPermalink() : getPermalink(section.href),
+      })),
     },
     {
       text: '贡献',
@@ -84,6 +73,7 @@ export const footerData = {
         { text: '活动', textEn: 'Events', href: getPermalink('/events') },
         { text: '贡献', textEn: 'Contribute', href: getPermalink('/contribute') },
         { text: '用户', textEn: 'Adopters', href: getPermalink('/adopters') },
+        { text: '品牌资源', textEn: 'Brand Kit', href: getPermalink('/brand') },
       ],
     },
     {
@@ -92,7 +82,7 @@ export const footerData = {
       links: [
         { text: 'Email', href: 'mailto:opensource@iflytek.com' },
         { text: 'GitHub', href: 'https://github.com/iflytek' },
-        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
+        { text: 'Discord', href: 'https://discord.gg/UgnuzaJKwc' },
       ],
     },
     {
@@ -113,7 +103,7 @@ export const footerData = {
       links: [
         { text: 'LinkedIn', href: 'https://www.linkedin.com/in/astron-ai' },
         { text: 'WeChat', href: '#' },
-        { text: 'Discord', href: 'https://discord.com/invite/vXzgts4fK' },
+        { text: 'Discord', href: 'https://discord.gg/UgnuzaJKwc' },
       ],
     },
   ],
@@ -125,7 +115,7 @@ export const footerData = {
   socialLinks: [
     { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/in/astron-ai' },
     { ariaLabel: 'WeChat', icon: 'tabler:brand-wechat', href: '#' },
-    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.com/invite/vXzgts4fK' },
+    { ariaLabel: 'Discord', icon: 'tabler:brand-discord', href: 'https://discord.gg/UgnuzaJKwc' },
     {
       ariaLabel: 'Hugging Face',
       iconHtml: HUGGINGFACE_ICON,

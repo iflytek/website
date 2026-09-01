@@ -1,150 +1,75 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
+import ReleaseCurrent from '~/components/home/ReleaseCurrent.astro';
+import ProjectLandscape from '~/components/home/ProjectLandscape.astro';
+import LatestPosts from '~/components/home/LatestPosts.astro';
+import AdopterLogoLoop from '~/components/home/AdopterLogoLoop.astro';
+import CommunityCTA from '~/components/home/CommunityCTA.astro';
 
-import Hero from '~/components/widgets/Hero.astro';
-import Features from '~/components/widgets/Features.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
-
+import { getCollection } from 'astro:content';
+import { fetchAllPosts } from '~/utils/blog';
 import { getProjectsWithStats } from '~/utils/project-stats';
 
 const metadata = {
-  title: '科大讯飞开源 — AI Agent, Developer Tools & More',
+  title: 'Astron 企业级 Agentic AI 开源生态 — 讯飞开源',
+  description: '探索以 Astron 为核心的企业级 Agentic AI 开源生态，发现真实项目、技术内容与社区贡献路径。',
   ignoreTitleTemplate: true,
 };
 
-const projects = await getProjectsWithStats();
-const totalStars = projects.reduce((sum, p) => sum + (p.data.stars || 0), 0);
-const totalForks = projects.reduce((sum, p) => sum + (p.data.forks || 0), 0);
-const starDisplay = totalStars >= 1000 ? (totalStars / 1000).toFixed(1) + 'K' : totalStars.toString();
+const PROJECT_PREVIEW_ORDER = ['iflytek/astron-agent', 'iflytek/astron-rpa', 'iflytek/skillhub'] as const;
+
+const [projects, allPosts, adopters] = await Promise.all([
+  getProjectsWithStats(),
+  fetchAllPosts(),
+  getCollection('adopter'),
+]);
+const latestPosts = allPosts.filter((post) => post.lang === 'zh').slice(0, 3);
+const latestEnglishPosts = latestPosts.map((post) => (post.translation?.lang === 'en' ? post.translation : post));
+const orderedAdopters = [...adopters].sort((a, b) => a.id.localeCompare(b.id));
+
+const projectByRepo = new Map(projects.map((project) => [project.data.repo, project]));
+const orderedRepos = new Set<string>(PROJECT_PREVIEW_ORDER);
+const explicitlyOrderedProjects = PROJECT_PREVIEW_ORDER.flatMap((repo) => {
+  const project = projectByRepo.get(repo);
+  return project ? [project] : [];
+});
+const fallbackProjects = projects.filter((project) => !orderedRepos.has(project.data.repo));
+const releaseProjects = [...explicitlyOrderedProjects, ...fallbackProjects].slice(0, 3).map((project) => ({
+  slug: project.id.replace(/\.(yaml|yml)$/i, ''),
+  name: project.data.name,
+  nameEn: project.data.nameEn || project.data.name,
+  category: project.data.category,
+}));
+
+const totalStars = projects.reduce((sum, project) => sum + (project.data.stars || 0), 0);
+const formatCompact = (value: number) => {
+  if (value < 1000) return value.toLocaleString('en-US');
+  const compact = (value / 1000).toFixed(1).replace(/\.0$/, '');
+  return `${compact}K`;
+};
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero Section -->
-  <Hero
-    actions={[
-      {
-        variant: 'primary',
-        text: '<span data-i18n="home.exploreBtn">探索项目</span>',
-        href: '/projects',
-        icon: 'tabler:code',
-      },
-      {
-        text: '<span data-i18n="home.contributeBtn">参与贡献</span>',
-        href: '/contribute',
-      },
-    ]}
-  >
-    <Fragment slot="title">
-      <span class="text-primary dark:text-primary-400" data-lang-zh="讯飞" data-lang-en="iFLYTEK">iFLYTEK</span>
-      <span data-lang-zh="开源" data-lang-en="Open Source"> Open Source</span>
-    </Fragment>
-
-    <Fragment slot="subtitle">
-      <span data-i18n="home.subtitle"
-        >探索科大讯飞的开源世界 — 涵盖 AI 大模型、自然语言处理、语音识别等前沿技术，共建智能未来。</span
-      >
-    </Fragment>
-  </Hero>
-
-  <!-- Stats Section -->
-  <Stats
-    tagline='<span data-i18n="home.statsTagline">开源数据</span>'
-    title='<span data-i18n="home.statsTitle">科大讯飞开源生态</span>'
-    stats={[
-      {
-        title: '<span data-i18n="home.statProjects">开源项目</span>',
-        amount: projects.length.toString(),
-        icon: 'tabler:code',
-      },
-      {
-        title: 'GitHub Stars',
-        amount: starDisplay,
-        icon: 'tabler:star',
-      },
-      {
-        title: 'Forks',
-        amount: totalForks >= 1000 ? (totalForks / 1000).toFixed(1) + 'K' : totalForks.toString(),
-        icon: 'tabler:git-fork',
-      },
-      {
-        title: '<span data-i18n="home.statLicense">开源协议</span>',
-        amount: 'Apache 2.0',
-        icon: 'tabler:license',
-      },
-    ]}
-  />
-
-  <!-- Featured Areas -->
-  <Features
-    id="explore"
-    tagline='<span data-i18n="home.featuresTagline">探索</span>'
-    title='<span data-i18n="home.featuresTitle">发现开源的力量</span>'
-    subtitle='<span data-i18n="home.featuresSubtitle">从 AI 大模型到开发者工具，科大讯飞开源生态覆盖多个技术领域</span>'
-    items={[
-      {
-        title: '<span data-i18n="home.featProjectsTitle">开源项目</span>',
-        description:
-          '<span data-i18n="home.featProjectsDesc">涵盖 AI、NLP、语音识别、开发者工具等多个领域的开源项目，提供完整的文档和示例。</span>',
-        icon: 'tabler:box',
-      },
-      {
-        title: '<span data-i18n="home.featLandscapeTitle">全景图</span>',
-        description:
-          '<span data-i18n="home.featLandscapeDesc">CNCF 风格的开源生态全景图，一目了然地查看所有科大讯飞开源项目及分类。</span>',
-        icon: 'tabler:map',
-      },
-      {
-        title: '<span data-i18n="home.featBlogTitle">技术博客</span>',
-        description:
-          '<span data-i18n="home.featBlogDesc">深入的技术文章、教程和架构分享，帮助你更好地理解和使用开源项目。</span>',
-        icon: 'tabler:article',
-      },
-      {
-        title: '<span data-i18n="home.featEventsTitle">社区活动</span>',
-        description:
-          '<span data-i18n="home.featEventsDesc">Meetup、Hackathon、Conference 等丰富多彩的社区活动，与开发者面对面交流。</span>',
-        icon: 'tabler:calendar-event',
-      },
-      {
-        title: '<span data-i18n="home.featContributeTitle">参与贡献</span>',
-        description:
-          '<span data-i18n="home.featContributeDesc">无论你是新手还是资深开发者，都可以找到适合自己的贡献方式。</span>',
-        icon: 'tabler:git-pull-request',
-      },
-      {
-        title: '<span data-i18n="home.featLicenseTitle">开源许可</span>',
-        description:
-          '<span data-i18n="home.featLicenseDesc">所有项目均采用宽松的开源协议，鼓励商业使用和技术创新。</span>',
-        icon: 'tabler:license',
-      },
-    ]}
-  />
-
-  <!-- Latest Blog Posts -->
-  <BlogLatestPosts
-    title='<span data-i18n="home.blogTitle">技术博客与新闻</span>'
-    linkText='<span data-i18n="blog.viewAllPosts">View All Posts</span>'
-  />
-
-  <!-- Call to Action -->
-  <CallToAction
-    title='<span data-i18n="home.ctaTitle">加入科大讯飞开源社区</span>'
-    subtitle='<span data-i18n="home.ctaSubtitle">与我们一起构建更好的 AI 开源生态</span>'
-    actions={[
-      {
-        variant: 'primary',
-        text: '<span data-i18n="home.ctaGithub">在 GitHub 上关注我们</span>',
-        href: 'https://github.com/iflytek',
-        target: '_blank',
-        icon: 'tabler:brand-github',
-      },
-      {
-        text: '<span data-i18n="home.ctaDiscord">加入 Discord</span>',
-        href: 'https://discord.com/invite/vXzgts4fK',
-        icon: 'tabler:brand-discord',
-      },
-    ]}
-  />
+  <div class="release-home">
+    <ReleaseCurrent projects={releaseProjects} projectCount={projects.length} starDisplay={formatCompact(totalStars)} />
+    <ProjectLandscape />
+    <LatestPosts posts={latestPosts} englishPosts={latestEnglishPosts} />
+    <AdopterLogoLoop adopters={orderedAdopters} />
+    <CommunityCTA />
+  </div>
 </Layout>
+
+<style>
+  .release-home {
+    min-height: 100vh;
+    overflow: clip;
+    background: #010208;
+    color: #e9e9e9;
+    color-scheme: dark;
+  }
+
+  :global(.release-home ::selection) {
+    background: #2864e4;
+    color: #fff;
+  }
+</style>

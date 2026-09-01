@@ -61,11 +61,27 @@ jobs:
         with:
           name: dist-pr-${{ github.event.pull_request.number }}
           path: dist/
+      - name: Resolve generated site root
+        id: site-root
+        shell: bash
+        run: |
+          if [[ -d dist/client ]]; then
+            echo "path=dist/client" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=dist" >> "$GITHUB_OUTPUT"
+          fi
       - name: Check links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --verbose --no-progress 'dist/**/*.html'
-        continue-on-error: true
+          # The Vercel adapter uses dist/client/ when server routes exist,
+          # while a fully static build writes HTML directly under dist/.
+          # --root-dir tells lychee how to resolve root-relative links
+          # (/_astro/..., /sitemap-index.xml, /blog, etc.) in those files.
+          # .lychee.toml holds exclude / retry / accept configuration.
+          args: >-
+            --verbose --no-progress --config .lychee.toml
+            --root-dir '${{ steps.site-root.outputs.path }}'
+            '${{ steps.site-root.outputs.path }}/**/*.html'
 
   # ============ License Check ============
   license-check:

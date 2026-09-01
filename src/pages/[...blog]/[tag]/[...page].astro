@@ -1,11 +1,10 @@
 ---
 import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
-import { blogTagRobots, getStaticPathsBlogTag } from '~/utils/blog';
 
 import Layout from '~/layouts/PageLayout.astro';
-import BlogList from '~/components/blog/List.astro';
-import Headline from '~/components/blog/Headline.astro';
-import Pagination from '~/components/blog/Pagination.astro';
+import BlogArchive from '~/components/blog/BlogArchive.astro';
+
+import { blogTagRobots, getStaticPathsBlogTag } from '~/utils/blog';
 
 export const prerender = true;
 
@@ -16,12 +15,13 @@ export const getStaticPaths = (async ({ paginate }) => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { page, tag } = Astro.props as Props;
-
 const currentPage = page.currentPage ?? 1;
+const lastPage = page.lastPage ?? 1;
+const total = page.total ?? page.data.length;
 
 const metadata = {
-  title: `Posts by tag '${tag.title}'${currentPage > 1 ? ` — Page ${currentPage} ` : ''}`,
-  description: `标签 '${tag.title}' 下的文章 — Posts tagged '${tag.title}' from the iFLYTEK open source blog.`,
+  description: `Posts tagged '${tag.title}' - articles from the iFLYTEK open source blog.`,
+  title: `标签：${tag.title}${currentPage > 1 ? ` — 第 ${currentPage} 页` : ''}`,
   robots: {
     index: blogTagRobots?.index,
     follow: blogTagRobots?.follow,
@@ -30,9 +30,15 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <Headline>Tag: {tag.title}</Headline>
-    <BlogList posts={page.data} />
-    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
-  </section>
+  <BlogArchive
+    posts={page.data}
+    titleZh={`标签：${tag.title}`}
+    titleEn={`Tag: ${tag.title}`}
+    activeSection={null}
+    total={total}
+    currentPage={currentPage}
+    lastPage={lastPage}
+    prevUrl={page.url.prev}
+    nextUrl={page.url.next}
+  />
 </Layout>

@@ -1,280 +1,1474 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
+import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
-import { events as eventsData } from '~/data/events';
 
-export const prerender = false;
+import { events, type Event } from '~/data/events';
+import Layout from '~/layouts/PageLayout.astro';
+
+export const prerender = true;
 
 const metadata = {
   title: 'Events',
-  description:
-    '科大讯飞开源社区活动 — iFLYTEK open source community events: meetups, hackathons, workshops and conferences, with the latest community news.',
+  description: '查看 Astron 开源社区即将举行与往期的 Meetup、会议、黑客松和工作坊。',
 };
 
-// Auto-determine status based on event date vs current date
-const now = new Date();
-const todayStr = now.toISOString().split('T')[0];
-const events = eventsData
-  .map((event) => ({
-    ...event,
-    status: (event.date === todayStr ? 'ongoing' : event.date > todayStr ? 'upcoming' : 'past') as
-      'ongoing' | 'upcoming' | 'past',
-  }))
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const today = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).format(new Date());
 
-const typeLabels: Record<string, string> = {
-  conference: 'Conference',
-  meetup: 'Meetup',
-  hackathon: 'Hackathon',
-  workshop: 'Workshop',
-  webinar: 'Webinar',
+const eventRecords = events
+  .map((event) => {
+    const status: NonNullable<Event['status']> =
+      event.date === today ? 'ongoing' : event.date > today ? 'upcoming' : 'past';
+    return { ...event, status };
+  })
+  .sort((a, b) => b.date.localeCompare(a.date));
+
+const upcomingEvents = eventRecords
+  .filter((event) => event.status !== 'past')
+  .sort((a, b) => a.date.localeCompare(b.date));
+const pastEvents = eventRecords.filter((event) => event.status === 'past');
+
+const typeLabels: Record<Event['type'], { zh: string; en: string }> = {
+  conference: { zh: '会议', en: 'Conference' },
+  meetup: { zh: 'Meetup', en: 'Meetup' },
+  hackathon: { zh: '黑客松', en: 'Hackathon' },
+  workshop: { zh: '工作坊', en: 'Workshop' },
+  webinar: { zh: '线上分享', en: 'Webinar' },
 };
 
-const typeColors: Record<string, string> = {
-  conference: 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
-  meetup: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  hackathon: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
-  workshop: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  webinar: 'bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300',
+const statusLabels: Record<NonNullable<Event['status']>, { zh: string; en: string }> = {
+  upcoming: { zh: '即将举办', en: 'Upcoming' },
+  ongoing: { zh: '进行中', en: 'Ongoing' },
+  past: { zh: '已结束', en: 'Past' },
 };
 
-// Get unique types for filter
-const eventTypes = [...new Set(events.map((e) => e.type))];
+const eventTypeOrder: Event['type'][] = ['conference', 'meetup', 'hackathon', 'workshop', 'webinar'];
+const archiveTypeSet = new Set(pastEvents.map((event) => event.type));
+const archiveTypes = eventTypeOrder.filter((type) => archiveTypeSet.has(type));
 
-// URL-driven filter state so filtered views are crawlable and shareable
-const typeParam = Astro.url.searchParams.get('type') || 'all';
-const activeType = (eventTypes as string[]).includes(typeParam) ? typeParam : 'all';
-const filteredEvents = activeType === 'all' ? events : events.filter((e) => e.type === activeType);
+const locationLabels: Record<string, { zh: string; en: string }> = {
+  'Shanghai, China': { zh: '中国 · 上海', en: 'Shanghai, China' },
+  'IBP International Conference Center, Shanghai, China': {
+    zh: '中国 · 上海 · IBP 国际会议中心',
+    en: 'IBP International Conference Center, Shanghai, China',
+  },
+  Online: { zh: '线上', en: 'Online' },
+  'Tianjin, China': { zh: '中国 · 天津', en: 'Tianjin, China' },
+  'Hefei, China': { zh: '中国 · 合肥', en: 'Hefei, China' },
+  'Zhengzhou, China': { zh: '中国 · 郑州', en: 'Zhengzhou, China' },
+  'Hangzhou, China': { zh: '中国 · 杭州', en: 'Hangzhou, China' },
+  'Qingdao, China': { zh: '中国 · 青岛', en: 'Qingdao, China' },
+  'Chongqing, China': { zh: '中国 · 重庆', en: 'Chongqing, China' },
+  'Barcelona, Spain': { zh: '西班牙 · 巴塞罗那', en: 'Barcelona, Spain' },
+  'Online + Hefei': { zh: '线上 + 中国 · 合肥', en: 'Online + Hefei' },
+};
 
-const activeChipClass = 'bg-primary-600 text-white';
-const inactiveChipClass =
-  'bg-gray-100 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
+const localizeLocation = (location: string) => locationLabels[location] || { zh: location, en: location };
 
-// Blog posts for news section
+const eventDate = (date: string) => new Date(`${date}T00:00:00Z`);
+const eventDateParts = (date: string) => {
+  const [year, month, day] = date.split('-');
+  const value = eventDate(date);
+  return {
+    year,
+    month,
+    day,
+    monthEn: new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' }).format(value).toUpperCase(),
+    weekdayZh: new Intl.DateTimeFormat('zh-CN', { weekday: 'short', timeZone: 'UTC' }).format(value),
+    weekdayEn: new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'UTC' }).format(value).toUpperCase(),
+  };
+};
+
+const formatNewsDate = (date: Date | undefined, locale: 'zh-CN' | 'en-US') =>
+  date
+    ? new Intl.DateTimeFormat(locale, {
+        year: 'numeric',
+        month: locale === 'zh-CN' ? 'numeric' : 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+      }).format(date)
+    : '';
+
 const posts = await getCollection('post');
-const newsPosts = posts
-  .filter((p) => p.data.category === 'news')
-  .sort(
-    (a, b) =>
-      new Date(b.data.publishDate || Date.now()).getTime() - new Date(a.data.publishDate || Date.now()).getTime()
-  );
+const postSlug = (post: (typeof posts)[number]) => post.id.replace(/\.(md|mdx)$/i, '');
+const newsPosts = posts.filter((post) => post.data.category === 'news');
+const englishNewsPosts = newsPosts.filter((post) => post.data.lang === 'en');
+const newsItems = newsPosts
+  .filter((post) => post.data.lang !== 'en')
+  .sort((a, b) => new Date(b.data.publishDate || 0).getTime() - new Date(a.data.publishDate || 0).getTime())
+  .slice(0, 4)
+  .map((post) => {
+    const zhSlug = postSlug(post);
+    const englishPost = englishNewsPosts.find((candidate) => {
+      const enSlug = postSlug(candidate);
+      return (
+        enSlug === `${zhSlug}-en` ||
+        enSlug === post.data.translationId ||
+        candidate.data.translationId === zhSlug ||
+        candidate.data.translationId === post.id
+      );
+    });
+    const englishSource = englishPost || post;
+    const publishDate = post.data.publishDate ? new Date(post.data.publishDate) : undefined;
+
+    return {
+      hrefZh: `/blog/${zhSlug}`,
+      hrefEn: `/blog/${postSlug(englishSource)}`,
+      titleZh: post.data.title,
+      titleEn: englishSource.data.title,
+      excerptZh: post.data.excerpt || '',
+      excerptEn: englishSource.data.excerpt || post.data.excerpt || '',
+      dateZh: formatNewsDate(publishDate, 'zh-CN'),
+      dateEn: formatNewsDate(publishDate, 'en-US'),
+      isoDate: publishDate?.toISOString() || '',
+    };
+  });
 ---
 
 <Layout metadata={metadata}>
-  <!-- Header -->
-  <section
-    class="relative overflow-hidden bg-gradient-to-b from-primary-50 to-white py-16 dark:from-gray-900 dark:to-gray-950 md:py-20"
-  >
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute left-1/3 top-1/3 h-48 w-48 rounded-full bg-primary-400 blur-[80px]"></div>
-      <div class="absolute right-1/3 bottom-1/3 h-48 w-48 rounded-full bg-accent-400 blur-[80px]"></div>
-    </div>
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="flex items-center justify-center text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          <span
-            class="bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent"
-            data-i18n="events.titleZh">社区活动</span
+  <div class="events-page" data-events-directory>
+    <header class="events-hero">
+      <div class="events-shell events-hero__inner">
+        <div class="events-hero__copy">
+          <h1 data-lang-zh="社区活动" data-lang-en="Community events">社区活动</h1>
+          <p
+            data-lang-zh="从 Meetup、会议到黑客松与工作坊，跟进 Astron 开源社区的下一场交流，也可回看过往活动。"
+            data-lang-en="Follow the next Astron open-source community meetup, conference, hackathon, or workshop—and revisit the past program."
           >
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400" data-i18n="events.subtitle">
-          参与科大讯飞开源社区活动 — Meetup、Hackathon、Workshop，与开发者面对面交流
+            从 Meetup、会议到黑客松与工作坊，跟进 Astron 开源社区的下一场交流，也可回看过往活动。
+          </p>
+        </div>
+        <p
+          class="events-hero__summary"
+          aria-label="活动概览"
+          data-aria-label-zh="活动概览"
+          data-aria-label-en="Event overview"
+        >
+          <span>
+            <strong>{upcomingEvents.length}</strong>
+            <span data-lang-zh="场接下来" data-lang-en="next">场接下来</span>
+          </span>
+          <span>
+            <strong>{pastEvents.length}</strong>
+            <span data-lang-zh="场往期活动" data-lang-en="past events">场往期活动</span>
+          </span>
+          <span data-lang-zh="线下 · 线上 · 混合" data-lang-en="In person · Online · Hybrid">线下 · 线上 · 混合</span>
         </p>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Events Timeline -->
-  <section class="py-12 md:py-16">
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-      <!-- Filter Tabs -->
-      <div class="mb-10 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href="/events"
-          class:list={[
-            'rounded-full px-5 py-2 text-sm font-medium',
-            activeType === 'all' ? activeChipClass : inactiveChipClass,
-          ]}
-        >
-          <span data-lang-zh={`全部 (${events.length})`} data-lang-en={`All (${events.length})`}
-            >全部 ({events.length})</span
-          >
-        </a>
+    <section class="events-section events-next" aria-labelledby="events-next-title">
+      <div class="events-shell">
+        <header class="events-section__heading">
+          <h2 id="events-next-title" data-lang-zh="接下来" data-lang-en="Coming up">接下来</h2>
+        </header>
+
         {
-          eventTypes.map((type) => (
-            <a
-              href={`/events?type=${type}`}
-              class:list={[
-                'rounded-full px-5 py-2 text-sm font-medium',
-                activeType === type ? activeChipClass : inactiveChipClass,
-              ]}
-            >
-              {typeLabels[type]} ({events.filter((e) => e.type === type).length})
-            </a>
-          ))
-        }
-      </div>
-
-      <!-- Timeline -->
-      <div class="space-y-1">
-        {
-          filteredEvents.map((event, index) => (
-            <div class="relative flex gap-4 sm:gap-8">
-              {/* Timeline line & dot */}
-              <div class="flex flex-col items-center">
-                <div class="relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                  <div
-                    class:list={[
-                      'h-3.5 w-3.5 rounded-full ring-4 ring-white dark:ring-gray-950',
-                      event.status === 'upcoming'
-                        ? 'bg-green-500'
-                        : event.status === 'ongoing'
-                          ? 'bg-yellow-500 animate-pulse'
-                          : 'bg-gray-300 dark:bg-gray-600',
-                    ]}
-                  />
-                </div>
-                {index < filteredEvents.length - 1 && <div class="w-px flex-1 bg-gray-200 dark:bg-gray-800" />}
-              </div>
-
-              {/* Event Card */}
-              <div class="mb-8 flex-1 rounded-xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800 sm:p-6">
-                <div class="flex flex-wrap items-start justify-between gap-2">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class:list={['rounded-full px-2.5 py-0.5 text-xs font-medium', typeColors[event.type]]}>
-                      {typeLabels[event.type]}
-                    </span>
-                    <span
-                      class:list={[
-                        'rounded-full px-2.5 py-0.5 text-xs font-medium',
-                        event.status === 'upcoming'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-                          : event.status === 'ongoing'
-                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300'
-                            : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-                      ]}
-                    >
-                      {event.status === 'upcoming' ? (
-                        <span data-i18n="events.upcoming">即将举办</span>
-                      ) : event.status === 'ongoing' ? (
-                        <span data-i18n="events.ongoing">进行中</span>
-                      ) : (
-                        <span data-i18n="events.past">已结束</span>
-                      )}
-                    </span>
-                  </div>
-                  <time class="text-sm font-medium text-gray-500 dark:text-gray-400">{event.date}</time>
-                </div>
-
-                <h3 class="mt-3 text-lg font-bold text-gray-900 dark:text-white">
-                  {event.link ? (
-                    <a
-                      href={event.link}
-                      target="_blank"
-                      rel="noopener"
-                      class="hover:text-primary-600 dark:hover:text-primary-400"
-                    >
-                      <span data-lang-zh={event.titleZh} data-lang-en={event.title}>
-                        {event.titleZh}
+          upcomingEvents.length > 0 ? (
+            <ol class="events-next__list" role="list">
+              {upcomingEvents.map((event) => {
+                const date = eventDateParts(event.date);
+                const location = localizeLocation(event.location);
+                return (
+                  <li class="event-next-row">
+                    <time class="event-next-date" datetime={event.date}>
+                      <span
+                        class="event-next-date__month"
+                        data-lang-zh={`${date.month} 月`}
+                        data-lang-en={date.monthEn}
+                      >
+                        {date.month} 月
                       </span>
-                    </a>
-                  ) : (
-                    <span data-lang-zh={event.titleZh} data-lang-en={event.title}>
-                      {event.titleZh}
-                    </span>
-                  )}
-                </h3>
-                <p
-                  class="mt-1 text-sm text-gray-500 dark:text-gray-500"
-                  data-lang-zh={event.titleZh}
-                  data-lang-en={event.title}
-                >
-                  {event.title}
-                </p>
-                <p
-                  class="mt-3 text-sm text-gray-600 dark:text-gray-400"
-                  data-lang-zh={event.description}
-                  data-lang-en={event.descriptionEn}
-                >
-                  {event.description}
-                </p>
+                      <strong>{date.day}</strong>
+                      <span
+                        class="event-next-date__foot"
+                        data-lang-zh={`${date.year} · ${date.weekdayZh}`}
+                        data-lang-en={`${date.year} · ${date.weekdayEn}`}
+                      >
+                        {date.year} · {date.weekdayZh}
+                      </span>
+                    </time>
 
-                <div class="mt-4 flex items-center justify-between">
-                  <span class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    {event.location}
-                  </span>
-                  {event.link && (
-                    <a
-                      href={event.link}
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
-                    >
-                      <span data-i18n="events.viewDetails">详情</span>
-                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  )}
-                </div>
-              </div>
+                    <article class="event-next-content">
+                      <div class="event-next-content__meta">
+                        <span
+                          class="event-type-signal"
+                          data-lang-zh={typeLabels[event.type].zh}
+                          data-lang-en={typeLabels[event.type].en}
+                        >
+                          {typeLabels[event.type].zh}
+                        </span>
+                        <span
+                          class:list={['event-status-signal', `event-status-signal--${event.status}`]}
+                          data-lang-zh={statusLabels[event.status].zh}
+                          data-lang-en={statusLabels[event.status].en}
+                        >
+                          {statusLabels[event.status].zh}
+                        </span>
+                      </div>
+                      <h3>
+                        <span data-lang-zh={event.titleZh} data-lang-en={event.title}>
+                          {event.titleZh}
+                        </span>
+                      </h3>
+                      {(event.subtitle || event.subtitleEn) && (
+                        <p
+                          class="event-next-content__subtitle"
+                          data-lang-zh={event.subtitle || event.titleZh}
+                          data-lang-en={event.subtitleEn || event.title}
+                        >
+                          {event.subtitle || event.titleZh}
+                        </p>
+                      )}
+                      <p
+                        class="event-next-content__description"
+                        data-lang-zh={event.description}
+                        data-lang-en={event.descriptionEn}
+                      >
+                        {event.description}
+                      </p>
+                      <p class="event-location">
+                        <Icon name="tabler:map-pin" aria-hidden="true" />
+                        <span data-lang-zh={location.zh} data-lang-en={location.en}>
+                          {location.zh}
+                        </span>
+                      </p>
+                    </article>
+
+                    <div class="event-next-action">
+                      {event.link ? (
+                        <a href={event.link} target="_blank" rel="noopener noreferrer">
+                          <span data-lang-zh="查看活动详情" data-lang-en="Event details">
+                            查看活动详情
+                          </span>
+                          <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <span data-lang-zh="暂无外部链接" data-lang-en="No external link">
+                          暂无外部链接
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <div class="events-static-empty">
+              <p data-lang-zh="当前没有已公布的近期活动。" data-lang-en="No upcoming events have been announced yet.">
+                当前没有已公布的近期活动。
+              </p>
+              <span
+                data-lang-zh="新活动确认后会在此更新；你仍可浏览完整往期记录。"
+                data-lang-en="New events will appear here once confirmed. The complete past program remains available below."
+              >
+                新活动确认后会在此更新；你仍可浏览完整往期记录。
+              </span>
             </div>
-          ))
+          )
         }
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- News Section -->
-  {
-    newsPosts.length > 0 && (
-      <section class="border-t border-gray-200 bg-gray-50 py-12 dark:border-gray-800 dark:bg-gray-900/50 md:py-16">
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <h2 class="mb-8 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-            <span data-i18n="events.latestNews">最新动态</span>
-          </h2>
-          <div class="grid gap-6 sm:grid-cols-2">
-            {newsPosts.slice(0, 4).map((post) => (
-              <a
-                href={`/blog/${post.id.replace('.md', '').replace('.mdx', '')}`}
-                class="group rounded-xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-800"
-              >
-                <span class="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
-                  News
-                </span>
-                <h3 class="mt-3 font-semibold text-gray-900 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400">
-                  {post.data.title}
-                </h3>
-                {post.data.excerpt && (
-                  <p class="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{post.data.excerpt}</p>
-                )}
-                <time class="mt-3 block text-xs text-gray-400">
-                  {post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString('zh-CN') : ''}
-                </time>
-              </a>
-            ))}
+    <section class="events-section events-archive" aria-labelledby="events-archive-title">
+      <div class="events-shell">
+        <header class="events-section__heading events-section__heading--archive">
+          <h2 id="events-archive-title" data-lang-zh="往期活动" data-lang-en="Past events">往期活动</h2>
+        </header>
+
+        <form class="events-filters" data-event-filters novalidate hidden>
+          <div
+            class="events-filters__track"
+            role="group"
+            aria-label="筛选往期活动"
+            data-aria-label-zh="筛选往期活动"
+            data-aria-label-en="Filter past events"
+          >
+            <button type="button" data-event-type="all" aria-pressed="true">
+              <span data-lang-zh="全部" data-lang-en="All">全部</span>
+              <span class="events-filter-count">{pastEvents.length}</span>
+            </button>
+            {
+              archiveTypes.map((type) => (
+                <button type="button" data-event-type={type} aria-pressed="false">
+                  <span data-lang-zh={typeLabels[type].zh} data-lang-en={typeLabels[type].en}>
+                    {typeLabels[type].zh}
+                  </span>
+                  <span class="events-filter-count">{pastEvents.filter((event) => event.type === type).length}</span>
+                </button>
+              ))
+            }
           </div>
+        </form>
+
+        <div class="events-archive__status">
+          <p
+            data-event-result-count
+            data-template-zh="显示 {count} 场往期活动"
+            data-template-en="Showing {count} past events"
+          >
+            显示 {pastEvents.length} 场往期活动
+          </p>
+          <button type="button" data-clear-event-filter hidden>
+            <span data-lang-zh="清除筛选" data-lang-en="Clear filter">清除筛选</span>
+          </button>
+          <p class="sr-only" aria-live="polite" aria-atomic="true" data-event-result-live></p>
         </div>
-      </section>
-    )
-  }
+
+        <ol class="events-archive__list" role="list">
+          {
+            pastEvents.map((event) => {
+              const date = eventDateParts(event.date);
+              const location = localizeLocation(event.location);
+              return (
+                <li class="event-archive-row" data-event-item data-event-type={event.type}>
+                  <time class="event-archive-date" datetime={event.date}>
+                    <strong>{date.year}</strong>
+                    <span>
+                      {date.month}.{date.day}
+                    </span>
+                  </time>
+                  <p
+                    class="event-archive-type"
+                    data-lang-zh={typeLabels[event.type].zh}
+                    data-lang-en={typeLabels[event.type].en}
+                  >
+                    {typeLabels[event.type].zh}
+                  </p>
+                  <article class="event-archive-main">
+                    <h3 data-lang-zh={event.titleZh} data-lang-en={event.title}>
+                      {event.titleZh}
+                    </h3>
+                    <p data-lang-zh={event.description} data-lang-en={event.descriptionEn}>
+                      {event.description}
+                    </p>
+                  </article>
+                  <p class="event-archive-location">
+                    <Icon name="tabler:map-pin" aria-hidden="true" />
+                    <span data-lang-zh={location.zh} data-lang-en={location.en}>
+                      {location.zh}
+                    </span>
+                  </p>
+                  <div class="event-archive-action">
+                    {event.link ? (
+                      <a
+                        href={event.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${event.titleZh}：查看活动详情`}
+                        data-aria-label-zh={`${event.titleZh}：查看活动详情`}
+                        data-aria-label-en={`${event.title}: View event details`}
+                      >
+                        <Icon name="tabler:arrow-up-right" aria-hidden="true" />
+                      </a>
+                    ) : (
+                      <span>
+                        <span aria-hidden="true">—</span>
+                        <span class="sr-only" data-lang-zh="暂无外部链接" data-lang-en="No external link">
+                          暂无外部链接
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                </li>
+              );
+            })
+          }
+        </ol>
+
+        <div class="events-filter-empty" data-event-empty hidden>
+          <p data-lang-zh="没有这一类型的往期活动。" data-lang-en="No past events match this format.">
+            没有这一类型的往期活动。
+          </p>
+          <button type="button" data-clear-event-filter>
+            <span data-lang-zh="查看全部活动" data-lang-en="View all events">查看全部活动</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    {
+      newsItems.length > 0 && (
+        <section class="events-section events-news" aria-labelledby="events-news-title">
+          <div class="events-shell">
+            <header class="events-section__heading">
+              <h2 id="events-news-title" data-lang-zh="最新动态" data-lang-en="Latest news">
+                最新动态
+              </h2>
+            </header>
+
+            <ol class="events-news__list" role="list">
+              {newsItems.map((news) => (
+                <li>
+                  <a href={news.hrefZh} data-news-link data-href-zh={news.hrefZh} data-href-en={news.hrefEn}>
+                    <div class="events-news__meta">
+                      <span>NEWS</span>
+                      <time datetime={news.isoDate} data-lang-zh={news.dateZh} data-lang-en={news.dateEn}>
+                        {news.dateZh}
+                      </time>
+                    </div>
+                    <h3 data-lang-zh={news.titleZh} data-lang-en={news.titleEn}>
+                      {news.titleZh}
+                    </h3>
+                    {news.excerptZh && (
+                      <p data-lang-zh={news.excerptZh} data-lang-en={news.excerptEn}>
+                        {news.excerptZh}
+                      </p>
+                    )}
+                    <span class="events-news__action">
+                      <span data-lang-zh="阅读动态" data-lang-en="Read update">
+                        阅读动态
+                      </span>
+                      <Icon name="tabler:arrow-right" aria-hidden="true" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <script is:inline data-astro-rerun>
+    (() => {
+      const root = document.querySelector('[data-events-directory]');
+      if (!root || root.dataset.eventsReady === 'true') return;
+      root.dataset.eventsReady = 'true';
+
+      const form = root.querySelector('[data-event-filters]');
+      const buttons = Array.from(root.querySelectorAll('[data-event-type]'));
+      const items = Array.from(root.querySelectorAll('[data-event-item]'));
+      const resultCount = root.querySelector('[data-event-result-count]');
+      const resultLive = root.querySelector('[data-event-result-live]');
+      const emptyState = root.querySelector('[data-event-empty]');
+      const clearButtons = Array.from(root.querySelectorAll('[data-clear-event-filter]'));
+      const newsLinks = Array.from(root.querySelectorAll('[data-news-link]'));
+
+      if (!form || buttons.length === 0 || !resultCount || !emptyState) return;
+
+      const validTypes = new Set(buttons.map((button) => button.dataset.eventType));
+      const url = new URL(window.location.href);
+      const requestedType = url.searchParams.get('type') || 'all';
+      let activeType = validTypes.has(requestedType) ? requestedType : 'all';
+      const currentLanguage = () => (localStorage.lang === 'en' ? 'en' : 'zh');
+
+      const localizedResult = (count) => {
+        if (currentLanguage() === 'en') return count === 1 ? 'Showing 1 past event' : `Showing ${count} past events`;
+        return `显示 ${count} 场往期活动`;
+      };
+
+      const syncUrl = () => {
+        const nextUrl = new URL(window.location.href);
+        if (activeType === 'all') nextUrl.searchParams.delete('type');
+        else nextUrl.searchParams.set('type', activeType);
+        window.history.replaceState(window.history.state, '', nextUrl);
+      };
+
+      const syncLocalizedAttributes = () => {
+        const language = currentLanguage();
+        newsLinks.forEach((link) => {
+          link.href = language === 'en' ? link.dataset.hrefEn : link.dataset.hrefZh;
+        });
+        root.querySelectorAll('[data-aria-label-zh]').forEach((element) => {
+          const label = language === 'en' ? element.dataset.ariaLabelEn : element.dataset.ariaLabelZh;
+          if (label) element.setAttribute('aria-label', label);
+        });
+      };
+
+      const applyFilter = ({ announce = true, sync = true } = {}) => {
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          const visible = activeType === 'all' || item.dataset.eventType === activeType;
+          item.hidden = !visible;
+          if (visible) visibleCount += 1;
+        });
+
+        buttons.forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.eventType === activeType));
+        });
+
+        resultCount.textContent = localizedResult(visibleCount);
+        if (announce && resultLive) resultLive.textContent = localizedResult(visibleCount);
+        emptyState.hidden = visibleCount !== 0;
+        clearButtons.forEach((button) => {
+          if (!button.closest('[data-event-empty]')) button.hidden = activeType === 'all';
+        });
+        if (sync) syncUrl();
+      };
+
+      const clearFilter = () => {
+        activeType = 'all';
+        applyFilter();
+        buttons[0]?.focus();
+      };
+
+      const filterHandler = (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const button = target.closest('[data-event-type]');
+        if (!button || !form.contains(button)) return;
+        activeType = button.dataset.eventType || 'all';
+        applyFilter();
+      };
+
+      form.addEventListener('click', filterHandler);
+      clearButtons.forEach((button) => button.addEventListener('click', clearFilter));
+      form.addEventListener('submit', (event) => event.preventDefault());
+
+      const previousLanguageHandler = window.__eventsDirectoryLanguageHandler;
+      if (previousLanguageHandler) document.removeEventListener('languagechange', previousLanguageHandler);
+
+      const languageHandler = () => {
+        syncLocalizedAttributes();
+        applyFilter({ announce: false, sync: false });
+      };
+      window.__eventsDirectoryLanguageHandler = languageHandler;
+      document.addEventListener('languagechange', languageHandler);
+
+      const cleanup = () => {
+        document.removeEventListener('languagechange', languageHandler);
+        if (window.__eventsDirectoryLanguageHandler === languageHandler) {
+          delete window.__eventsDirectoryLanguageHandler;
+        }
+      };
+      document.addEventListener('astro:before-swap', cleanup, { once: true });
+
+      syncLocalizedAttributes();
+      applyFilter({ announce: false });
+      form.hidden = false;
+    })();
+  </script>
 </Layout>
+
+<style>
+  .events-page {
+    min-height: 100vh;
+    overflow: clip;
+    background: var(--rc-canvas);
+    color: var(--rc-text);
+  }
+
+  .events-shell {
+    width: min(calc(100% - 3rem), 87.5rem);
+    margin-inline: auto;
+  }
+
+  .events-hero {
+    padding: clamp(3.75rem, 7vw, 6.5rem) 0 clamp(3rem, 5vw, 4.5rem);
+    border-bottom: 1px solid var(--rc-rule);
+  }
+
+  .events-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: clamp(2.5rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .events-hero__copy {
+    max-width: 54rem;
+  }
+
+  .events-hero h1 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .events-hero__copy > p {
+    max-width: 44rem;
+    margin: 1.5rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.72;
+    text-wrap: pretty;
+  }
+
+  .events-hero__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem 1.25rem;
+    align-items: center;
+    margin: 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .events-hero__summary > span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .events-hero__summary strong {
+    color: var(--rc-text-strong);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .events-section {
+    padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  }
+
+  .events-section + .events-section {
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .events-section__heading {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: start;
+  }
+
+  .events-section__heading h2 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: var(--rc-type-section-heading);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .events-section__heading > p {
+    max-width: 40rem;
+    margin: 0.15rem 0 0;
+    color: var(--rc-text-muted);
+    font-size: 1rem;
+    line-height: 1.68;
+    text-wrap: pretty;
+  }
+
+  .events-next__list {
+    margin: clamp(2.25rem, 4vw, 3.5rem) 0 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+    list-style: none;
+  }
+
+  .event-next-row {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(8rem, 0.23fr) minmax(0, 1fr) minmax(11rem, 0.24fr);
+  }
+
+  .event-next-row + .event-next-row {
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .event-next-date {
+    display: flex;
+    min-height: 14rem;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.75rem clamp(1.25rem, 2.5vw, 2.25rem);
+    border-right: 1px solid var(--rc-rule);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .event-next-date__month,
+  .event-next-date__foot {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .event-next-date strong {
+    margin: 0.25rem 0 0.4rem;
+    color: var(--rc-text-strong);
+    font-family: var(--aw-font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 660;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+  }
+
+  .event-next-content {
+    min-width: 0;
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .event-next-content__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    align-items: center;
+  }
+
+  .event-type-signal,
+  .event-status-signal {
+    display: inline-flex;
+    align-items: center;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .event-status-signal::before {
+    width: 0.35rem;
+    height: 0.35rem;
+    margin-right: 0.55rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.75rem rgb(60 143 247 / 42%);
+    content: '';
+  }
+
+  .event-status-signal--ongoing::before {
+    background: var(--rc-amber);
+    box-shadow: 0 0 0.75rem rgb(239 166 61 / 38%);
+  }
+
+  .event-next-content h3 {
+    max-width: 48rem;
+    margin: 1.1rem 0 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    text-wrap: pretty;
+  }
+
+  .event-next-content__subtitle {
+    max-width: 52rem;
+    margin: 0.75rem 0 0;
+    color: var(--rc-text);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .event-next-content__description {
+    display: -webkit-box;
+    max-width: 68ch;
+    margin: 0.9rem 0 0;
+    overflow: hidden;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .event-location,
+  .event-archive-location {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--rc-text-faint);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .event-location {
+    margin: 1.15rem 0 0;
+  }
+
+  .event-location :global(svg),
+  .event-archive-location :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+    stroke-width: 1.5;
+  }
+
+  .event-next-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .event-next-action a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0 1rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .event-next-action a:hover {
+    border-color: var(--rc-header-rule);
+    background: var(--rc-band);
+  }
+
+  .event-next-action a :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .event-next-action > span {
+    color: var(--rc-text-faint);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .events-static-empty,
+  .events-filter-empty {
+    margin-top: clamp(2.25rem, 4vw, 3.5rem);
+    padding: 2rem;
+    border-block: 1px solid var(--rc-rule-strong);
+    color: var(--rc-text-muted);
+  }
+
+  .events-static-empty p,
+  .events-filter-empty p {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .events-static-empty span {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .events-filters {
+    margin-top: clamp(2.25rem, 4vw, 3.5rem);
+  }
+
+  .events-filters__track {
+    display: flex;
+    max-width: 100%;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.2rem 0.2rem 0.7rem;
+    scrollbar-color: var(--rc-rule-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  .events-filters button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--rc-rule);
+    border-radius: var(--rc-radius-control);
+    background: rgb(5 7 13 / 62%);
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .events-filters button:hover {
+    border-color: var(--rc-rule-strong);
+    color: var(--rc-text);
+  }
+
+  .events-filters button[aria-pressed='true'] {
+    border-color: var(--rc-header-rule);
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+  }
+
+  .events-filters button[aria-pressed='true']::before {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--rc-blue);
+    box-shadow: 0 0 0.7rem rgb(60 143 247 / 42%);
+    content: '';
+  }
+
+  .events-filter-count {
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .events-archive__status {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  .events-archive__status p {
+    margin: 0;
+  }
+
+  .events-archive__status button,
+  .events-filter-empty button {
+    min-height: 2.75rem;
+    padding: 0 0.8rem;
+    border: 0;
+    border-radius: var(--rc-radius-control);
+    background: transparent;
+    color: var(--rc-text-muted);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgb(160 159 162 / 45%);
+    text-underline-offset: 0.28em;
+  }
+
+  .events-archive__status button:hover,
+  .events-filter-empty button:hover {
+    color: var(--rc-text-strong);
+    text-decoration-color: var(--rc-blue);
+  }
+
+  .events-archive__list {
+    margin: 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+    list-style: none;
+  }
+
+  .event-archive-row {
+    display: grid;
+    min-width: 0;
+    grid-template-areas: 'date type main location action';
+    grid-template-columns: 7rem 7.5rem minmax(0, 1fr) minmax(10rem, 14rem) 3.25rem;
+    align-items: stretch;
+    transition: background-color 160ms ease;
+  }
+
+  .event-archive-row + .event-archive-row {
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .event-archive-row:hover,
+  .event-archive-row:focus-within {
+    background: rgb(8 12 20 / 62%);
+  }
+
+  .event-archive-date {
+    display: flex;
+    grid-area: date;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.4rem 1rem 1.4rem 0;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.45;
+  }
+
+  .event-archive-date strong {
+    color: var(--rc-text-muted);
+    font-weight: 600;
+  }
+
+  .event-archive-type {
+    display: flex;
+    grid-area: type;
+    align-items: center;
+    margin: 0;
+    padding: 1.4rem 1rem;
+    border-left: 1px solid var(--rc-rule);
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .event-archive-main {
+    min-width: 0;
+    grid-area: main;
+    padding: 1.35rem clamp(1.25rem, 2.5vw, 2rem);
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .event-archive-main h3 {
+    margin: 0;
+    color: var(--rc-text-strong);
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.015em;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+
+  .event-archive-main p {
+    display: -webkit-box;
+    margin: 0.45rem 0 0;
+    overflow: hidden;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .event-archive-location {
+    grid-area: location;
+    align-items: center;
+    margin: 0;
+    padding: 1.35rem 1rem;
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .event-archive-action {
+    display: flex;
+    grid-area: action;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--rc-rule);
+    color: var(--rc-text-faint);
+  }
+
+  .event-archive-action a {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--rc-radius-control);
+    color: var(--rc-text-muted);
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .event-archive-action a:hover {
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+  }
+
+  .event-archive-action a :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .events-filter-empty {
+    text-align: center;
+  }
+
+  .events-filter-empty button {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .events-news__list {
+    display: grid;
+    margin: clamp(2.25rem, 4vw, 3.5rem) 0 0;
+    padding: 0;
+    border-block: 1px solid var(--rc-rule-strong);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .events-news__list li {
+    min-width: 0;
+  }
+
+  .events-news__list li:nth-child(even) {
+    border-left: 1px solid var(--rc-rule);
+  }
+
+  .events-news__list li:nth-child(n + 3) {
+    border-top: 1px solid var(--rc-rule);
+  }
+
+  .events-news__list a {
+    display: flex;
+    min-height: 18rem;
+    flex-direction: column;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+
+  .events-news__list a:hover,
+  .events-news__list a:focus-visible {
+    background: var(--rc-surface-raised);
+  }
+
+  .events-news__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--rc-text-faint);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  .events-news__meta > span {
+    color: var(--rc-blue);
+    font-weight: 650;
+  }
+
+  .events-news__list h3 {
+    max-width: 32rem;
+    margin: 1.5rem 0 0;
+    color: var(--rc-text-strong);
+    font-size: clamp(1.18rem, 1.7vw, 1.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+
+  .events-news__list p {
+    display: -webkit-box;
+    max-width: 65ch;
+    margin: 0.9rem 0 0;
+    overflow: hidden;
+    color: var(--rc-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .events-news__action {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    color: var(--rc-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .events-news__action :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 160ms ease;
+  }
+
+  .events-news__list a:hover .events-news__action,
+  .events-news__list a:focus-visible .events-news__action {
+    color: var(--rc-text-strong);
+  }
+
+  .events-news__list a:hover .events-news__action :global(svg),
+  .events-news__list a:focus-visible .events-news__action :global(svg) {
+    transform: translateX(0.2rem);
+  }
+
+  .event-next-action a:focus-visible,
+  .event-archive-action a:focus-visible,
+  .events-filters button:focus-visible,
+  .events-archive__status button:focus-visible,
+  .events-filter-empty button:focus-visible,
+  .events-news__list a:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 68rem) {
+    .events-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    .events-hero__summary {
+      max-width: 44rem;
+    }
+
+    .event-next-row {
+      grid-template-columns: 8rem minmax(0, 1fr);
+    }
+
+    .event-next-action {
+      grid-column: 2;
+      justify-content: flex-start;
+      padding: 0 2rem 1.75rem;
+      border-left: 1px solid var(--rc-rule);
+    }
+
+    .event-archive-row {
+      grid-template-areas:
+        'date type main action'
+        'date type location action';
+      grid-template-columns: 6.5rem 7rem minmax(0, 1fr) 3.25rem;
+    }
+
+    .event-archive-location {
+      align-items: flex-start;
+      padding: 0 1.5rem 1.25rem;
+      border-left: 1px solid var(--rc-rule);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .events-shell {
+      width: min(calc(100% - 2rem), 87.5rem);
+    }
+
+    .events-hero {
+      padding: 2rem 0 1.75rem;
+    }
+
+    .events-hero__inner {
+      gap: 1.5rem;
+    }
+
+    .events-hero__copy > p {
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .events-hero__summary {
+      display: grid;
+      grid-template-columns: repeat(2, max-content);
+      gap: 0.5rem 1.25rem;
+      align-items: baseline;
+      padding-top: 0.875rem;
+    }
+
+    .events-hero__summary > span:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .events-section {
+      padding: 3.5rem 0;
+    }
+
+    .events-next {
+      padding-top: 2.5rem;
+    }
+
+    .events-section__heading {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+
+    .events-next .events-section__heading > p {
+      display: none;
+    }
+
+    .events-next__list {
+      margin-top: 1.5rem;
+    }
+
+    .event-next-row {
+      grid-template-columns: 6.25rem minmax(0, 1fr);
+    }
+
+    .event-next-date {
+      min-height: 12rem;
+      padding: 1.5rem 1rem;
+    }
+
+    .event-next-content {
+      padding: 1.25rem 1rem 1rem;
+    }
+
+    .event-next-content__description {
+      display: none;
+    }
+
+    .event-next-content__subtitle {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .event-location {
+      margin-top: 0.75rem;
+    }
+
+    .event-next-action {
+      padding: 0 1rem 1rem;
+    }
+
+    .event-next-action a {
+      width: 100%;
+    }
+
+    .event-archive-row {
+      grid-template-areas:
+        'date action'
+        'type action'
+        'main main'
+        'location location';
+      grid-template-columns: minmax(0, 1fr) 3.25rem;
+      padding: 1.25rem 0;
+    }
+
+    .event-archive-date {
+      flex-direction: row;
+      gap: 0.35rem;
+      align-items: baseline;
+      padding: 0 1rem;
+    }
+
+    .event-archive-date strong::after {
+      content: '.';
+    }
+
+    .event-archive-type {
+      padding: 0.35rem 1rem 0;
+      border-left: 0;
+    }
+
+    .event-archive-main {
+      padding: 1rem 1rem 0;
+      border-left: 0;
+    }
+
+    .event-archive-location {
+      padding: 0.85rem 1rem 0;
+      border-left: 0;
+    }
+
+    .event-archive-action {
+      grid-row: 1 / 3;
+      border-left: 1px solid var(--rc-rule);
+    }
+
+    .events-news__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .events-news__list li:nth-child(even) {
+      border-left: 0;
+    }
+
+    .events-news__list li + li {
+      border-top: 1px solid var(--rc-rule);
+    }
+
+    .events-news__list a {
+      min-height: 16rem;
+      padding: 1.5rem 1rem;
+    }
+  }
+
+  @media (max-width: 28rem) {
+    .events-hero__copy > p {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .event-next-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .event-next-date {
+      min-height: 0;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 0.7rem;
+      padding: 0.875rem 1rem;
+      border-right: 0;
+      border-bottom: 1px solid var(--rc-rule);
+    }
+
+    .event-next-date strong {
+      order: -1;
+      margin: 0;
+    }
+
+    .event-next-date__foot {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .event-next-action {
+      grid-column: 1;
+      padding: 0 1rem 1.25rem;
+      border-left: 0;
+    }
+
+    .event-next-content {
+      padding-inline: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .event-next-action a,
+    .event-archive-row,
+    .event-archive-action a,
+    .events-filters button,
+    .events-news__list a,
+    .events-news__action :global(svg) {
+      transition: none;
+    }
+
+    .events-news__list a:hover .events-news__action :global(svg),
+    .events-news__list a:focus-visible .events-news__action :global(svg) {
+      transform: none;
+    }
+  }
+</style>

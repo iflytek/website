@@ -1,50 +1,55 @@
 {
-  "updated_at": "2026-07-31T19:18:55.310Z",
+  "updated_at": "2026-08-24T10:15:47.917Z",
   "repos": {
     "iflytek/astron-agent": {
-      "stars": 9279,
-      "forks": 873,
-      "updated_at": "2026-07-31T19:18:53.689Z"
+      "stars": 8947,
+      "forks": 859,
+      "updated_at": "2026-08-24T10:15:43.989Z"
     },
     "iflytek/astron-rpa": {
-      "stars": 5895,
-      "forks": 596,
-      "updated_at": "2026-07-31T19:18:53.900Z"
+      "stars": 5573,
+      "forks": 578,
+      "updated_at": "2026-08-24T10:15:44.424Z"
     },
     "iflytek/astronclaw-tutorial": {
-      "stars": 425,
-      "forks": 45,
-      "updated_at": "2026-07-31T19:18:54.098Z"
+      "stars": 390,
+      "forks": 46,
+      "updated_at": "2026-08-24T10:15:44.863Z"
+    },
+    "iflytek/dolphin-mcp-pilot": {
+      "stars": 12,
+      "forks": 16,
+      "updated_at": "2026-08-24T10:15:45.311Z"
     },
     "iflytek/domux": {
-      "stars": 29,
-      "forks": 2,
-      "updated_at": "2026-07-31T19:18:54.322Z"
+      "stars": 31,
+      "forks": 5,
+      "updated_at": "2026-08-24T10:15:45.719Z"
     },
     "harnessclaw/harnessclaw-engine": {
       "stars": 271,
-      "forks": 92,
-      "updated_at": "2026-07-31T19:18:54.519Z"
+      "forks": 94,
+      "updated_at": "2026-08-24T10:15:46.187Z"
     },
     "harnessclaw/harnessclaw": {
-      "stars": 304,
-      "forks": 92,
-      "updated_at": "2026-07-31T19:18:54.716Z"
+      "stars": 310,
+      "forks": 98,
+      "updated_at": "2026-08-24T10:15:46.622Z"
     },
     "iflytek/iFly-Skills": {
       "stars": 213,
-      "forks": 26,
-      "updated_at": "2026-07-31T19:18:54.914Z"
+      "forks": 27,
+      "updated_at": "2026-08-24T10:15:47.030Z"
     },
     "iflytek/memflywheel": {
-      "stars": 35,
-      "forks": 3,
-      "updated_at": "2026-07-31T19:18:55.109Z"
+      "stars": 39,
+      "forks": 5,
+      "updated_at": "2026-08-24T10:15:47.445Z"
     },
     "iflytek/skillhub": {
-      "stars": 4826,
-      "forks": 702,
-      "updated_at": "2026-07-31T19:18:55.310Z"
+      "stars": 4904,
+      "forks": 790,
+      "updated_at": "2026-08-24T10:15:47.916Z"
     }
   }
 }

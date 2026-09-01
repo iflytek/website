@@ -1,0 +1,397 @@
+<div class="community-dots" data-community-dots-root aria-hidden="true">
+  <span class="community-dots__fallback"></span>
+  <canvas class="community-dots__canvas" data-community-dots></canvas>
+  <span class="community-dots__glow" data-community-dots-glow></span>
+</div>
+
+<script is:inline>
+  (() => {
+    const DOT_DIAMETER = 2.4;
+    const BASE_STEP = 18;
+    const CURSOR_RADIUS = 160;
+    const BULGE_STRENGTH = 8;
+    const ACTIVE_FRAME_INTERVAL = 1000 / 30;
+
+    const initializeDotField = (canvas) => {
+      if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.dotsReady) return;
+
+      const root = canvas.closest('[data-community-dots-root]');
+      const interactionSurface = root?.closest('.community-cta');
+      const glow = root?.querySelector('[data-community-dots-glow]');
+      const context = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      if (!(root instanceof HTMLElement) || !(interactionSurface instanceof HTMLElement) || !context) return;
+
+      const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const finePointer = window.matchMedia('(pointer: fine)');
+      const connection = navigator.connection;
+      const pointer = {
+        x: -9999,
+        y: -9999,
+        previousClientX: null,
+        previousClientY: null,
+        speed: 0,
+        active: false,
+        lastMove: 0,
+      };
+
+      let width = 1;
+      let height = 1;
+      let dots = [];
+      let dotGradient = null;
+      let engagement = 0;
+      let animationFrame = 0;
+      let resizeFrame = 0;
+      let lastDrawTime = 0;
+      let visible = true;
+      let interactionsBound = false;
+      let disposed = false;
+
+      const render = () => {
+        context.clearRect(0, 0, width, height);
+        context.fillStyle = dotGradient || 'rgba(160, 159, 162, 0.38)';
+        context.beginPath();
+        const radius = DOT_DIAMETER / 2;
+
+        for (const dot of dots) {
+          context.moveTo(dot.x + radius, dot.y);
+          context.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+        }
+
+        context.fill();
+        root.classList.add('is-ready');
+      };
+
+      const resetDots = (shouldRender = true) => {
+        for (const dot of dots) {
+          dot.x = dot.anchorX;
+          dot.y = dot.anchorY;
+        }
+        engagement = 0;
+        pointer.speed = 0;
+        if (glow instanceof HTMLElement) glow.style.opacity = '0';
+        if (shouldRender) render();
+      };
+
+      const buildDots = () => {
+        const compact = width <= 672;
+        const maxDots = compact ? 2200 : 4500;
+        const estimatedDots = (width * height) / (BASE_STEP * BASE_STEP);
+        const step = BASE_STEP * Math.max(1, Math.sqrt(estimatedDots / maxDots));
+        const columns = Math.max(1, Math.floor(width / step));
+        const rows = Math.max(1, Math.floor(height / step));
+        const offsetX = (width - (columns - 1) * step) / 2;
+        const offsetY = (height - (rows - 1) * step) / 2;
+        const nextDots = [];
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let column = 0; column < columns; column += 1) {
+            const anchorX = offsetX + column * step;
+            const anchorY = offsetY + row * step;
+            nextDots.push({ anchorX, anchorY, x: anchorX, y: anchorY });
+          }
+        }
+
+        dots = nextDots;
+        dotGradient = context.createLinearGradient(0, 0, width, height);
+        dotGradient.addColorStop(0, 'rgba(160, 159, 162, 0.44)');
+        dotGradient.addColorStop(1, 'rgba(60, 143, 247, 0.28)');
+        resetDots();
+      };
+
+      const resize = () => {
+        const bounds = root.getBoundingClientRect();
+        width = Math.max(1, bounds.width);
+        height = Math.max(1, bounds.height);
+        const compact = width <= 672;
+        const requestedRatio = Math.min(window.devicePixelRatio || 1, compact ? 1 : 1.25);
+        const maxPixels = compact ? 280000 : 720000;
+        const rawPixels = width * requestedRatio * height * requestedRatio;
+        const pixelScale = Math.min(1, Math.sqrt(maxPixels / rawPixels));
+        const renderRatio = requestedRatio * pixelScale;
+        const renderWidth = Math.max(1, Math.round(width * renderRatio));
+        const renderHeight = Math.max(1, Math.round(height * renderRatio));
+
+        if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
+          canvas.width = renderWidth;
+          canvas.height = renderHeight;
+        }
+        context.setTransform(renderRatio, 0, 0, renderRatio, 0, 0);
+        buildDots();
+      };
+
+      const stopAnimation = () => {
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      };
+
+      const animate = (timestamp) => {
+        if (disposed || !visible || document.hidden) {
+          stopAnimation();
+          return;
+        }
+
+        if (timestamp - lastDrawTime < ACTIVE_FRAME_INTERVAL) {
+          animationFrame = requestAnimationFrame(animate);
+          return;
+        }
+        lastDrawTime = timestamp;
+
+        const moving = pointer.active && timestamp - pointer.lastMove < 120;
+        const targetEngagement = moving ? Math.min(pointer.speed / 18, 0.82) : 0;
+        engagement += (targetEngagement - engagement) * 0.16;
+        pointer.speed *= 0.72;
+
+        const cursorRadiusSquared = CURSOR_RADIUS * CURSOR_RADIUS;
+        let maximumDisplacement = 0;
+
+        for (const dot of dots) {
+          let targetX = dot.anchorX;
+          let targetY = dot.anchorY;
+          const deltaX = pointer.x - dot.anchorX;
+          const deltaY = pointer.y - dot.anchorY;
+          const distanceSquared = deltaX * deltaX + deltaY * deltaY;
+
+          if (engagement > 0.002 && distanceSquared > 0 && distanceSquared < cursorRadiusSquared) {
+            const distance = Math.sqrt(distanceSquared);
+            const influence = 1 - distance / CURSOR_RADIUS;
+            const push = influence * influence * BULGE_STRENGTH * engagement;
+            targetX -= (deltaX / distance) * push;
+            targetY -= (deltaY / distance) * push;
+          }
+
+          dot.x += (targetX - dot.x) * 0.2;
+          dot.y += (targetY - dot.y) * 0.2;
+          maximumDisplacement = Math.max(
+            maximumDisplacement,
+            Math.abs(dot.x - dot.anchorX),
+            Math.abs(dot.y - dot.anchorY)
+          );
+        }
+
+        if (glow instanceof HTMLElement) {
+          glow.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0) translate(-50%, -50%)`;
+          glow.style.opacity = String(Math.min(engagement * 0.28, 0.24));
+        }
+        render();
+
+        if (!moving && engagement < 0.003 && maximumDisplacement < 0.02) {
+          resetDots();
+          stopAnimation();
+          return;
+        }
+
+        animationFrame = requestAnimationFrame(animate);
+      };
+
+      const startAnimation = () => {
+        if (animationFrame || disposed || !visible || document.hidden) return;
+        animationFrame = requestAnimationFrame(animate);
+      };
+
+      const handlePointerMove = (event) => {
+        const bounds = interactionSurface.getBoundingClientRect();
+        pointer.x = event.clientX - bounds.left;
+        pointer.y = event.clientY - bounds.top;
+        if (pointer.previousClientX === null || pointer.previousClientY === null) {
+          pointer.speed = 6;
+        } else {
+          pointer.speed = Math.hypot(event.clientX - pointer.previousClientX, event.clientY - pointer.previousClientY);
+        }
+        pointer.previousClientX = event.clientX;
+        pointer.previousClientY = event.clientY;
+        pointer.active = true;
+        pointer.lastMove = performance.now();
+        startAnimation();
+      };
+
+      const handlePointerLeave = () => {
+        pointer.active = false;
+        pointer.previousClientX = null;
+        pointer.previousClientY = null;
+        startAnimation();
+      };
+
+      const setInteractionBinding = () => {
+        const shouldBind = finePointer.matches && !motionPreference.matches && !connection?.saveData;
+        if (shouldBind === interactionsBound) return;
+        interactionsBound = shouldBind;
+
+        if (shouldBind) {
+          interactionSurface.addEventListener('pointermove', handlePointerMove, { passive: true });
+          interactionSurface.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+        } else {
+          interactionSurface.removeEventListener('pointermove', handlePointerMove);
+          interactionSurface.removeEventListener('pointerleave', handlePointerLeave);
+          pointer.active = false;
+          stopAnimation();
+          resetDots();
+        }
+      };
+
+      const handleConditionsChange = () => setInteractionBinding();
+      const handleResize = () => {
+        if (resizeFrame) cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = 0;
+          if (!disposed) resize();
+        });
+      };
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          pointer.active = false;
+          stopAnimation();
+          resetDots(false);
+        } else if (visible) {
+          render();
+        }
+      };
+      const handleBeforeSwap = () => dispose();
+      const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(handleResize) : null;
+      const intersectionObserver =
+        typeof IntersectionObserver === 'function'
+          ? new IntersectionObserver(
+              ([entry]) => {
+                if (disposed) return;
+                visible = Boolean(entry?.isIntersecting);
+                if (!visible) {
+                  pointer.active = false;
+                  stopAnimation();
+                  resetDots(false);
+                } else {
+                  render();
+                }
+              },
+              { rootMargin: '80px' }
+            )
+          : null;
+
+      const dispose = () => {
+        if (disposed) return;
+        disposed = true;
+        stopAnimation();
+        if (resizeFrame) cancelAnimationFrame(resizeFrame);
+        resizeObserver?.disconnect();
+        intersectionObserver?.disconnect();
+        interactionSurface.removeEventListener('pointermove', handlePointerMove);
+        interactionSurface.removeEventListener('pointerleave', handlePointerLeave);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('astro:before-swap', handleBeforeSwap);
+        motionPreference.removeEventListener?.('change', handleConditionsChange);
+        finePointer.removeEventListener?.('change', handleConditionsChange);
+        connection?.removeEventListener?.('change', handleConditionsChange);
+      };
+
+      canvas.dataset.dotsReady = 'true';
+      resize();
+      setInteractionBinding();
+      resizeObserver?.observe(root);
+      intersectionObserver?.observe(root);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('astro:before-swap', handleBeforeSwap, { once: true });
+      motionPreference.addEventListener?.('change', handleConditionsChange);
+      finePointer.addEventListener?.('change', handleConditionsChange);
+      connection?.addEventListener?.('change', handleConditionsChange);
+    };
+
+    const scheduleDotField = (canvas) => {
+      if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.dotsReady || canvas.dataset.dotsScheduled) return;
+      if (typeof IntersectionObserver !== 'function') {
+        initializeDotField(canvas);
+        return;
+      }
+
+      canvas.dataset.dotsScheduled = 'true';
+      const cleanupSchedule = () => {
+        observer.disconnect();
+        document.removeEventListener('astro:before-swap', cleanupSchedule);
+        delete canvas.dataset.dotsScheduled;
+      };
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          cleanupSchedule();
+          initializeDotField(canvas);
+        },
+        { rootMargin: '400px' }
+      );
+
+      observer.observe(canvas);
+      document.addEventListener('astro:before-swap', cleanupSchedule, { once: true });
+    };
+
+    const initializeAll = () => {
+      document.querySelectorAll('[data-community-dots]').forEach(scheduleDotField);
+    };
+
+    if (!window.__communityDotFieldBound) {
+      window.__communityDotFieldBound = true;
+      document.addEventListener('astro:page-load', initializeAll);
+    }
+    initializeAll();
+  })();
+</script>
+
+<style>
+  .community-dots,
+  .community-dots__fallback,
+  .community-dots__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .community-dots {
+    z-index: 0;
+    overflow: hidden;
+    background: var(--rc-canvas);
+    pointer-events: none;
+  }
+
+  .community-dots__fallback {
+    background-color: var(--rc-canvas);
+    background-image: radial-gradient(circle, rgb(160 159 162 / 38%) 0 1.2px, transparent 1.35px);
+    background-position: center;
+    background-size: 18px 18px;
+    opacity: 1;
+    transition: opacity 420ms ease;
+  }
+
+  .community-dots__canvas {
+    display: block;
+    opacity: 0;
+    transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .community-dots__glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 17rem;
+    height: 17rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(60 143 247 / 18%) 0%, rgb(71 115 200 / 8%) 44%, transparent 72%);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .community-dots.is-ready .community-dots__fallback {
+    opacity: 0;
+  }
+
+  .community-dots.is-ready .community-dots__canvas {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .community-dots__fallback,
+    .community-dots__canvas {
+      transition: none;
+    }
+
+    .community-dots__glow {
+      display: none;
+    }
+  }
+</style>

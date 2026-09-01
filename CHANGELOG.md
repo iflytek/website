@@ -2,22 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.6.0] - 2026-08-26
 
 ### Added
 
+- **Astron Ecosystem Milestone Timeline**: Bilingual responsive `/milestone` page with Gantt-style timeline covering Astron Agent, Astron RPA, SkillHub, AgentBridge, GitHub Trending peaks, OSS Insight rankings, foundation ecosystem entries, and awards through August 2026
+- **New Event: Maintaining an Enterprise-Grade Agent Project Solo (2026-09-04)**: A2M Shanghai conference session on using Loop Engineering for AI-native automated delivery loop for Astron Agent
+- **New Event: Focus on Efficiency, Not Compute (2026-09-06)**: Shanghai meetup on heterogeneous AI acceleration infrastructure with Volcano + HAMi-core on Kubernetes
+- **Event Subtitles**: Optional bilingual subtitle fields for event cards with backward-compatible title fallback
+- **Homepage Redesign**: Dark tech-style visuals with unified design tokens, optimized Hero/project landscape/tech blog cards/partner LogoLoop, new background animations
+
+### Changed
+
+- **Homepage Architecture**: Refactored to dark tech-style design, removed deprecated theme toggle and standalone landscape page, unified branding
+- **README**: Updated Astro version 6.x → 7.x, improved project structure documentation, fixed Pages table
+- **Event Type**: Tianjin AI Innovation Exchange Conference changed from `meetup` to `conference`
+
+### Fixed
+
+- **Security: extract-zip Path Traversal (CVE-2026-56876)**: Overrode `@iconify/tools` to `^5.0.12` to remove vulnerable dependency
+- **CI Lychee Link Errors**: Fixed root-relative link resolution by pointing lychee at `dist/client/` with `.lychee.toml` configuration
+- **MoonBit Partner Logo**: Replaced with corrected horizontal transparent logo for proper sizing
+
+### Dependencies
+
+- **astro**: 7.2.0 → 7.2.2 (component styles, incremental builds, image optimization fixes)
+- **@astrojs/markdown-remark**: 7.2.2 → 7.2.4
+- **@astrojs/mdx**: 7.0.5 → 7.0.7 (Sätteri processor v0.10.3)
+- **astro-icon**: 1.1.5 → 1.2.0 (removes `extract-zip` vulnerability, requires Node ≥22.12)
+- **Dev Dependencies**: TypeScript-ESLint 8.66.0 → 8.67.0, astro-compress 2.4.2 → 2.4.3, ESLint 10.8.0 → 10.8.1, globals 17.9.0 → 17.11.0, tsx 4.23.9 → 4.23.12
+
+### Documentation
+
+- **HER Hack Partners**: Added MoonBit as partner
+
+## [0.5.0] - 2026-08-11
+
+### Added
+
+- **New Project: Dolphin MCP Pilot**: Production-grade MCP Server for Apache DolphinScheduler (`iflytek/dolphin-mcp-pilot`) — 58 tools covering workflow creation, scheduling, instance control, resource management, and raw API passthrough. Category: `agent-skills`, Language: Python, License: Apache-2.0
+- **Dolphin MCP Pilot Blog Post**: Release announcement blog (`dolphin-mcp-pilot-release.md`) covering project motivation, technical architecture (MCP protocol, dual auth modes, guided troubleshooting), tool matrix, quick start guide, and real-world usage scenarios (one-line scheduling, automated failure diagnosis, workflow version rollback)
 - **New Event: Driving Real Hardware with Astron Agent (2026-07-31)**: Online hackathon exploring how to connect user intent with real devices using Astron Agent — featuring Tuya T5 hardware walkthrough (reading sensor data, conditional logic, screen prompts) with a Mock API path for participants without dev boards
 - **Bilingual Event Descriptions**: Added `descriptionEn` field to the `Event` interface and English descriptions for all 12 events. Events page (`events.astro`) and search index (`search-index.json.ts`) now switch between Chinese and English descriptions via the existing `data-lang-zh` / `data-lang-en` language toggle
 
 ### Fixed
 
+- **Security: 5 Dependency Vulnerabilities Resolved (4 high, 1 moderate)**: `npm audit` reduced from 5 to 0 — fixed `brace-expansion` DoS via unbounded intermediate arrays (GHSA-rgw5-rvv9-x895), `fast-uri` host confusion via backslash authority (GHSA-7p8r-x3mc-p8w7), `nanoid` infinite loop with zero-size custom generators (GHSA-2v37-7h3g-55p8), `postcss` sourceMappingURL arbitrary file read (GHSA-fxqj-rqcc-2cmp), `undici` response desync / info disclosure / CRLF injection / cookie injection (GHSA-8xcm-r25x-g524, GHSA-4cwx-7wf7-3272, GHSA-m8rv-5g2x-5cg5, GHSA-jr45-8vmc-qm54, GHSA-v3r7-h72x-cjcm)
 - **Security: 10 Dependency Vulnerabilities Resolved (1 critical, 6 high, 3 moderate)**: `npm audit` reduced from 10 vulnerabilities to 0 — fixed `tar` PAX numeric path type confusion (critical), `astro` reflected XSS via unescaped View Transition animation properties / spread attribute names / `transition:*` directive values (GHSA-4g3v-8h47-v7g6, GHSA-f48w-9m4c-m7f5, GHSA-7pw4-f3q4-r2p2), `sharp` inherited libvips CVE-2026-33327 / CVE-2026-33328 / CVE-2026-35590 / CVE-2026-35591, `svgo` removeScripts executable script bypass + DOCTYPE Billion Laughs DoS (GHSA-2p49-hgcm-8545, GHSA-xpqw-6gx7-v673), `brace-expansion` exponential-time `{} ` group expansion DoS (GHSA-3jxr-9vmj-r5cp), `fast-uri` host confusion via literal backslash authority delimiter and failed IDN canonicalization (GHSA-v2hh-gcrm-f6hx, GHSA-4c8g-83qw-93j6)
 - **Production Build Missing Responsive Layout**: `astro-compress` v2.4.1 CSS minifier silently drops all Tailwind CSS v4 responsive breakpoint queries (`@media (width>=48rem)` etc.) because its CSS parser doesn't support Media Queries Level 4 range syntax — the production build on Vercel rendered every page as mobile-only layout. Disabled `CSS: true` in `astro-compress` config to preserve responsive styles; CSS files grow from ~124 KB to ~142 KB uncompressed
 - **CI Build Failure After Astro 7.1.6 Upgrade**: `astro.config.ts` imported `unified` from `@astrojs/markdown-remark`, a transitive dependency nested under `@astrojs/mdx/node_modules/` that npm doesn't hoist to top-level `node_modules` on fresh installs (CI & Vercel). Added `@astrojs/markdown-remark` as a direct dependency to fix module resolution
 
 ### Changed
 
-- **SEO-Friendly Project and Event Filters**: Replace client-side-only filters with server-rendered, shareable query-string URLs for project category/language and event type; add explicit empty states, request-time event status calculation, and page-specific bilingual meta descriptions across list, policy, and blog pages
+- **Page-Specific SEO Descriptions**: Add metadata for CLA, security, community values, and blog tag pages, with bilingual policy-page descriptions
 - **Astro 6 → 7 Major Upgrade**: `astro` ^6.4.8 → ^7.1.3, `@astrojs/vercel` ^10.0.8 → ^11.0.3, `@astrojs/mdx` ^6.0.3 → ^7.0.3 (Astro 7 ships with Vite 8 + Rolldown, stricter SSR static-build validation)
 - **astro-compress Upgrade**: ^2.3.8 → ^2.4.1 (picks up svgo 4.x, sharp 0.34.x)
 - **npm overrides Update**: Added `"svgo": ">=4.0.2"` and `"sharp": "^0.35.3"` overrides to force transitive dependencies to safe versions; removed conflicting `"vite": "^7"` override (Astro 7 requires Vite 8)
