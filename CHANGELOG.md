@@ -54,6 +54,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Page-Specific SEO Descriptions**: Add metadata for CLA, security, community values, and blog tag pages, with bilingual policy-page descriptions
 - **Astro 6 → 7 Major Upgrade**: `astro` ^6.4.8 → ^7.1.3, `@astrojs/vercel` ^10.0.8 → ^11.0.3, `@astrojs/mdx` ^6.0.3 → ^7.0.3 (Astro 7 ships with Vite 8 + Rolldown, stricter SSR static-build validation)
 - **astro-compress Upgrade**: ^2.3.8 → ^2.4.1 (picks up svgo 4.x, sharp 0.34.x)
 - **npm overrides Update**: Added `"svgo": ">=4.0.2"` and `"sharp": "^0.35.3"` overrides to force transitive dependencies to safe versions; removed conflicting `"vite": "^7"` override (Astro 7 requires Vite 8)
