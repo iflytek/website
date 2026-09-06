@@ -82,6 +82,9 @@
     "path-to-regexp": ">=6.3.0",
     "svgo": ">=4.0.2",
     "sharp": "^0.35.3",
-    "@iconify/tools": "^5.0.12"
+    "@iconify/tools": "^5.0.12",
+    "fast-uri": ">=4.1.4",
+    "postcss-selector-parser": ">=6.1.4",
+    "deepmerge-ts": ">=8.0.2"
   }
 }

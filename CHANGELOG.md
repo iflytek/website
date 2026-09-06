@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- **Security: 6 Dependency Vulnerabilities Resolved (5 high, 1 low)**: `npm audit` reduced from 6 to 0 — fixed `fast-uri` host confusion via percent-encoded scheme normalization / SSRF via malformed IPv6 / SSRF via repeated hostname percent-decoding / host confusion via skipped IDN canonicalization (4 high, CVE-2026-76172, CVE-2026-75975, CVE-2026-75899, CVE-2026-75931), `postcss-selector-parser` DoS via uncontrolled AST recursion (low, CVE-2026-9358), `deepmerge-ts` stack exhaustion when merging recursive object graphs (high, CVE-2026-40345)
+
+### Dependencies
+
+- **npm overrides**: Added `fast-uri >=4.1.4`, `postcss-selector-parser >=6.1.4`, `deepmerge-ts >=8.0.2` to force transitive dependencies to safe versions
+
 ## [0.6.0] - 2026-08-26
 
 ### Added
