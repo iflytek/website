@@ -42,12 +42,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Fetch contributors data
-        run: npm run fetch:contributors
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build site
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
       - name: Deploy to Vercel Production
         id: deploy
         uses: amondnet/vercel-action@v42

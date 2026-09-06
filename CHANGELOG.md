@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Production Contribute Page Missing Code Contributors**: Added `fetch-contributors.ts` to `prebuild` so contributor data is automatically fetched during Vercel builds; removed redundant standalone fetch step from `deploy.yml` and switched `GITHUB_TOKEN` source to `ADMIN_PAT` to avoid unauthenticated GitHub API rate limit (60 req/hr) causing missing contributor data
 - **Security: 6 Dependency Vulnerabilities Resolved (5 high, 1 low)**: `npm audit` reduced from 6 to 0 — fixed `fast-uri` host confusion via percent-encoded scheme normalization / SSRF via malformed IPv6 / SSRF via repeated hostname percent-decoding / host confusion via skipped IDN canonicalization (4 high, CVE-2026-76172, CVE-2026-75975, CVE-2026-75899, CVE-2026-75931), `postcss-selector-parser` DoS via uncontrolled AST recursion (low, CVE-2026-9358), `deepmerge-ts` stack exhaustion when merging recursive object graphs (high, CVE-2026-40345)
 
 ### Dependencies
