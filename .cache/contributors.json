@@ -1,17 +1,20 @@
 {
-  "updated_at": "2026-08-10T12:35:01.352Z",
-  "total": 140,
+  "updated_at": "2026-09-06T09:24:22.881Z",
+  "total": 157,
+  "source": {
+    "organization": "iflytek",
+    "organization_repository_policy": "public_non_fork_non_archived",
+    "extra_repositories": [
+      "harnessclaw/harnessclaw",
+      "harnessclaw/harnessclaw-engine"
+    ],
+    "repository_count": 60
+  },
   "contributors": [
-    {
-      "username": "whybeyoung",
-      "avatar_url": "https://avatars.githubusercontent.com/u/10629930?v=4",
-      "contributions": 1081,
-      "profile_url": "https://github.com/whybeyoung"
-    },
     {
       "username": "lyj715824",
       "avatar_url": "https://avatars.githubusercontent.com/u/124077501?v=4",
-      "contributions": 836,
+      "contributions": 871,
       "profile_url": "https://github.com/lyj715824"
     },
     {
@@ -29,7 +32,7 @@
     {
       "username": "dongmucat",
       "avatar_url": "https://avatars.githubusercontent.com/u/70678707?v=4",
-      "contributions": 344,
+      "contributions": 347,
       "profile_url": "https://github.com/dongmucat"
     },
     {
@@ -39,16 +42,28 @@
       "profile_url": "https://github.com/yun-zhi-ztl"
     },
     {
+      "username": "XiaoSeS",
+      "avatar_url": "https://avatars.githubusercontent.com/u/87064762?v=4",
+      "contributions": 283,
+      "profile_url": "https://github.com/XiaoSeS"
+    },
+    {
+      "username": "FenjuFu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92919259?v=4",
+      "contributions": 270,
+      "profile_url": "https://github.com/FenjuFu"
+    },
+    {
       "username": "BillorBear",
       "avatar_url": "https://avatars.githubusercontent.com/u/128047331?v=4",
       "contributions": 209,
       "profile_url": "https://github.com/BillorBear"
     },
     {
-      "username": "FenjuFu",
-      "avatar_url": "https://avatars.githubusercontent.com/u/92919259?v=4",
-      "contributions": 198,
-      "profile_url": "https://github.com/FenjuFu"
+      "username": "whybeyoung",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10629930?v=4",
+      "contributions": 171,
+      "profile_url": "https://github.com/whybeyoung"
     },
     {
       "username": "bestksl",
@@ -75,28 +90,22 @@
       "profile_url": "https://github.com/Alex-Smith-1234"
     },
     {
-      "username": "XiaoSeS",
-      "avatar_url": "https://avatars.githubusercontent.com/u/87064762?v=4",
-      "contributions": 140,
-      "profile_url": "https://github.com/XiaoSeS"
-    },
-    {
       "username": "sharphu",
       "avatar_url": "https://avatars.githubusercontent.com/u/39578471?v=4",
       "contributions": 129,
       "profile_url": "https://github.com/sharphu"
     },
     {
+      "username": "dongjiang1989",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5010507?v=4",
+      "contributions": 118,
+      "profile_url": "https://github.com/dongjiang1989"
+    },
+    {
       "username": "slqcode",
       "avatar_url": "https://avatars.githubusercontent.com/u/7392466?v=4",
       "contributions": 113,
       "profile_url": "https://github.com/slqcode"
-    },
-    {
-      "username": "dongjiang1989",
-      "avatar_url": "https://avatars.githubusercontent.com/u/5010507?v=4",
-      "contributions": 100,
-      "profile_url": "https://github.com/dongjiang1989"
     },
     {
       "username": "doctorbruce",
@@ -195,16 +204,16 @@
       "profile_url": "https://github.com/blessleon"
     },
     {
-      "username": "zhubin4615",
-      "avatar_url": "https://avatars.githubusercontent.com/u/31718425?v=4",
-      "contributions": 37,
-      "profile_url": "https://github.com/zhubin4615"
-    },
-    {
       "username": "Thomas1024-Astron",
       "avatar_url": "https://avatars.githubusercontent.com/u/138456210?v=4",
       "contributions": 37,
       "profile_url": "https://github.com/Thomas1024-Astron"
+    },
+    {
+      "username": "zhubin4615",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31718425?v=4",
+      "contributions": 37,
+      "profile_url": "https://github.com/zhubin4615"
     },
     {
       "username": "wangbing1005",
@@ -381,6 +390,12 @@
       "profile_url": "https://github.com/zijian2"
     },
     {
+      "username": "luojiyin1987",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6524977?v=4",
+      "contributions": 12,
+      "profile_url": "https://github.com/luojiyin1987"
+    },
+    {
       "username": "iflytek-open",
       "avatar_url": "https://avatars.githubusercontent.com/u/26294606?v=4",
       "contributions": 11,
@@ -421,12 +436,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/14340297?v=4",
       "contributions": 9,
       "profile_url": "https://github.com/ding727272zzz"
-    },
-    {
-      "username": "luojiyin1987",
-      "avatar_url": "https://avatars.githubusercontent.com/u/6524977?v=4",
-      "contributions": 9,
-      "profile_url": "https://github.com/luojiyin1987"
     },
     {
       "username": "sea-wyq",
@@ -471,6 +480,24 @@
       "profile_url": "https://github.com/hlxmg"
     },
     {
+      "username": "myml",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13045857?v=4",
+      "contributions": 7,
+      "profile_url": "https://github.com/myml"
+    },
+    {
+      "username": "Vast-Stars",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18486331?v=4",
+      "contributions": 7,
+      "profile_url": "https://github.com/Vast-Stars"
+    },
+    {
+      "username": "Hui-of-limin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52191549?v=4",
+      "contributions": 7,
+      "profile_url": "https://github.com/Hui-of-limin"
+    },
+    {
       "username": "ftlizii",
       "avatar_url": "https://avatars.githubusercontent.com/u/43408508?v=4",
       "contributions": 7,
@@ -493,6 +520,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/19969570?v=4",
       "contributions": 5,
       "profile_url": "https://github.com/TechQuery"
+    },
+    {
+      "username": "bbdu3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/313232278?v=4",
+      "contributions": 5,
+      "profile_url": "https://github.com/bbdu3"
     },
     {
       "username": "niclausse",
@@ -519,6 +552,12 @@
       "profile_url": "https://github.com/LHB6540"
     },
     {
+      "username": "michael-xiii",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1186790?v=4",
+      "contributions": 4,
+      "profile_url": "https://github.com/michael-xiii"
+    },
+    {
       "username": "happened",
       "avatar_url": "https://avatars.githubusercontent.com/u/20530955?v=4",
       "contributions": 3,
@@ -531,22 +570,16 @@
       "profile_url": "https://github.com/dygslyz"
     },
     {
-      "username": "michael-xiii",
-      "avatar_url": "https://avatars.githubusercontent.com/u/1186790?v=4",
+      "username": "gale-popai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/259040597?v=4",
       "contributions": 3,
-      "profile_url": "https://github.com/michael-xiii"
+      "profile_url": "https://github.com/gale-popai"
     },
     {
       "username": "mosesyu95",
       "avatar_url": "https://avatars.githubusercontent.com/u/22955185?v=4",
       "contributions": 3,
       "profile_url": "https://github.com/mosesyu95"
-    },
-    {
-      "username": "myml",
-      "avatar_url": "https://avatars.githubusercontent.com/u/13045857?v=4",
-      "contributions": 3,
-      "profile_url": "https://github.com/myml"
     },
     {
       "username": "lxyzhangqing",
@@ -609,6 +642,12 @@
       "profile_url": "https://github.com/haosenwang1018"
     },
     {
+      "username": "whyiug",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6668626?v=4",
+      "contributions": 2,
+      "profile_url": "https://github.com/whyiug"
+    },
+    {
       "username": "jinjin123456",
       "avatar_url": "https://avatars.githubusercontent.com/u/40254407?v=4",
       "contributions": 2,
@@ -625,12 +664,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/158296326?v=4",
       "contributions": 2,
       "profile_url": "https://github.com/chengchengchengcc"
-    },
-    {
-      "username": "gale-popai",
-      "avatar_url": "https://avatars.githubusercontent.com/u/259040597?v=4",
-      "contributions": 2,
-      "profile_url": "https://github.com/gale-popai"
     },
     {
       "username": "tenten-shih",
@@ -753,52 +786,28 @@
       "profile_url": "https://github.com/jonymei"
     },
     {
+      "username": "binyangzhu000-sudo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/224954946?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/binyangzhu000-sudo"
+    },
+    {
       "username": "autumn747",
       "avatar_url": "https://avatars.githubusercontent.com/u/117841304?v=4",
       "contributions": 1,
       "profile_url": "https://github.com/autumn747"
     },
     {
-      "username": "zhukai9527",
-      "avatar_url": "https://avatars.githubusercontent.com/u/22883012?v=4",
+      "username": "CaffreySun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15625350?v=4",
       "contributions": 1,
-      "profile_url": "https://github.com/zhukai9527"
+      "profile_url": "https://github.com/CaffreySun"
     },
     {
-      "username": "SenLinLeo",
-      "avatar_url": "https://avatars.githubusercontent.com/u/45943833?v=4",
+      "username": "xiaoyaner0201",
+      "avatar_url": "https://avatars.githubusercontent.com/u/258399167?v=4",
       "contributions": 1,
-      "profile_url": "https://github.com/SenLinLeo"
-    },
-    {
-      "username": "utafrali",
-      "avatar_url": "https://avatars.githubusercontent.com/u/8383373?v=4",
-      "contributions": 1,
-      "profile_url": "https://github.com/utafrali"
-    },
-    {
-      "username": "zhaieryuan",
-      "avatar_url": "https://avatars.githubusercontent.com/u/127175435?v=4",
-      "contributions": 1,
-      "profile_url": "https://github.com/zhaieryuan"
-    },
-    {
-      "username": "Phil-OSophy-42",
-      "avatar_url": "https://avatars.githubusercontent.com/u/215625218?v=4",
-      "contributions": 1,
-      "profile_url": "https://github.com/Phil-OSophy-42"
-    },
-    {
-      "username": "vzpd",
-      "avatar_url": "https://avatars.githubusercontent.com/u/28712045?v=4",
-      "contributions": 1,
-      "profile_url": "https://github.com/vzpd"
-    },
-    {
-      "username": "xring",
-      "avatar_url": "https://avatars.githubusercontent.com/u/7193733?v=4",
-      "contributions": 1,
-      "profile_url": "https://github.com/xring"
+      "profile_url": "https://github.com/xiaoyaner0201"
     },
     {
       "username": "yaffir",
@@ -807,10 +816,64 @@
       "profile_url": "https://github.com/yaffir"
     },
     {
-      "username": "CaffreySun",
-      "avatar_url": "https://avatars.githubusercontent.com/u/15625350?v=4",
+      "username": "xring",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7193733?v=4",
       "contributions": 1,
-      "profile_url": "https://github.com/CaffreySun"
+      "profile_url": "https://github.com/xring"
+    },
+    {
+      "username": "vzpd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28712045?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/vzpd"
+    },
+    {
+      "username": "qwn3213",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15106813?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/qwn3213"
+    },
+    {
+      "username": "Phil-OSophy-42",
+      "avatar_url": "https://avatars.githubusercontent.com/u/215625218?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/Phil-OSophy-42"
+    },
+    {
+      "username": "15258725278",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50289372?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/15258725278"
+    },
+    {
+      "username": "zhaieryuan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/127175435?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/zhaieryuan"
+    },
+    {
+      "username": "utafrali",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8383373?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/utafrali"
+    },
+    {
+      "username": "ShinyHero666",
+      "avatar_url": "https://avatars.githubusercontent.com/u/160204855?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/ShinyHero666"
+    },
+    {
+      "username": "SenLinLeo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45943833?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/SenLinLeo"
+    },
+    {
+      "username": "zhukai9527",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22883012?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/zhukai9527"
     },
     {
       "username": "biqibao112212-bot",
@@ -835,6 +898,54 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
       "contributions": 1,
       "profile_url": "https://github.com/web-flow"
+    },
+    {
+      "username": "qrx-joe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/174945156?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/qrx-joe"
+    },
+    {
+      "username": "MittaPei",
+      "avatar_url": "https://avatars.githubusercontent.com/u/315415437?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/MittaPei"
+    },
+    {
+      "username": "yangmengze608-afk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/244291450?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/yangmengze608-afk"
+    },
+    {
+      "username": "posuizhiyu-maker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/270531697?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/posuizhiyu-maker"
+    },
+    {
+      "username": "YanDawsonBot",
+      "avatar_url": "https://avatars.githubusercontent.com/u/282117796?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/YanDawsonBot"
+    },
+    {
+      "username": "dj331",
+      "avatar_url": "https://avatars.githubusercontent.com/u/154816521?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/dj331"
+    },
+    {
+      "username": "eason-and-jerrry",
+      "avatar_url": "https://avatars.githubusercontent.com/u/319766215?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/eason-and-jerrry"
+    },
+    {
+      "username": "jiayigreat1-ops",
+      "avatar_url": "https://avatars.githubusercontent.com/u/293986565?v=4",
+      "contributions": 1,
+      "profile_url": "https://github.com/jiayigreat1-ops"
     },
     {
       "username": "hu-qi",
