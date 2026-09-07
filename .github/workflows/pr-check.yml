@@ -43,6 +43,8 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Build site
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT || secrets.GITHUB_TOKEN }}
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-artifact@v7
