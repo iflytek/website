@@ -7,11 +7,11 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Production Contribute Page Missing Code Contributors**: Added `fetch-contributors.ts` to `prebuild` so contributor data is automatically fetched during Vercel builds; removed redundant standalone fetch step from `deploy.yml` and switched `GITHUB_TOKEN` source to `ADMIN_PAT` to avoid unauthenticated GitHub API rate limit (60 req/hr) causing missing contributor data
-- **Security: 6 Dependency Vulnerabilities Resolved (5 high, 1 low)**: `npm audit` reduced from 6 to 0 — fixed `fast-uri` host confusion via percent-encoded scheme normalization / SSRF via malformed IPv6 / SSRF via repeated hostname percent-decoding / host confusion via skipped IDN canonicalization (4 high, CVE-2026-76172, CVE-2026-75975, CVE-2026-75899, CVE-2026-75931), `postcss-selector-parser` DoS via uncontrolled AST recursion (low, CVE-2026-9358), `deepmerge-ts` stack exhaustion when merging recursive object graphs (high, CVE-2026-40345)
+- **Security: 10 Dependency Vulnerabilities Resolved (8 high, 1 medium, 1 low)**: `npm audit` reduced from 10 to 0 — fixed `fast-uri` host confusion via percent-encoded scheme normalization / SSRF via malformed IPv6 / SSRF via repeated hostname percent-decoding / host confusion via skipped IDN canonicalization (4 high, CVE-2026-76172, CVE-2026-75975, CVE-2026-75899, CVE-2026-75931), `postcss-selector-parser` DoS via uncontrolled AST recursion (low, CVE-2026-9358), `deepmerge-ts` stack exhaustion when merging recursive object graphs (high, CVE-2026-40345), `svgo` removeScripts XSS via namespace-prefixed SVG anchors / control-character URL bypass (GHSA-w27v-7q3p-w38r, CVE-2026-84370) and removeScripts incomplete sanitization of executable HTML in SVG `<foreignObject>` (GHSA-4vpr-x523-8j87, CVE-2026-84369), `sharp` inherited libheif vulnerabilities (GHSA-rgj7-g3m4-5g8c), `smol-toml` DoS via malformed TOML documents (GHSA-7w5x-hrqm-74c2)
 
 ### Dependencies
 
-- **npm overrides**: Added `fast-uri >=4.1.4`, `postcss-selector-parser >=6.1.4`, `deepmerge-ts >=8.0.2` to force transitive dependencies to safe versions
+- **npm overrides**: Added `fast-uri >=4.1.4`, `postcss-selector-parser >=6.1.4`, `deepmerge-ts >=8.0.2`, `smol-toml >=1.7.1` to force transitive dependencies to safe versions; bumped `svgo >=4.0.2` → `>=4.1.0`, `sharp ^0.35.3` → `^0.35.4`
 
 ## [0.6.0] - 2026-08-26
 
