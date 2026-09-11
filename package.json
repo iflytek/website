@@ -69,7 +69,7 @@
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "reading-time": "^1.5.0",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.23.13",
@@ -80,11 +80,15 @@
     "yaml": ">=2.8.3",
     "esbuild": ">=0.28.1",
     "path-to-regexp": ">=6.3.0",
-    "svgo": ">=4.0.2",
-    "sharp": "^0.35.3",
+    "svgo": ">=4.1.0",
+    "sharp": "^0.35.4",
     "@iconify/tools": "^5.0.12",
     "fast-uri": ">=4.1.4",
     "postcss-selector-parser": ">=6.1.4",
-    "deepmerge-ts": ">=8.0.2"
+    "deepmerge-ts": ">=8.0.2",
+    "smol-toml": ">=1.7.1"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }
