@@ -2,7 +2,14 @@
 import MarkdownLayout from '~/layouts/MarkdownLayout.astro';
 ---
 
-<MarkdownLayout frontmatter={{ title: '安全策略', titleEn: 'Security Policy' }}>
+<MarkdownLayout
+  frontmatter={{
+    title: '安全策略',
+    titleEn: 'Security Policy',
+    description:
+      '科大讯飞开源安全策略 — How to responsibly report security vulnerabilities in iFLYTEK open source projects and what to expect from the disclosure process.',
+  }}
+>
   <!-- Chinese Content -->
   <div class="i18n-zh">
     <p>如果你在本项目中发现安全问题，请遵循以下指南。</p>
