@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-14
+
 ### Fixed
 
 - **Production Contribute Page Missing Code Contributors**: Added `fetch-contributors.ts` to `prebuild` so contributor data is automatically fetched during Vercel builds; removed redundant standalone fetch step from `deploy.yml` and switched `GITHUB_TOKEN` source to `ADMIN_PAT` to avoid unauthenticated GitHub API rate limit (60 req/hr) causing missing contributor data
