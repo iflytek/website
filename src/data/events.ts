@@ -18,6 +18,21 @@ export interface Event {
 
 export const events: Event[] = [
   {
+    title:
+      'From Observability to Autonomous Decisions: AIOps Architecture Practice with Prometheus and Multi-Agent Collaboration',
+    titleZh: '从可观测到自主决策：基于 Prometheus 与多 Agent 协同的 AIOps 架构实践',
+    subtitle: '第 30 届 GOPS 全球运维大会·上海站',
+    subtitleEn: 'The 30th GOPS Global Operations Conference · Shanghai',
+    date: '2026-10-16',
+    type: 'conference',
+    description:
+      '探讨如何基于 Prometheus 可观测性数据，结合多 Agent 协同架构，构建从监控洞察到自主决策的 AIOps 闭环系统。分享在大规模分布式环境下的实践经验，包括指标采集、智能告警、根因分析与自动化运维等核心能力的落地方案。',
+    descriptionEn:
+      'Exploring how to build an AIOps closed-loop system from monitoring insights to autonomous decisions, leveraging Prometheus observability data combined with multi-agent collaborative architecture. Sharing practical experiences in large-scale distributed environments, including core capabilities such as metrics collection, intelligent alerting, root cause analysis, and automated operations.',
+    location: 'Shanghai, China',
+    link: 'https://www3.bagevent.com/event/9149220',
+  },
+  {
     title: 'Focus on Efficiency, Not Compute',
     titleZh: '不卷算力，卷效率',
     subtitle: '基于 Volcano + HAMi-core 打造 K8s 异构 AI 加速算力底座',

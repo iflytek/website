@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T09:24:22.881Z",
+  "updated_at": "2026-09-15T09:02:11.812Z",
   "total": 157,
   "source": {
     "organization": "iflytek",
@@ -12,10 +12,10 @@
   },
   "contributors": [
     {
-      "username": "lyj715824",
+      "username": "yjlu666",
       "avatar_url": "https://avatars.githubusercontent.com/u/124077501?v=4",
-      "contributions": 871,
-      "profile_url": "https://github.com/lyj715824"
+      "contributions": 874,
+      "profile_url": "https://github.com/yjlu666"
     },
     {
       "username": "smallKeyboy",
@@ -30,9 +30,15 @@
       "profile_url": "https://github.com/vsxd"
     },
     {
+      "username": "XiaoSeS",
+      "avatar_url": "https://avatars.githubusercontent.com/u/87064762?v=4",
+      "contributions": 365,
+      "profile_url": "https://github.com/XiaoSeS"
+    },
+    {
       "username": "dongmucat",
       "avatar_url": "https://avatars.githubusercontent.com/u/70678707?v=4",
-      "contributions": 347,
+      "contributions": 350,
       "profile_url": "https://github.com/dongmucat"
     },
     {
@@ -42,15 +48,9 @@
       "profile_url": "https://github.com/yun-zhi-ztl"
     },
     {
-      "username": "XiaoSeS",
-      "avatar_url": "https://avatars.githubusercontent.com/u/87064762?v=4",
-      "contributions": 283,
-      "profile_url": "https://github.com/XiaoSeS"
-    },
-    {
       "username": "FenjuFu",
       "avatar_url": "https://avatars.githubusercontent.com/u/92919259?v=4",
-      "contributions": 270,
+      "contributions": 276,
       "profile_url": "https://github.com/FenjuFu"
     },
     {
@@ -98,7 +98,7 @@
     {
       "username": "dongjiang1989",
       "avatar_url": "https://avatars.githubusercontent.com/u/5010507?v=4",
-      "contributions": 118,
+      "contributions": 123,
       "profile_url": "https://github.com/dongjiang1989"
     },
     {
@@ -414,6 +414,12 @@
       "profile_url": "https://github.com/maomeideliu"
     },
     {
+      "username": "bbdu3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/313232278?v=4",
+      "contributions": 11,
+      "profile_url": "https://github.com/bbdu3"
+    },
+    {
       "username": "jangrui",
       "avatar_url": "https://avatars.githubusercontent.com/u/5895682?v=4",
       "contributions": 11,
@@ -456,6 +462,12 @@
       "profile_url": "https://github.com/mmmlll0708"
     },
     {
+      "username": "Hui-of-limin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52191549?v=4",
+      "contributions": 8,
+      "profile_url": "https://github.com/Hui-of-limin"
+    },
+    {
       "username": "bwl0211",
       "avatar_url": "https://avatars.githubusercontent.com/u/104616643?v=4",
       "contributions": 7,
@@ -492,12 +504,6 @@
       "profile_url": "https://github.com/Vast-Stars"
     },
     {
-      "username": "Hui-of-limin",
-      "avatar_url": "https://avatars.githubusercontent.com/u/52191549?v=4",
-      "contributions": 7,
-      "profile_url": "https://github.com/Hui-of-limin"
-    },
-    {
       "username": "ftlizii",
       "avatar_url": "https://avatars.githubusercontent.com/u/43408508?v=4",
       "contributions": 7,
@@ -520,12 +526,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/19969570?v=4",
       "contributions": 5,
       "profile_url": "https://github.com/TechQuery"
-    },
-    {
-      "username": "bbdu3",
-      "avatar_url": "https://avatars.githubusercontent.com/u/313232278?v=4",
-      "contributions": 5,
-      "profile_url": "https://github.com/bbdu3"
     },
     {
       "username": "niclausse",
