@@ -33,6 +33,20 @@ export const events: Event[] = [
     link: 'https://www3.bagevent.com/event/9149220',
   },
   {
+    title: 'Spark LLM: Technical Innovation Practice with Domestic Computing Power',
+    titleZh: '星火大模型：国产算力下技术自主创新实践',
+    subtitle: 'AICC 2026 人工智能计算大会',
+    subtitleEn: 'AICC 2026 AI Computing Conference',
+    date: '2026-09-21',
+    type: 'conference',
+    description:
+      '本次演讲围绕讯飞星火大模型在国产算力下的实践展开：从背景介绍出发，展示星火大模型的能力表现，深入探讨国产算力面临的技术挑战与突破路径，介绍端侧模型的开源进展，分享行业落地案例，并展望规划与生态共建的未来方向。',
+    descriptionEn:
+      "This talk covers iFLYTEK Spark large model practices on domestic computing: starting with background, showcasing Spark's capabilities, exploring technical challenges and breakthroughs in domestic computing, introducing edge-side model open-source efforts, sharing industry deployment cases, and outlining future plans and ecosystem collaboration.",
+    location: 'Beijing, China',
+    link: 'https://www.aicconf.net/',
+  },
+  {
     title: 'Focus on Efficiency, Not Compute',
     titleZh: '不卷算力，卷效率',
     subtitle: '基于 Volcano + HAMi-core 打造 K8s 异构 AI 加速算力底座',

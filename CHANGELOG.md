@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **New Event: From Observability to Autonomous Decisions (2026-10-16)**: AIOps architecture practice session at the 30th GOPS Global Operations Conference · Shanghai, covering Prometheus-based observability data combined with multi-agent collaborative architecture for building closed-loop AIOps systems
+- **New Event: Spark LLM — Domestic Computing Innovation Practice (2026-09-21)**: Technical talk at AICC 2026 AI Computing Conference · Beijing, covering Spark LLM capabilities, domestic computing challenges & breakthroughs, edge-side model open-source, and industry deployment cases
 
 ## [0.7.0] - 2026-09-14
 
