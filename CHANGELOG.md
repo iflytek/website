@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **New Event: From Observability to Autonomous Decisions (2026-10-16)**: AIOps architecture practice session at the 30th GOPS Global Operations Conference · Shanghai, covering Prometheus-based observability data combined with multi-agent collaborative architecture for building closed-loop AIOps systems
+
 ## [0.7.0] - 2026-09-14
 
 ### Fixed
