@@ -6,7 +6,7 @@ on:
   workflow_dispatch:       # Manual trigger
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   update:
@@ -24,7 +24,7 @@ jobs:
       - name: Update contributors data
         run: npm run fetch:contributors
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
       - name: Commit and push if changed
         env:
           ADMIN_PAT: ${{ secrets.ADMIN_PAT }}
@@ -47,7 +47,7 @@ jobs:
             echo "::error::ADMIN_PAT cannot access this repository; rotate the repository secret."
             exit 1
           fi
-          git commit -m "chore: update contributors data"
+          git commit -m "chore: update contributors data [skip ci]"
           git push \
             "https://x-access-token:${ADMIN_PAT}@github.com/${GITHUB_REPOSITORY}.git" \
             "HEAD:${GITHUB_REF_NAME}"
