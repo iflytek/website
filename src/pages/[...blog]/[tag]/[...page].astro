@@ -20,6 +20,7 @@ const lastPage = page.lastPage ?? 1;
 const total = page.total ?? page.data.length;
 
 const metadata = {
+  description: `Posts tagged '${tag.title}' - articles from the iFLYTEK open source blog.`,
   title: `标签：${tag.title}${currentPage > 1 ? ` — 第 ${currentPage} 页` : ''}`,
   robots: {
     index: blogTagRobots?.index,
