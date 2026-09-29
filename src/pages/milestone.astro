@@ -275,6 +275,19 @@ const milestones: Array<{
       en: 'View on LFX Insights',
     },
   },
+  {
+    dateZh: '2026.09.29',
+    dateEn: 'Sep 29, 2026',
+    datetime: '2026-09-29',
+    project: 'sparkllm',
+    icon: 'tabler:download',
+    titleZh: 'Spark-X2.5 累计下载突破百万',
+    titleEn: 'Spark-X2.5 passed one million downloads',
+    descriptionZh:
+      'SparkLLM Spark-X2.5 开源模型在各分发渠道的下载量，加上社区衍生模型（第三方量化 / 微调）的下载量，累计突破一百万。',
+    descriptionEn:
+      'Combined downloads of the open-source SparkLLM Spark-X2.5 model across distribution channels and its community derivatives (third-party quantizations and fine-tunes) passed one million.',
+  },
 ];
 
 type GanttItem = {
@@ -519,6 +532,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
         dateEn: 'Sep 11, 2026',
         barZh: '奖项 · 09.11',
         barEn: 'Award · Sep 11',
+      },
+      {
+        sourceIndex: 16,
+        kind: 'point',
+        start: 13,
+        titleZh: 'Spark-X2.5 累计下载突破百万',
+        titleEn: 'Spark-X2.5 passed 1M downloads',
+        dateZh: '2026.09.29',
+        dateEn: 'Sep 29, 2026',
+        barZh: '百万下载 · 09.29',
+        barEn: '1M downloads · Sep 29',
       },
     ],
   },
