@@ -9,6 +9,15 @@ All notable changes to this project will be documented in this file.
 - **New Event: From Observability to Autonomous Decisions (2026-10-16)**: AIOps architecture practice session at the 30th GOPS Global Operations Conference · Shanghai, covering Prometheus-based observability data combined with multi-agent collaborative architecture for building closed-loop AIOps systems
 - **New Event: Spark LLM — Domestic Computing Innovation Practice (2026-09-21)**: Technical talk at AICC 2026 AI Computing Conference · Beijing, covering Spark LLM capabilities, domestic computing challenges & breakthroughs, edge-side model open-source, and industry deployment cases
 
+### Fixed
+
+- **Security: 31 Dependency Vulnerabilities Resolved (16 high, 10 medium, 5 low)**: `npm audit` high-severity count reduced from 31 to 8 (remaining 8 are `braces` stack-exhaustion DoS + `http-cache-semantics` cache disclosure — no patched versions available upstream). Fixed `sharp` librsvg RCE (CVE-2026-96889), `smol-toml` quadratic-time `parse()` DoS, `source-map-js` event-loop DoS via indexed source-map section offsets, `devalue` 6 alerts (shared memory serialization, sparse-array CPU amplification, quadratic primitive expansion, async unhandled rejection, `__proto__` property-key coercion bypass), `brace-expansion` quadratic-time `{a},b}` rewrite DoS + uncontrolled recursion stack exhaustion (5 alerts), `fast-uri` inconsistent host case normalization + `mailto` header injection, `undici` 11 alerts (orphaned RetryHandler DoS, oversized chunked response truncation, `Set-Cookie` caching cookie disclosure, unbounded decompression DoS, unrequested WebSocket subprotocol DoS, retry interceptor response splitting, `BalancedPool` TLS cert validation bypass, unsafe HTTP method response caching, `WebSocketStream` unclean close DoS, cross-origin cache poisoning, `permessage-deflate` unhandled error DoS)
+- **CI License Compliance Crash**: Removed blanket `brace-expansion >=5.0.12` npm override that forced `minimatch@3.x` (used by `glob@7` in the `license-checker` chain) to load `brace-expansion@5.x`, which has an incompatible API (`TypeError: expand is not a function`). Without the override, npm's natural semver resolution correctly installs `brace-expansion@5.0.12` for `minimatch@10` and `brace-expansion@1.1.21` for `minimatch@3` — both patched against reported Dependabot alerts
+
+### Dependencies
+
+- **npm overrides**: Added `source-map-js >=1.2.2`, `devalue >=5.9.3`, `undici >=8.10.2`; bumped `sharp ^0.35.4` → `^0.35.5`, `fast-uri >=4.1.4` → `>=4.1.5`, `smol-toml >=1.7.1` → `>=1.9.0`; removed `brace-expansion >=5.0.12` (incompatible with `minimatch@3.x` API)
+
 ## [0.7.0] - 2026-09-14
 
 ### Fixed
