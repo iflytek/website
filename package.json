@@ -79,7 +79,7 @@
   "overrides": {
     "yaml": ">=2.8.3",
     "esbuild": ">=0.28.1",
-    "path-to-regexp": ">=6.3.0",
+    "path-to-regexp": ">=6.3.0 <7.0.0",
     "svgo": ">=4.1.0",
     "sharp": "^0.35.5",
     "@iconify/tools": "^5.0.12",
