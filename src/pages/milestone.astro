@@ -8,12 +8,13 @@ const metadata = {
     'Milestones of the iFLYTEK Astron open source ecosystem across community rankings, global trends, ecosystem recognition, and industry awards.',
 };
 
-type ProjectKey = 'agent' | 'rpa' | 'skillhub' | 'ecosystem';
+type ProjectKey = 'agent' | 'rpa' | 'skillhub' | 'sparkllm' | 'ecosystem';
 
 const projectMeta: Record<ProjectKey, { labelZh: string; labelEn: string; accent: string }> = {
   agent: { labelZh: 'Astron Agent', labelEn: 'Astron Agent', accent: 'var(--rc-blue)' },
   rpa: { labelZh: 'Astron RPA', labelEn: 'Astron RPA', accent: 'var(--rc-cyan)' },
   skillhub: { labelZh: 'SkillHub', labelEn: 'SkillHub', accent: 'var(--rc-violet)' },
+  sparkllm: { labelZh: 'SparkLLM', labelEn: 'SparkLLM', accent: 'var(--rc-coral)' },
   ecosystem: {
     labelZh: 'Astron 生态',
     labelEn: 'Astron ecosystem',
@@ -212,6 +213,81 @@ const milestones: Array<{
       'Astron Agent was listed in the AI Native — Workflow Orchestration category of the CNCF Landscape, expanding its visibility across the global cloud-native ecosystem.',
     link: { href: '/blog/astron-agent-joins-cncf-landscape', zh: '了解更多', en: 'Learn more' },
   },
+  {
+    dateZh: '2026.08.28',
+    dateEn: 'Aug 28, 2026',
+    datetime: '2026-08-28',
+    project: 'agent',
+    icon: 'tabler:building-factory-2',
+    titleZh: '制造业 AI 原生应用标杆',
+    titleEn: 'Benchmark AI-Native Application for Manufacturing',
+    descriptionZh: 'Astron Agent 在“2026 AI-FDE 赋能制造业大会”上获评“制造业 AI 原生应用标杆”。',
+    descriptionEn:
+      'Astron Agent was named a Benchmark AI-Native Application for Manufacturing at the 2026 AI-FDE Empowering Manufacturing Conference.',
+    link: {
+      href: 'https://mp.weixin.qq.com/s/d3-JCJ-ISAKCL9YHSDavnQ',
+      zh: '查看大会报道',
+      en: 'Read the conference report',
+    },
+  },
+  {
+    dateZh: '2026.09.07',
+    dateEn: 'Sep 7, 2026',
+    datetime: '2026-09-07',
+    project: 'sparkllm',
+    icon: 'tabler:flame',
+    titleZh: 'Hugging Face Trending #1',
+    titleEn: 'Hugging Face Trending #1',
+    descriptionZh: 'SparkLLM Spark-X2.5 登顶 Hugging Face Trending，位列 #1。',
+    descriptionEn: 'SparkLLM Spark-X2.5 reached #1 on Hugging Face Trending.',
+  },
+  {
+    dateZh: '2026.09.11',
+    dateEn: 'Sep 11, 2026',
+    datetime: '2026-09-11',
+    project: 'sparkllm',
+    icon: 'tabler:award',
+    titleZh: '金算奖 · 端侧智能创新奖',
+    titleEn: 'Jinsuan Award · Edge Intelligence Innovation Award',
+    descriptionZh: 'SparkLLM（词元星火）在 2026 全球边缘 AI 算力大会上获得“金算奖 · 端侧智能创新奖”。',
+    descriptionEn:
+      'SparkLLM received the Jinsuan Award for Edge Intelligence Innovation at the 2026 Global Edge AI Computing Conference.',
+    link: {
+      href: 'https://mp.weixin.qq.com/s/H4hLNJeA_dOiyEBfYuNyLA',
+      zh: '查看获奖名单',
+      en: 'View the winners',
+    },
+  },
+  {
+    dateZh: '2026.09.15',
+    dateEn: 'Sep 15, 2026',
+    datetime: '2026-09-15',
+    project: 'agent',
+    icon: 'tabler:chart-dots-3',
+    titleZh: '入驻 LFX Insights',
+    titleEn: 'Onboarded to LFX Insights',
+    descriptionZh: 'Astron Agent 正式入驻 Linux 基金会 LFX Insights，项目健康度与社区贡献数据向全球开放可查。',
+    descriptionEn:
+      'Astron Agent was onboarded to Linux Foundation LFX Insights, making its project health and community contribution data publicly visible.',
+    link: {
+      href: 'https://insights.linuxfoundation.org/project/astron-agent',
+      zh: '查看 LFX Insights',
+      en: 'View on LFX Insights',
+    },
+  },
+  {
+    dateZh: '2026.09.29',
+    dateEn: 'Sep 29, 2026',
+    datetime: '2026-09-29',
+    project: 'sparkllm',
+    icon: 'tabler:download',
+    titleZh: 'Spark-X2.5 累计下载突破百万',
+    titleEn: 'Spark-X2.5 passed one million downloads',
+    descriptionZh:
+      'SparkLLM Spark-X2.5 开源模型在各分发渠道的下载量，加上社区衍生模型（第三方量化 / 微调）的下载量，累计突破一百万。',
+    descriptionEn:
+      'Combined downloads of the open-source SparkLLM Spark-X2.5 model across distribution channels and its community derivatives (third-party quantizations and fine-tunes) passed one million.',
+  },
 ];
 
 type GanttItem = {
@@ -240,6 +316,7 @@ const months = [
   { zh: '2026.06', en: 'Jun 2026' },
   { zh: '2026.07', en: 'Jul 2026' },
   { zh: '2026.08', en: 'Aug 2026' },
+  { zh: '2026.09', en: 'Sep 2026' },
 ];
 
 // A compact presentation model keeps the original horizontal map while the
@@ -316,6 +393,28 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
         dateEn: 'Jul 16, 2026',
         barZh: 'CNCF · 07.16',
         barEn: 'CNCF · Jul 16',
+      },
+      {
+        sourceIndex: 12,
+        kind: 'point',
+        start: 12,
+        titleZh: '制造业 AI 原生应用标杆',
+        titleEn: 'Benchmark AI-native application for manufacturing',
+        dateZh: '2026.08.28',
+        dateEn: 'Aug 28, 2026',
+        barZh: '标杆 · 08.28',
+        barEn: 'Benchmark · Aug 28',
+      },
+      {
+        sourceIndex: 15,
+        kind: 'point',
+        start: 13,
+        titleZh: '入驻 LFX Insights',
+        titleEn: 'Onboarded to LFX Insights',
+        dateZh: '2026.09.15',
+        dateEn: 'Sep 15, 2026',
+        barZh: 'LFX · 09.15',
+        barEn: 'LFX · Sep 15',
       },
     ],
   },
@@ -410,6 +509,44 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
     ],
   },
   {
+    project: 'sparkllm',
+    items: [
+      {
+        sourceIndex: 13,
+        kind: 'point',
+        start: 13,
+        titleZh: 'Spark-X2.5 · Hugging Face Trending #1',
+        titleEn: 'Spark-X2.5 · Hugging Face Trending #1',
+        dateZh: '2026.09.07',
+        dateEn: 'Sep 7, 2026',
+        barZh: 'HF #1 · 09.07',
+        barEn: 'HF #1 · Sep 7',
+      },
+      {
+        sourceIndex: 14,
+        kind: 'point',
+        start: 13,
+        titleZh: '金算奖 · 端侧智能创新奖',
+        titleEn: 'Jinsuan Award · Edge Intelligence Innovation',
+        dateZh: '2026.09.11',
+        dateEn: 'Sep 11, 2026',
+        barZh: '奖项 · 09.11',
+        barEn: 'Award · Sep 11',
+      },
+      {
+        sourceIndex: 16,
+        kind: 'point',
+        start: 13,
+        titleZh: 'Spark-X2.5 累计下载突破百万',
+        titleEn: 'Spark-X2.5 passed 1M downloads',
+        dateZh: '2026.09.29',
+        dateEn: 'Sep 29, 2026',
+        barZh: '百万下载 · 09.29',
+        barEn: '1M downloads · Sep 29',
+      },
+    ],
+  },
+  {
     project: 'ecosystem',
     items: [
       {
@@ -452,8 +589,8 @@ const stats = [
   },
 ];
 
-const periodZh = '2025.09 — 2026.08';
-const periodEn = 'Sep 2025 — Aug 2026';
+const periodZh = '2025.09 — 2026.09';
+const periodEn = 'Sep 2025 — Sep 2026';
 ---
 
 <Layout metadata={metadata}>
@@ -562,6 +699,7 @@ const periodEn = 'Sep 2025 — Aug 2026';
           >
             <div
               class="milestone-gantt"
+              style={'--gantt-month-count:' + months.length}
               role="table"
               aria-label="Astron open source milestone timeline"
               aria-describedby="milestone-gantt-description"
@@ -711,7 +849,10 @@ const periodEn = 'Sep 2025 — Aug 2026';
                                   </span>
                                 </div>
                               ) : (
-                                <div class="milestone-gantt__point-wrap" style={`grid-column:${item.start}`}>
+                                <div
+                                  class:list={['milestone-gantt__point-wrap', item.start === months.length && 'is-end']}
+                                  style={`grid-column:${item.start}`}
+                                >
                                   <span
                                     class="milestone-gantt__point"
                                     style={'--milestone-accent:' + project.accent}
@@ -1059,10 +1200,10 @@ const periodEn = 'Sep 2025 — Aug 2026';
 
   .milestone-gantt {
     --gantt-label-width: clamp(16rem, 20vw, 18rem);
-    --gantt-track-width: minmax(60rem, 1fr);
+    --gantt-track-width: minmax(65rem, 1fr);
     --milestone-bar-size: var(--rc-type-label);
     --milestone-micro-size: 0.6875rem;
-    min-width: 76rem;
+    min-width: 81rem;
     color: var(--rc-text);
   }
 
@@ -1097,7 +1238,7 @@ const periodEn = 'Sep 2025 — Aug 2026';
   .milestone-gantt__track {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--gantt-month-count, 12), minmax(0, 1fr));
     min-width: 0;
   }
 
@@ -1178,7 +1319,7 @@ const periodEn = 'Sep 2025 — Aug 2026';
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--gantt-month-count, 12), minmax(0, 1fr));
   }
 
   .milestone-gantt__grid-line {
@@ -1360,6 +1501,11 @@ const periodEn = 'Sep 2025 — Aug 2026';
 
   .milestone-gantt__point-label > span {
     white-space: nowrap;
+  }
+
+  .milestone-gantt__point-wrap.is-end .milestone-gantt__point-label {
+    right: calc(100% + 1.25rem);
+    left: auto;
   }
 
   .milestone-gantt__track--item:focus-within .milestone-gantt__point,
