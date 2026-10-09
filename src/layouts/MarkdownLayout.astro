@@ -7,13 +7,17 @@ export interface Props {
   frontmatter: {
     title?: string;
     titleEn?: string;
+    description?: string;
+    descriptionEn?: string;
   };
 }
 
 const { frontmatter } = Astro.props;
+const description = [frontmatter?.description, frontmatter?.descriptionEn].filter(Boolean).join(' - ');
 
 const metadata: MetaData = {
   title: frontmatter?.title,
+  description: description || undefined,
 };
 ---
 
