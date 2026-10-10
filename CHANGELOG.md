@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **iFLYTEK Joins TODO Group OSPO Landscape**: Bilingual blog post announcing iFLYTEK's inclusion in the OSPO Landscape under the OSPO Adopter category, alongside GitHub, Honda, IBM, Intel, and other global organizations. Added `iflytek-joins-ospo-landscape.md` (zh) and `iflytek-joins-ospo-landscape-en.md` (en) with OSPO Landscape PNG illustration
 - **New Event: From Observability to Autonomous Decisions (2026-10-16)**: AIOps architecture practice session at the 30th GOPS Global Operations Conference · Shanghai, covering Prometheus-based observability data combined with multi-agent collaborative architecture for building closed-loop AIOps systems
 - **New Event: Spark LLM — Domestic Computing Innovation Practice (2026-09-21)**: Technical talk at AICC 2026 AI Computing Conference · Beijing, covering Spark LLM capabilities, domestic computing challenges & breakthroughs, edge-side model open-source, and industry deployment cases
 

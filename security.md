@@ -8,7 +8,7 @@
 - [Security Best Practices](#security-best-practices)
 <!-- /toc -->
 
-If you discover a security issue in this project, please follow the guidelines below.
+If you discover a security vulnerability, please report it privately to security@iflytek.com. Do not open a public issue.
 
 ## Reporting a Vulnerability
 
