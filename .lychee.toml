@@ -30,6 +30,14 @@ exclude = [
   # runners (especially on first request). Exclude to avoid spurious
   # failures for a known-stable target.
   '^https?://(www\.)?huggingface\.co/',
+  # TODO Group OSPO Landscape — dynamic SPA; item-specific URLs and
+  # the base page both time out or return non-2xx from CI runners.
+  # Exclude the entire domain to avoid spurious failures.
+  '^https://landscape\.todogroup\.org/',
+  # iFLYTEK Open Source site — blog posts reference pages that may
+  # not yet be deployed when the PR is checked against the built
+  # preview (not yet merged to main / pushed to production).
+  '^https://opensource\.iflytek\.com/',
 ]
 
 # Retry flaky requests a couple of times before reporting them.
