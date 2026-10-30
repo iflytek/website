@@ -288,6 +288,19 @@ const milestones: Array<{
     descriptionEn:
       'Combined downloads of the open-source SparkLLM Spark-X2.5 model across distribution channels and its community derivatives (third-party quantizations and fine-tunes) passed one million.',
   },
+  {
+    dateZh: '2026.10.30',
+    dateEn: 'Oct 30, 2026',
+    datetime: '2026-10-30',
+    project: 'sparkllm',
+    icon: 'tabler:download',
+    titleZh: 'Spark-X2.5 和 Spark-X2.6 累计下载突破 350 万',
+    titleEn: 'Spark-X2.5 and Spark-X2.6 passed 3.5 million downloads',
+    descriptionZh:
+      'Spark-X2.5 和 Spark-X2.6 官方模型及社区衍生模型（第三方量化、微调和格式转换）在 Hugging Face 的累计下载量合计突破 350 万次。',
+    descriptionEn:
+      'Combined cumulative downloads of the official Spark-X2.5 and Spark-X2.6 models and their community derivatives (third-party quantizations, fine-tunes, and format conversions) on Hugging Face passed 3.5 million.',
+  },
 ];
 
 type GanttItem = {
@@ -317,6 +330,7 @@ const months = [
   { zh: '2026.07', en: 'Jul 2026' },
   { zh: '2026.08', en: 'Aug 2026' },
   { zh: '2026.09', en: 'Sep 2026' },
+  { zh: '2026.10', en: 'Oct 2026' },
 ];
 
 // A compact presentation model keeps the original horizontal map while the
@@ -544,6 +558,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
         barZh: '百万下载 · 09.29',
         barEn: '1M downloads · Sep 29',
       },
+      {
+        sourceIndex: 17,
+        kind: 'point',
+        start: 14,
+        titleZh: 'Spark-X2.5 和 Spark-X2.6 累计下载突破 350 万',
+        titleEn: 'Spark-X2.5 and Spark-X2.6 passed 3.5M downloads',
+        dateZh: '2026.10.30',
+        dateEn: 'Oct 30, 2026',
+        barZh: '350 万下载 · 10.30',
+        barEn: '3.5M downloads · Oct 30',
+      },
     ],
   },
   {
@@ -589,8 +614,8 @@ const stats = [
   },
 ];
 
-const periodZh = '2025.09 — 2026.09';
-const periodEn = 'Sep 2025 — Sep 2026';
+const periodZh = '2025.09 — 2026.10';
+const periodEn = 'Sep 2025 — Oct 2026';
 ---
 
 <Layout metadata={metadata}>
