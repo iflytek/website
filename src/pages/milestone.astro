@@ -315,6 +315,32 @@ const milestones: Array<{
     descriptionEn:
       'Combined cumulative downloads of the official Spark-X2.5 and Spark-X2.6 models and their community derivatives (third-party quantizations, fine-tunes, and format conversions) on Hugging Face passed 3.5 million.',
   },
+  {
+    dateZh: '2026.10.30',
+    dateEn: 'Oct 30, 2026',
+    datetime: '2026-10-30',
+    project: 'agent',
+    icon: 'tabler:trophy',
+    titleZh: '上海开源软件应用创新大赛 · 开源 AI 工具赛道三等奖',
+    titleEn:
+      'Third prize in the Open Source AI Tools track of the Shanghai Open Source Software Application Innovation Competition',
+    descriptionZh: 'Astron Agent 获得 2026 上海开源软件应用创新大赛开源 AI 工具赛道三等奖。',
+    descriptionEn:
+      'Astron Agent won third prize in the Open Source AI Tools track of the 2026 Shanghai Open Source Software Application Innovation Competition.',
+    link: { href: 'https://www.oschina.net/os2026/winners', zh: '查看获奖名单', en: 'View the winners' },
+  },
+  {
+    dateZh: '2026.11.10（待发布）',
+    dateEn: 'Nov 10, 2026 (upcoming)',
+    datetime: '2026-11-10',
+    project: 'agent',
+    icon: 'tabler:award',
+    titleZh: '2026 年度 OSCAR“开源+”尖峰实践',
+    titleEn: '2026 OSCAR Open Source+ Peak Practice',
+    descriptionZh: 'Astron Agent 的 2026 年度 OSCAR“开源+”尖峰实践荣誉，计划于 2026 年 11 月 10 日发布。',
+    descriptionEn:
+      'Astron Agent’s 2026 OSCAR Open Source+ Peak Practice recognition is scheduled for November 10, 2026.',
+  },
 ];
 
 type GanttItem = {
@@ -345,6 +371,7 @@ const months = [
   { zh: '2026.08', en: 'Aug 2026' },
   { zh: '2026.09', en: 'Sep 2026' },
   { zh: '2026.10', en: 'Oct 2026' },
+  { zh: '2026.11', en: 'Nov 2026' },
 ];
 
 // A compact presentation model keeps the original horizontal map while the
@@ -443,6 +470,28 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
         dateEn: 'Sep 15, 2026',
         barZh: 'LFX · 09.15',
         barEn: 'LFX · Sep 15',
+      },
+      {
+        sourceIndex: 19,
+        kind: 'point',
+        start: 14,
+        titleZh: '上海开源大赛 · 开源 AI 工具赛道三等奖',
+        titleEn: 'Shanghai Open Source Competition · Third prize, AI Tools',
+        dateZh: '2026.10.30',
+        dateEn: 'Oct 30, 2026',
+        barZh: '三等奖 · 10.30',
+        barEn: 'Third prize · Oct 30',
+      },
+      {
+        sourceIndex: 20,
+        kind: 'point',
+        start: 15,
+        titleZh: 'OSCAR“开源+”尖峰实践（待发布）',
+        titleEn: 'OSCAR Open Source+ Peak Practice (upcoming)',
+        dateZh: '2026.11.10',
+        dateEn: 'Nov 10, 2026',
+        barZh: '待发布 · 11.10',
+        barEn: 'Upcoming · Nov 10',
       },
     ],
   },
@@ -639,8 +688,8 @@ const stats = [
   },
 ];
 
-const periodZh = '2025.09 — 2026.10';
-const periodEn = 'Sep 2025 — Oct 2026';
+const periodZh = '2025.09 — 2026.11';
+const periodEn = 'Sep 2025 — Nov 2026';
 ---
 
 <Layout metadata={metadata}>
