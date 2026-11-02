@@ -289,6 +289,20 @@ const milestones: Array<{
       'Combined downloads of the open-source SparkLLM Spark-X2.5 model across distribution channels and its community derivatives (third-party quantizations and fine-tunes) passed one million.',
   },
   {
+    dateZh: '2026.10.05',
+    dateEn: 'Oct 5, 2026',
+    datetime: '2026-10-05',
+    project: 'sparkllm',
+    icon: 'tabler:search',
+    titleZh: 'Spark-X2.5 领先 PocketPal 联网搜索评测 #1 & #3',
+    titleEn: 'Spark-X2.5 leads the PocketPal web search table at #1 & #3',
+    descriptionZh:
+      '在 PocketPal Agentic Web Search 评测中，Spark-X2.5-4B 表列第 1，1.7B 表列第 3，Fresh 正确率分别为 89%、87%；两款模型均被标记为准确率与模型体积的帕累托前沿模型，Q4_K_M 权重体积分别为 2.6 GB、1.1 GB。名次按评测表列顺序，领先组的 90% 置信区间重叠。',
+    descriptionEn:
+      'In the PocketPal Agentic Web Search evaluation, Spark-X2.5-4B and Spark-X2.5-1.7B appear first and third in the table, with Fresh accuracy of 89% and 87%, respectively. Both are marked on the accuracy-versus-model-size Pareto frontier, with Q4_K_M weights of 2.6 GB and 1.1 GB. Positions refer to table order; the leading group has overlapping 90% confidence intervals.',
+    link: { href: 'https://pocketpal.dev/evals/web-search', zh: 'PocketPal 评测', en: 'PocketPal evaluation' },
+  },
+  {
     dateZh: '2026.10.30',
     dateEn: 'Oct 30, 2026',
     datetime: '2026-10-30',
@@ -560,6 +574,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
       },
       {
         sourceIndex: 17,
+        kind: 'point',
+        start: 14,
+        titleZh: 'Spark-X2.5 领先 PocketPal 联网搜索评测 #1 & #3',
+        titleEn: 'Spark-X2.5 leads the PocketPal web search table at #1 & #3',
+        dateZh: '2026.10.05',
+        dateEn: 'Oct 5, 2026',
+        barZh: '#1 & #3 · 10.05',
+        barEn: '#1 & #3 · Oct 5',
+      },
+      {
+        sourceIndex: 18,
         kind: 'point',
         start: 14,
         titleZh: 'Spark-X2.5 和 Spark-X2.6 累计下载突破 350 万',
