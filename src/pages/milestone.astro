@@ -383,6 +383,25 @@ const milestones: Array<{
     descriptionEn:
       'Astron Agent’s 2026 OSCAR Open Source+ Peak Practice recognition is scheduled for November 10, 2026.',
   },
+  {
+    id: 'spark-5m-downloads',
+    dateZh: '2026.11.09',
+    dateEn: 'Nov 9, 2026',
+    datetime: '2026-11-09T03:36:39+08:00',
+    project: 'sparkllm',
+    icon: 'tabler:download',
+    titleZh: 'Spark-X2.5 和 Spark-X2.6 累计下载 / 拉取突破 500 万',
+    titleEn: 'Spark-X2.5 and Spark-X2.6 passed 5M downloads / pulls',
+    descriptionZh:
+      'SparkLLM 于北京时间 2026 年 11 月 9 日 03:36 发布：Spark-X2.5 和 Spark-X2.6 在六个平台累计下载 / 拉取突破 500 万，包含 276 个社区衍生模型。此为跨平台累计口径，不是单一平台下载量或独立用户数。',
+    descriptionEn:
+      'Announced by SparkLLM on November 9, 2026 at 03:36 Beijing time: Spark-X2.5 and Spark-X2.6 passed 5M cumulative downloads / pulls across six platforms, including 276 community derivatives. This is a cross-platform total, not downloads on a single platform or unique users.',
+    link: {
+      href: 'https://x.com/SparkLLM/status/2119514456971485233',
+      zh: '查看官方公告',
+      en: 'View the official announcement',
+    },
+  },
 ];
 
 type GanttItem = {
@@ -684,6 +703,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
         dateEn: 'Oct 30, 2026',
         barZh: '350 万下载 · 10.30',
         barEn: '3.5M downloads · Oct 30',
+      },
+      {
+        sourceId: 'spark-5m-downloads',
+        kind: 'point',
+        start: 15,
+        titleZh: 'Spark-X2.5 和 Spark-X2.6 累计下载 / 拉取突破 500 万',
+        titleEn: 'Spark-X2.5 and Spark-X2.6 passed 5M downloads / pulls',
+        dateZh: '2026.11.09',
+        dateEn: 'Nov 9, 2026',
+        barZh: '500 万下载 / 拉取 · 11.09',
+        barEn: '5M downloads / pulls · Nov 9',
       },
     ],
   },
@@ -1010,9 +1040,9 @@ const periodEn = 'Sep 2025 — Nov 2026';
                               role="cell"
                               aria-labelledby={titleId}
                               aria-describedby={descriptionId}
-                              data-lang-title-zh={source.descriptionZh}
-                              data-lang-title-en={source.descriptionEn}
-                              title={source.descriptionZh}
+                              tabindex="0"
+                              data-milestone-description-zh={source.descriptionZh}
+                              data-milestone-description-en={source.descriptionEn}
                             >
                               <div class="milestone-gantt__grid" aria-hidden="true">
                                 {months.map((_, index) => (
@@ -1093,10 +1123,61 @@ const periodEn = 'Sep 2025 — Nov 2026';
       </div>
     </section>
   </div>
+  <div class="milestone-tooltip" data-milestone-tooltip hidden></div>
 </Layout>
 
 <script>
   (() => {
+    let activeTrack: HTMLElement | null = null;
+    const hideTooltip = () => {
+      const tooltip = document.querySelector<HTMLElement>('[data-milestone-tooltip]');
+      if (tooltip) tooltip.hidden = true;
+      activeTrack = null;
+    };
+    const showTooltip = (track: HTMLElement) => {
+      const tooltip = document.querySelector<HTMLElement>('[data-milestone-tooltip]');
+      if (!tooltip) return;
+      activeTrack = track;
+      const language = document.documentElement.lang === 'en' ? 'en' : 'zh';
+      tooltip.textContent = track.getAttribute(`data-milestone-description-${language}`);
+      tooltip.hidden = false;
+      const anchor = track.querySelector('.milestone-gantt__point-label, .milestone-gantt__range') || track;
+      const rect = anchor.getBoundingClientRect();
+      const gap = 12;
+      const left = Math.max(gap, Math.min(rect.left, window.innerWidth - tooltip.offsetWidth - gap));
+      const preferredTop = rect.top - tooltip.offsetHeight - gap;
+      const top = preferredTop >= gap ? preferredTop : rect.bottom + gap;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${Math.max(gap, Math.min(top, window.innerHeight - tooltip.offsetHeight - gap))}px`;
+    };
+    const initMilestoneTooltips = () => {
+      document.querySelectorAll<HTMLElement>('[data-milestone-description-zh]').forEach((track) => {
+        if (track.dataset.tooltipReady) return;
+        track.dataset.tooltipReady = 'true';
+        track.addEventListener('pointerenter', () => showTooltip(track));
+        track.addEventListener('pointerleave', (event) => {
+          if (event.relatedTarget instanceof Element && event.relatedTarget.closest('[data-milestone-tooltip]')) return;
+          hideTooltip();
+        });
+        track.addEventListener('focus', () => showTooltip(track));
+        track.addEventListener('blur', hideTooltip);
+        track.addEventListener('click', () => showTooltip(track));
+      });
+      const tooltip = document.querySelector<HTMLElement>('[data-milestone-tooltip]');
+      if (tooltip && !tooltip.dataset.ready) {
+        tooltip.dataset.ready = 'true';
+        tooltip.addEventListener('pointerleave', hideTooltip);
+      }
+    };
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') hideTooltip();
+    });
+    document.addEventListener('scroll', hideTooltip, true);
+    window.addEventListener('resize', hideTooltip);
+    document.addEventListener('astro:before-swap', hideTooltip);
+    document.addEventListener('languagechange', () => {
+      if (activeTrack) showTooltip(activeTrack);
+    });
     const syncMilestoneTitles = () => {
       const language = document.documentElement.lang === 'en' ? 'en' : 'zh';
       document.querySelectorAll('[data-lang-title-zh]').forEach((element) => {
@@ -1131,16 +1212,46 @@ const periodEn = 'Sep 2025 — Nov 2026';
 
     syncMilestoneTitles();
     initMilestoneGanttKeyboard();
+    initMilestoneTooltips();
     document.addEventListener('languagechange', syncMilestoneTitles);
     document.addEventListener('astro:after-swap', () => {
       syncMilestoneTitles();
       initMilestoneGanttKeyboard();
+      initMilestoneTooltips();
       window.requestAnimationFrame(syncMilestoneTitles);
     });
   })();
 </script>
 
 <style>
+  .milestone-tooltip {
+    position: fixed;
+    z-index: 100;
+    width: max-content;
+    max-width: min(28rem, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    overflow: auto;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: 8px;
+    background: var(--rc-surface-raised);
+    color: var(--rc-text-strong);
+    box-shadow: 0 8px 28px rgb(0 0 0 / 25%);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .milestone-tooltip[hidden] {
+    display: none;
+  }
+
+  .milestone-gantt__track--item:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: -3px;
+  }
+
   .milestone-page {
     min-height: 70vh;
     overflow: clip;
