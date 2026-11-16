@@ -19,6 +19,21 @@ export interface Event {
 export const events: Event[] = [
   {
     title:
+      'AI-Native Architecture Evolution and Governance: Building a Production-Grade Agent Infrastructure with Gateway, Sandbox, and Heterogeneous Scheduling',
+    titleZh: 'AI 原生架构的演进与治理：基于网关、沙箱与异构调度构建生产级智能体底座',
+    subtitle: 'AICon 北京 2026 · 专题「AI 原生架构的演进与治理」',
+    subtitleEn: 'AICon Beijing 2026 · Track "AI-Native Architecture Evolution and Governance"',
+    date: '2026-12-18',
+    type: 'conference',
+    description:
+      '随着自主智能体从原型 Demo 走向企业规模化落地，传统云原生服务架构无法适配 Agent 自主循环、链式工具调用、动态代码执行等行为特征，AI 原生架构范式应运而生。本次分享基于控制面与数据面分离的核心理念，介绍一套由 AgentGateway、Agent Sandbox、Volcano、HAMi 和 Prometheus 共同组成的生产级智能体底座：AgentGateway 作为控制面负责身份鉴权、工具策略管控、流量路由与操作审计；Agent Sandbox 作为数据面提供与会话绑定的强隔离执行环境；依托 Volcano Gang 调度与 HAMi 异构算力分片解决大规模 Agent 并发场景下的 GPU 争抢与资源配额管控问题；并基于 Prometheus 构建覆盖网关策略、沙箱熔断、调度状态、显存利用率、会话 SLO 的全链路可观测闭环。演讲嘉宾：董江，科大讯飞资深架构师。',
+    descriptionEn:
+      'As autonomous agents move from prototype demos to enterprise-scale production, traditional cloud-native service architectures cannot accommodate agent autonomy loops, chained tool calls, and dynamic code execution — giving rise to the AI-native architecture paradigm. Based on the core principle of control-plane/data-plane separation, this talk presents a production-grade agent infrastructure composed of AgentGateway, Agent Sandbox, Volcano, HAMi, and Prometheus: AgentGateway serves as the control plane for identity authentication, tool policy enforcement, traffic routing, and operation auditing; Agent Sandbox provides the data plane with session-bound, strongly isolated execution environments; Volcano gang scheduling and HAMi heterogeneous compute slicing address GPU contention and quota management under massive agent concurrency; and Prometheus delivers a full-link observability loop covering gateway policies, sandbox circuit-breaking, scheduling state, VRAM utilization, and session SLOs. Speaker: Dong Jiang, Senior Architect at iFLYTEK.',
+    location: 'Beijing, China',
+    link: 'https://aicon.infoq.cn/2026/beijing/presentation/7474',
+  },
+  {
+    title:
       'From Observability to Autonomous Decisions: AIOps Architecture Practice with Prometheus and Multi-Agent Collaboration',
     titleZh: '从可观测到自主决策：基于 Prometheus 与多 Agent 协同的 AIOps 架构实践',
     subtitle: '第 30 届 GOPS 全球运维大会·上海站',
