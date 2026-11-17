@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- **Grouped SparkLLM Download Milestones**: Consolidated the one-million, 3.5-million, and five-million download milestones into one bilingual timeline row with three staggered date markers (2026-09-29, 2026-10-30, and 2026-11-09). Preserved the original dates, version/platform scopes, and official announcement links; the different scopes do not represent a directly comparable growth series.
+
 ## [0.8.0] - 2026-11-17
 
 ### Added
