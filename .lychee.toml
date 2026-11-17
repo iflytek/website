@@ -38,6 +38,10 @@ exclude = [
   # not yet be deployed when the PR is checked against the built
   # preview (not yet merged to main / pushed to production).
   '^https://opensource\.iflytek\.com/',
+  # skillhub GitHub Pages site intermittently returns 503 from CI
+  # runners (GitHub Pages cold starts / temporary unavailability).
+  # Referenced by skillhub blog posts; known-stable target.
+  '^https://iflytek\.github\.io/skillhub/',
 ]
 
 # Retry flaky requests a couple of times before reporting them.
