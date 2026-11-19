@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **OSTAC 2026 Short-Paper Acceptances**: Added November 17 acceptance milestones for SkillHub (2026-00282), Astron Agent (2026-00283), and Spark-X2.5 (2026-00284), based on the organizer notifications supplied by the maintainer. Preserved the full Chinese manuscript titles and identified English titles as display translations; described poster presentation and the November 21 session as planned, not completed.
+- **Astron Agent Recognition and Research Milestones**: Updated the November 10 OSCAR Open Source+ Peak Practice recognition from upcoming to announced. Added the November 14 Fourth OpenAtom Competition Excellence Award in the Open Source Basic Software and Solutions track and the November 16 OSTAC 2026 full-paper acceptance for the Astron Agent empirical study (2026-00281), with bilingual timeline entries and official event links.
+
 ### Changed
 
 - **Grouped SparkLLM Download Milestones**: Consolidated the one-million, 3.5-million, and five-million download milestones into one bilingual timeline row with three staggered date markers (2026-09-29, 2026-10-30, and 2026-11-09). Preserved the original dates, version/platform scopes, and official announcement links; the different scopes do not represent a directly comparable growth series.
