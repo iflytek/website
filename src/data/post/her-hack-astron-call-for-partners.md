@@ -29,7 +29,7 @@ lang: 'zh'
 - 占比以 PR 中实际有 commit / `Co-authored-by:` 记录的贡献者为准，挂名不计入，鼓励每位队员真正动手；
 - 女性身份依据 GitHub Profile 公开展示的 **she/her** 或本人明确自我声明记录，无需提交隐私材料；没有明确声明时不根据姓名、头像或作品主题推断。
 
-第 6、7 期允许任何性别的个人参赛者参加，团队参赛须至少 50% 的贡献者为女性；投稿方式为指定 Hugging Face Discussion 加活动 Issue 留言，详见当期公告。
+第 6–8 期允许任何性别的个人参赛者参加，团队参赛须至少 50% 的贡献者为女性；投稿方式为指定 Hugging Face Discussion 加活动 Issue 留言，详见当期公告。
 
 ## 诚邀合作方出题
 
@@ -53,14 +53,14 @@ lang: 'zh'
 
 ### 奖励机制
 
-- **优胜奖**：第 1–5 期为人民币 500 元；第 6、7 期各设 1 名优胜奖，奖金为 100 美元，荣誉称号以当期公告为准；
+- **优胜奖**：第 1–5 期为人民币 500 元；第 6–8 期各设 1 名优胜奖，奖金为 100 美元，荣誉称号以当期公告为准；
 - **优秀贡献奖（若干）**：Astron 周边礼包（电子产品、帆布袋、虚拟会员、Token、咖啡券等）。
 
 > 获奖者名单公布后，请通过邮箱 **ifly_opensource@iflytek.com** 或**企业微信小助手**发送领奖信息。
 
 ## 赛题信息与赛事进展，第一时间同步
 
-以下按各期正式 Issue 及主办方结果留言整理，核对日期为 2026 年 11 月 10 日。时间统一使用北京时间（UTC+8）；原文仅有日期时保留日期，不补造时分。Issue 创建时间不等于赛题正式确定或开放提交时间，尤其第 2 期由已有需求纳入活动。
+以下按各期正式 Issue 及主办方结果留言整理，核对日期为 2026 年 11 月 22 日。时间统一使用北京时间（UTC+8）；原文仅有日期时保留日期，不补造时分。Issue 创建时间不等于赛题正式确定或开放提交时间，尤其第 2 期由已有需求纳入活动。
 
 | 期数与赛题                                                   | Issue 创建时间   | 正式公告的提交安排                                                    | 实际结果公告                                                                                       |
 | ------------------------------------------------------------ | ---------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -71,8 +71,9 @@ lang: 'zh'
 | [#5](https://github.com/XHToken/Spark-X2.6/issues/3)         | 2026-09-01 20:56 | 2026-09-01–09-06；截止 09-06 24:00                                    | [2026-09-19 12:50](https://github.com/XHToken/Spark-X2.6/issues/3#issuecomment-5739456696)         |
 | [#6](https://github.com/XHToken/Spark-X2.6/issues/9)         | 2026-09-07 19:58 | 2026-09-07–09-13；截止 09-13 24:00                                    | [2026-09-21 15:13](https://github.com/XHToken/Spark-X2.6/issues/9#issuecomment-5756767922)         |
 | [#7](https://github.com/XHToken/Spark-X2.6/issues/16)        | 2026-10-23 11:43 | 开放日为 2026-10-23（UTC，未注明时分）；截止北京时间 2026-11-01 07:59 | [2026-11-04 10:31](https://github.com/XHToken/Spark-X2.6/issues/16#issuecomment-6620944041)        |
+| [#8](https://github.com/XHToken/Spark-X2.6/issues/32)        | 2026-11-22 21:17 | 开放日为 2026-11-22（UTC）；截止北京时间 2026-12-01 07:59             | 投稿开放，截止后在活动 Issue 公布                                                                  |
 
-第 7 期为 **Spark-X2.6 公益应用场景挑战赛**，原截止时间为 2026-10-31 23:59 UTC，换算后为上表北京时间。第 5、6 期结果实际公布于 9 月 19 日、9 月 21 日，替代旧表预计日期；结果公布不代表奖金已经发放。第 1、2 期未明确的起止日期不沿用原预计表。第 8、9 期在本页尚无正式公告链接，赛题与时间待公布。
+第 7 期为 **Spark-X2.6 公益应用场景挑战赛**，原截止时间为 2026-10-31 23:59 UTC，换算后为上表北京时间。第 5、6 期结果实际公布于 9 月 19 日、9 月 21 日，替代旧表预计日期；结果公布不代表奖金已经发放。第 1、2 期未明确的起止日期不沿用原预计表。第 8 期为 **Spark × SkillHub Agent 技能实战挑战赛**，从 SkillHub 选用一项技能，用本地 Spark-X2.6-4B 完成真实任务，以视频或图文 Demo 投稿。截止时间为 **2026-11-30 23:59 UTC**（北京时间 **2026-12-01 07:59**），详见[第 8 期正式公告与投稿登记](https://github.com/XHToken/Spark-X2.6/issues/32)。第 9 期赛题与时间待公布。
 
 欢迎公益组织、行业组织、高校与开源社区[按模板提交出题 Issue](https://github.com/iflytek/astron-agent/issues/new?template=her-hack-astron-challenge.md)，共同把真实需求转化为可落地的开源赛题。也欢迎开发者持续通过官网、GitHub 话题页和社群关注赛事进展，及时参与每期挑战。
 
@@ -222,7 +223,7 @@ lang: 'zh'
 
 ## 相关链接
 
-- 正式赛题参考：[HER Hack-Astron #7｜Spark-X2.6 公益应用场景挑战赛](https://github.com/XHToken/Spark-X2.6/issues/16)、[HER Hack-Astron #1](https://github.com/iflytek/astron-agent/issues/1482)、[HER Hack-Astron #2](https://github.com/iflytek/astron-agent/issues/1575)
+- 正式赛题参考：[HER Hack-Astron #8｜Spark × SkillHub Agent 技能实战挑战赛](https://github.com/XHToken/Spark-X2.6/issues/32)、[HER Hack-Astron #7｜Spark-X2.6 公益应用场景挑战赛](https://github.com/XHToken/Spark-X2.6/issues/16)、[HER Hack-Astron #1](https://github.com/iflytek/astron-agent/issues/1482)、[HER Hack-Astron #2](https://github.com/iflytek/astron-agent/issues/1575)
 - Astron 开源生态 GitHub 话题页：[github.com/topics/iflytek-astron](https://github.com/topics/iflytek-astron)
 - Astron Landscape：[opensource.iflytek.com/#project-landscape](https://opensource.iflytek.com/#project-landscape)
 - 讯飞开源官网：[opensource.iflytek.com](https://opensource.iflytek.com)
