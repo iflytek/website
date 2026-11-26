@@ -109,6 +109,24 @@ const logoGroups = [
       preview: colorway.preview,
     })),
   },
+  {
+    id: 'english-square',
+    titleZh: '英文方形组合标志',
+    titleEn: 'Square English Lockups',
+    descriptionZh: '图形搭配 iFLYTEK OPENSOURCE 英文字标，适用于社交媒体头像和英文品牌展示。',
+    descriptionEn:
+      'Use the mark with the iFLYTEK OPENSOURCE wordmark for profile images and English-language branding.',
+    assets: colorways
+      .filter((colorway) => colorway.slug.startsWith('gradient-'))
+      .map((colorway) => ({
+        titleZh: colorway.titleZh,
+        titleEn: colorway.titleEn,
+        path: '/brand/logos/stacked/english-square/' + colorway.slug + '.png',
+        width: 600,
+        height: 600,
+        preview: colorway.preview,
+      })),
+  },
 ];
 ---
 
