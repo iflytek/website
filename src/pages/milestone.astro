@@ -83,9 +83,31 @@ const milestones: Array<{
   titleEn: string;
   descriptionZh: string;
   descriptionEn: string;
+  image?: { src: string; alt: string; width: number; height: number };
   highlights?: Array<{ zh: string; en: string }>;
   link?: { href: string; zh: string; en: string };
 }> = [
+  {
+    id: 'her-hack-astron-opengood',
+    dateZh: '2026.11.15',
+    dateEn: 'Nov 15, 2026',
+    datetime: '2026-11-15',
+    project: 'ecosystem',
+    icon: 'tabler:award',
+    titleZh: 'HER Hack-Astron 获 OpenGood 开源公益优秀案例',
+    titleEn: 'HER Hack-Astron receives OpenGood recognition',
+    descriptionZh:
+      '2026 年 11 月 15 日，讯飞开源 HER Hack-Astron 女性开发者开源挑战计划获得开源社 OpenGood“开源公益优秀案例”荣誉，证书编号为 KYS-OG-002-2026。',
+    descriptionEn:
+      'On November 15, 2026, KaiYuanShe recognized iFLYTEK Open Source’s HER Hack-Astron women developers’ open-source challenge program as an OpenGood outstanding public-good case. Certificate: KYS-OG-002-2026.',
+    link: { href: '/images/milestones/her-hack-astron-opengood-2026.png', zh: '查看荣誉证书', en: 'View certificate' },
+    image: {
+      src: '/images/milestones/her-hack-astron-opengood-2026.png',
+      alt: 'HER Hack-Astron OpenGood 荣誉证书 / Certificate of Outstanding Case',
+      width: 1086,
+      height: 1448,
+    },
+  },
   {
     id: 'iflytek-ospo-landscape',
     dateZh: '2026.10.10',
@@ -867,6 +889,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
     project: 'ecosystem',
     items: [
       {
+        sourceId: 'her-hack-astron-opengood',
+        kind: 'point',
+        start: 15,
+        titleZh: 'HER Hack-Astron · OpenGood 开源公益优秀案例',
+        titleEn: 'HER Hack-Astron · OpenGood recognition',
+        dateZh: '2026.11.15',
+        dateEn: 'Nov 15, 2026',
+        barZh: 'OpenGood · 11.15',
+        barEn: 'OpenGood · Nov 15',
+      },
+      {
         sourceId: 'iflytek-ospo-landscape',
         kind: 'point',
         start: 14,
@@ -1181,6 +1214,22 @@ const periodEn = 'Sep 2025 — Nov 2026';
                                     </a>
                                   ) : null}
                                 </span>
+                                {source.image && (
+                                  <a
+                                    class="milestone-gantt__certificate"
+                                    href={source.image.src}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <img
+                                      src={source.image.src}
+                                      alt={source.image.alt}
+                                      width={source.image.width}
+                                      height={source.image.height}
+                                      loading="lazy"
+                                    />
+                                  </a>
+                                )}
                               </div>
                             </div>
 
@@ -1852,6 +1901,26 @@ const periodEn = 'Sep 2025 — Nov 2026';
     display: grid;
     min-width: 0;
     gap: 0.35rem;
+  }
+
+  .milestone-gantt__certificate {
+    display: block;
+    width: 6rem;
+    margin-top: 0.3rem;
+    border: 1px solid var(--rc-rule-strong);
+    border-radius: var(--rc-radius-control);
+    overflow: hidden;
+  }
+
+  .milestone-gantt__certificate img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .milestone-gantt__certificate:focus-visible {
+    outline: 2px solid var(--rc-focus);
+    outline-offset: 3px;
   }
 
   .milestone-gantt__item-title {
