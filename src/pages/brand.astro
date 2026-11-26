@@ -53,10 +53,23 @@ const usageGuides = [
     index: '03',
     titleZh: '透明 PNG',
     titleEn: 'Transparent PNG',
-    textZh: '资源已保留透明背景；卡片底色仅用于网页预览，不属于图片文件。',
-    textEn: 'Assets retain transparent backgrounds; card colors are previews and are not part of the files.',
+    textZh: '标志 PNG 已保留透明背景；卡片底色仅用于网页预览，不属于图片文件。',
+    textEn: 'Logo PNGs retain transparent backgrounds; card colors are previews and are not part of the files.',
   },
 ];
+
+const englishSizes: Record<string, [number, number]> = {
+  'gradient-black-alternate': [531, 75],
+  'gradient-black-primary': [614, 71],
+  'gradient-blue-alternate': [530, 75],
+  'gradient-blue-primary': [614, 71],
+  'gradient-white-alternate': [530, 75],
+  'gradient-white-primary': [600, 69],
+  'solid-blue-alternate': [529, 75],
+  'solid-blue-primary': [613, 71],
+  'white-alternate': [529, 75],
+  'white-primary': [614, 71],
+};
 
 const logoGroups = [
   {
@@ -95,6 +108,27 @@ const logoGroups = [
     ),
   },
   {
+    id: 'english',
+    titleZh: '英文横版组合标志',
+    titleEn: 'English Horizontal Lockups',
+    descriptionZh: '适用于英文展商页、演示和社区活动。可下载 SVG 或透明 PNG。',
+    descriptionEn: 'For exhibitor pages, presentations and community events. Available as SVG and transparent PNG.',
+    assets: colorways.flatMap((colorway) =>
+      variants.map((variant) => {
+        const name = colorway.slug + '-' + variant.slug;
+        const [width, height] = englishSizes[name];
+        return {
+          titleZh: colorway.titleZh + ' · ' + variant.titleZh,
+          titleEn: colorway.titleEn + ' · ' + variant.titleEn,
+          path: '/brand/logos/horizontal/english/' + name + '.png',
+          width,
+          height,
+          preview: colorway.preview,
+        };
+      })
+    ),
+  },
+  {
     id: 'stacked',
     titleZh: '竖版组合标志',
     titleEn: 'Stacked Lockups',
@@ -108,6 +142,31 @@ const logoGroups = [
       height: 458,
       preview: colorway.preview,
     })),
+  },
+  {
+    id: 'community',
+    titleZh: '社区活动素材',
+    titleEn: 'Community Event Artwork',
+    descriptionZh: 'Eventyay 展商封面与小火苗角色设计原图。',
+    descriptionEn: 'The Eventyay exhibitor cover and original Spark character sheet.',
+    assets: [
+      {
+        titleZh: 'Eventyay 展商横幅',
+        titleEn: 'Eventyay Exhibitor Banner',
+        path: '/brand/community/eventyay-exhibitor-banner.png',
+        width: 1500,
+        height: 500,
+        preview: 'light',
+      },
+      {
+        titleZh: '小火苗角色设计',
+        titleEn: 'Spark Character Sheet',
+        path: '/brand/community/spark-character.png',
+        width: 1536,
+        height: 1024,
+        preview: 'light',
+      },
+    ],
   },
 ];
 ---
@@ -135,10 +194,10 @@ const logoGroups = [
       </h1>
       <p
         class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-300"
-        data-lang-zh="下载官方图形标志、横版和竖版组合标志。所有图片均为透明底 PNG，可直接用于数字媒体与文档。"
-        data-lang-en="Download the official brand mark, horizontal lockups, and stacked lockups. Every asset is a transparent PNG ready for digital media and documents."
+        data-lang-zh="下载官方标志、英文组合标志、展商横幅及小火苗角色设计。"
+        data-lang-en="Download official logos, English lockups, the exhibitor banner and Spark character artwork."
       >
-        下载官方图形标志、横版和竖版组合标志。所有图片均为透明底 PNG，可直接用于数字媒体与文档。
+        下载官方标志、英文组合标志、展商横幅及小火苗角色设计。
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <a
@@ -246,6 +305,15 @@ const logoGroups = [
                       PNG · {asset.width} × {asset.height} px
                     </p>
                   </div>
+                  {group.id === 'english' && (
+                    <a
+                      class="font-semibold text-primary-700 dark:text-primary-300"
+                      href={asset.path.replace('.png', '.svg')}
+                      download
+                    >
+                      SVG ↓
+                    </a>
+                  )}
                   <a
                     href={asset.path}
                     download
