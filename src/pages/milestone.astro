@@ -87,6 +87,25 @@ const milestones: Array<{
   link?: { href: string; zh: string; en: string };
 }> = [
   {
+    id: 'iflytek-gosd-china-top30',
+    dateZh: '2026.10',
+    dateEn: 'Oct 2026',
+    datetime: '2026-10',
+    project: 'ecosystem',
+    icon: 'tabler:chart-bar',
+    titleZh: '科大讯飞首次进入中国开源企业影响力 Top 30',
+    titleEn: 'iFLYTEK debuts in China’s Top 30 for open source influence',
+    descriptionZh:
+      '科大讯飞在《2026 全球开源发展报告》的中国开源企业影响力榜位列第 21，OpenRank 为 1,109.71，榜单记录了 15 个活跃仓库和 312 名关联活跃开发者。企业榜统计期为 2025 年 7 月 1 日至 2026 年 6 月 30 日。报告的大模型榜采用 2026 年 8 月快照。',
+    descriptionEn:
+      'iFLYTEK ranked 21st among Chinese companies for open source influence in the Global Open Source Development Report 2026, with an OpenRank score of 1,109.71, 15 active repositories, and 312 associated active developers. The company ranking covers July 1, 2025 to June 30, 2026. The report’s model ranking uses an August 2026 snapshot.',
+    link: {
+      href: 'https://www.x-lab.info/2026-Global-Open-Source-Development-Report/2026/zh/chapters/03/#ch03-s02',
+      zh: '查看报告第 3.2 节',
+      en: 'Read section 3.2 of the report',
+    },
+  },
+  {
     id: 'iflytek-ospo-landscape',
     dateZh: '2026.10.10',
     dateEn: 'Oct 10, 2026',
@@ -866,6 +885,17 @@ const ganttGroups: Array<{ project: ProjectKey; items: GanttItem[] }> = [
   {
     project: 'ecosystem',
     items: [
+      {
+        sourceId: 'iflytek-gosd-china-top30',
+        kind: 'point',
+        start: 14,
+        titleZh: '科大讯飞首次进入中国开源企业影响力 Top 30',
+        titleEn: 'iFLYTEK debuts in China’s Top 30 for open source influence',
+        dateZh: '2026.10',
+        dateEn: 'Oct 2026',
+        barZh: '中国企业 #21',
+        barEn: 'China #21',
+      },
       {
         sourceId: 'iflytek-ospo-landscape',
         kind: 'point',
